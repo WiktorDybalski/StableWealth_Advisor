@@ -23,3 +23,4 @@ for ticker in tickerSymbols:
     else:
         merged_df = merged_df.join(close_prices, how='outer')
 merged_df.to_csv('stock_data2.csv')
+
