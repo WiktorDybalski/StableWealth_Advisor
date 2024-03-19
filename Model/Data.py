@@ -14,7 +14,7 @@ merged_df = pd.DataFrame()
 for ticker in tickerSymbols:
     # Fetch historical data for the ticker
     tickerData = yf.Ticker(ticker)
-    data = tickerData.history(period='1d', start='1974-01-01', end='2024-03-16')
+    data = tickerData.history(period='1d', start='1974-01-01')
 
     close_prices = data[['Close']].rename(columns={'Close': ticker})
 
