@@ -27,7 +27,7 @@ def run_monte_carlo_simulation(daily_returns):
     # fig_of_changes.show()
 
     # -----------------------------------------------------
-    np.random.seed(1)
+    np.random.seed()
     # Weight each security
     weights = np.random.random((number_of_companies, 1))
     # normalize it, so that some is one
@@ -38,7 +38,7 @@ def run_monte_carlo_simulation(daily_returns):
     log_ret = np.log(daily_returns / daily_returns.shift(1))
     # log_ret
 
-    n = 100
+    n = 50000
     # n = 10
 
     port_weights = np.zeros(shape=(n, len(daily_returns.columns)))
