@@ -14,6 +14,7 @@ def main():
     daily_returns2 = pd.read_csv('test_stock_data12.csv', index_col=0)
     # daily_returns2 = pd.read_csv('test_stock_data2.csv', index_col=0)
     print("Simulation1:")
+    print("Number of companies:", len(tickers1))
     mcs.run_monte_carlo_simulation(daily_returns1)
     # print("Simulation2:")
     # mcs.run_monte_carlo_simulation(daily_returns2)
