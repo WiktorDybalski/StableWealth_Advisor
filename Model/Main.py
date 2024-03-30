@@ -1,7 +1,7 @@
 import Data as data
 import Monte_carlo_simulation as mcs
 import pandas as pd
-
+import time
 
 def main():
     tickers1 = ["AAPL", "MSFT", "AMZN"]

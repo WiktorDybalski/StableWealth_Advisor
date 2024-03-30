@@ -1,4 +1,3 @@
-import pandas as pd
 import numpy as np
 import plotly.express as px
 import matplotlib.pyplot as plt
@@ -33,7 +32,7 @@ def run_monte_carlo_simulation(daily_returns):
 
     log_ret = np.log(daily_returns / daily_returns.shift(1))
 
-    n = 50000
+    n = 5000
 
     port_weights = np.zeros(shape=(n, len(daily_returns.columns)))
     port_volatility = np.zeros(n)
