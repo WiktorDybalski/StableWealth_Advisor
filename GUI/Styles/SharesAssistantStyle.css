@@ -1,0 +1,61 @@
+/* SharesAssistantStyle.css */
+
+QWidget {
+    background-color: #f9f9f9; /* Jasniejsze tło */
+}
+
+QLabel {
+    font-size: 18px; /* Nieco większe czcionki dla lepszej czytelności */
+    color: #333333; /* Ciemny szary dla tekstu */
+}
+
+#header, #footer {
+    height: 20%;
+    width: 100%;
+    background-color: #0062cc; /* Nieco ciemniejszy odcień niebieskiego */
+    color: white;
+    padding: 20px;
+    font-size: 24px; /* Większa czcionka dla nagłówka i stopki */
+    font-weight: bold;
+    border-radius: 5px; /* Lekkie zaokrąglenie rogów */
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1); /* Dodanie subtelnych cieni */
+}
+
+#middleWidget {
+    height: 60%;
+    width: 100%;
+    display: flex; /* Ustawienie flexbox dla lepszego rozmieszczenia elementów */
+    justify-content: space-around; /* Rozkładanie elementów równomiernie z zachowaniem odstępów */
+    padding: 10px 0; /* Dodanie paddingu tylko góra-dół */
+}
+
+#leftLabel, #rightLabel {
+    background-color: #e9ecef; /* Bardziej stonowany kolor tła */
+    padding: 20px;
+    margin: 10px;
+    border-radius: 10px; /* Wyraźniejsze zaokrąglenie rogów */
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1); /* Większe cienie dla lepszego efektu wizualnego */
+}
+
+#leftWidget {
+    border-right: 2px solid #BBBBBB; /* Jasniejszy odcień szarości dla linii */
+}
+
+#footer {
+    border-top: 2px solid #BBBBBB; /* Jasniejszy odcień szarości dla linii górnej */
+}
+
+QPushButton {
+    background-color: #007bff; /* Jasny niebieski dla przycisków */
+    color: white;
+    font-weight: bold;
+    padding: 10px 20px;
+    border-radius: 5px; /* Zaokrąglenie rogów przycisku */
+    border: none; /* Usunięcie domyślnej ramki */
+    transition: background-color 0.3s, color 0.3s; /* Płynne przejście kolorów */
+}
+
+QPushButton:hover {
+    background-color: #0056b3; /* Ciemniejszy niebieski przy najechaniu */
+    color: #ffffff;
+}

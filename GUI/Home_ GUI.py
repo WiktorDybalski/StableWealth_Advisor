@@ -1,98 +1,126 @@
 import sys
-from PyQt5.QtWidgets import (QApplication, QWidget, QVBoxLayout, QHBoxLayout, QLabel, QPushButton,
-                             QGraphicsDropShadowEffect, QPlainTextEdit, QTextEdit)
-from PyQt5.QtCore import QMargins
-from PyQt5.QtGui import QColor
-from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas
-from matplotlib.figure import Figure
+from PySide6.QtWidgets import QApplication, QWidget, QVBoxLayout, QLabel, QHBoxLayout, QPushButton, QStackedWidget
+from PySide6.QtCore import Qt, QFile
+
+from SharesAssistant_GUI import SharesAssistant
+from Calculator_GUI import TreasuryBondCalculator
 
 
-class DashboardWidget(QWidget):
+class HomeWindow(QWidget):
     def __init__(self):
         super().__init__()
+
+        self.stackedWidget = QStackedWidget()
         self.initUI()
+        self.setupStyles()
 
     def initUI(self):
-        self.layout = QVBoxLayout(self)
-        self.layout.setContentsMargins(QMargins(10, 10, 10, 10))
-        self.centerWindow()
+        screen = app.primaryScreen().size()
+        width = screen.width() * 0.8
+        height = screen.height() * 0.8
+        left = screen.width() * 0.1
+        top = screen.height() * 0.1
+        self.setGeometry(left, top, width, height)
+        self.setWindowTitle("StableWealth Advisor")
 
-        # Top bar with title
-        self.titleLabel = QLabel("StableWealth Advisor Dashboard")
-        self.layout.addWidget(self.titleLabel)
+        layout = QVBoxLayout()
 
-        # Content area
-        self.contentArea = QHBoxLayout()
-        self.layout.addLayout(self.contentArea)
+        layout.addWidget(self.stackedWidget)
 
-        # Left panel with buttons and info
-        self.leftPanel = QVBoxLayout()
-        self.contentArea.addLayout(self.leftPanel, 1)
+        self.homeWidget = QWidget()
+        self.setupHomeWidget()
 
-        # Adding buttons with their callbacks and respective content
-        self.addButton("Markowitz", "Your assistant in Portfolio Management!", "Portfolio Management Information...")
-        self.addButton("Calculator", "Calculate your future wealth!", "Future Wealth Calculator...")
+        self.stackedWidget.addWidget(self.homeWidget)
 
-        # Right panel initially with Matplotlib chart
-        self.chart = DynamicMplCanvas()
-        self.contentWidget = self.chart
-        self.contentArea.addWidget(self.contentWidget, 2)
+        self.sharesAssistant = SharesAssistant()
+        self.sharesAssistant.homeRequested.connect(self.showHome)
+        self.stackedWidget.addWidget(self.sharesAssistant)
 
-        self.applyStyles()
+        self.calculator = TreasuryBondCalculator()
+        self.calculator.homeRequested.connect(self.showHome)
+        self.stackedWidget.addWidget(self.calculator)
+        self.setLayout(layout)
 
-    def addButton(self, text, tooltip, content):
-        button = QPushButton(text)
-        button.setToolTip(tooltip)
-        button.clicked.connect(lambda: self.showContent(content))
-        self.leftPanel.addWidget(button)
+    def setupHomeWidget(self):
+        layout = QVBoxLayout()
 
-    def applyStyles(self):
-        shadowEffect = QGraphicsDropShadowEffect(blurRadius=5, xOffset=3, yOffset=3, color=QColor(0, 0, 0, 150))
-        self.titleLabel.setGraphicsEffect(shadowEffect)
+        self.create_header(layout)
+        self.create_middle_part(layout)
+        self.create_footer(layout)
+        self.setLayout(layout)
 
-    def centerWindow(self):
-        screen = QApplication.primaryScreen().geometry()
-        width = int(screen.width() * 0.7)
-        height = int(screen.height() * 0.8)
-        self.setGeometry((screen.width() - width) // 2, (screen.height() - height) // 2, width, height)
+        self.homeWidget.setLayout(layout)
 
-    def showContent(self, content):
-        # Check if we're trying to display the same type of content (e.g., text again)
-        if isinstance(self.contentWidget, QTextEdit) and not isinstance(content, FigureCanvas):
-            self.contentWidget.setPlainText(content)
-        else:
-            # Remove the existing content widget and replace it with new content
-            if self.contentWidget is not None:
-                self.contentArea.removeWidget(self.contentWidget)
-                self.contentWidget.deleteLater()
-            if isinstance(content, str):
-                self.contentWidget = QPlainTextEdit(content)
-                self.contentWidget.setReadOnly(True)
-            elif isinstance(content, FigureCanvas):
-                self.contentWidget = content
-            self.contentArea.addWidget(self.contentWidget, 2)
+    def setupStyles(self):
+        style_file = QFile("Styles/HomeWindowStyle.css")
+        style_file.open(QFile.ReadOnly | QFile.Text)
+        style_sheet = str(style_file.readAll(), encoding='utf-8')
+        self.setStyleSheet(style_sheet)
 
+    def showSharesAssistant(self):
+        self.stackedWidget.setCurrentWidget(self.sharesAssistant)
+    def showCalculator(self):
+        self.stackedWidget.setCurrentWidget(self.calculator)
 
-class DynamicMplCanvas(FigureCanvas):
-    def __init__(self):
-        fig = Figure(figsize=(20, 10))
-        self.axes = fig.add_subplot(111)
-        super().__init__(fig)
-        self.timer = self.new_timer(1000, [(self.update_figure, (), {})])
-        self.timer.start()
+    def showHome(self):
+        self.stackedWidget.setCurrentWidget(self.homeWidget)
 
-    def update_figure(self):
-        self.axes.clear()
-        self.axes.plot([0, 1, 2, 3, 4], [0, 1, 0, 1, 0], 'r')
-        self.draw()
+    def create_header(self, layout):
+        header = QLabel("StableWealth Advisor")
+        header.setAlignment(Qt.AlignCenter)
+        header.setObjectName("header")
+        layout.addWidget(header, 2)
+
+    def create_middle_part(self, layout):
+        middleWidget = QWidget()
+        middleWidget.setObjectName("middleWidget")
+        middleLayout = QHBoxLayout()
 
 
-def main():
+        self.create_left_label(middleLayout)
+        self.create_right_label(middleLayout)
+
+        middleWidget.setLayout(middleLayout)
+        layout.addWidget(middleWidget, 7)
+
+    def create_footer(self, layout):
+        footer = QLabel("Footer")
+        footer.setObjectName("footer")
+        footer.setAlignment(Qt.AlignCenter)
+        layout.addWidget(footer, 1)
+
+    def create_left_label(self, parent_layout):
+        leftLabel = QLabel()
+        leftLabel.setObjectName("leftLabel")
+        leftLabelLayout = QVBoxLayout()
+        leftLabelHeader = QLabel("Choose what you need")
+        leftLabelContent = QLabel()
+        sharesButton = QPushButton("Shares assistant")
+        sharesButton.clicked.connect(self.showSharesAssistant)
+
+        calculatorButton = QPushButton("Treasury bond calculator")
+        calculatorButton.clicked.connect(self.showCalculator)
+
+        leftLabelLayout.addWidget(leftLabelHeader, 2)
+        leftLabelLayout.addWidget(leftLabelContent, 8)
+        leftLabelContentLayout = QVBoxLayout()
+        leftLabelContent.setLayout(leftLabelContentLayout)
+        leftLabelContentLayout.addWidget(sharesButton)
+        leftLabelContentLayout.addWidget(calculatorButton)
+        leftLabelLayout.addWidget(leftLabelContent)
+
+        leftLabel.setLayout(leftLabelLayout)
+        parent_layout.addWidget(leftLabel, 4)
+
+    def create_right_label(self, parent_layout):
+        rightLabel = QLabel("Right Widget")
+        rightLabel.setObjectName("rightLabel")
+
+        parent_layout.addWidget(rightLabel, 6)
+
+if __name__ == "__main__":
     app = QApplication(sys.argv)
-    mainWidget = DashboardWidget()
-    mainWidget.show()
-    sys.exit(app.exec_())
+    window = HomeWindow()
+    window.show()
+    sys.exit(app.exec())
 
-
-if __name__ == '__main__':
-    main()

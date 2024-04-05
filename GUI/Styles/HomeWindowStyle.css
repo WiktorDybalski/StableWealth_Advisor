@@ -1,0 +1,68 @@
+/* HomeWindowStyle.css */
+
+QWidget {
+    background-color: #f9f9f9; /* Jasne tło dla całego okna */
+}
+
+QLabel {
+    font-size: 18px; /* Nieco większa czcionka dla lepszej czytelności */
+    color: #333; /* Ciemnoszary tekst */
+}
+
+#header, #footer {
+    height: 20%;
+    width: 100%;
+    background-color: #0056b3; /* Ciemniejszy odcień niebieskiego */
+    color: white;
+    padding: 20px;
+    font-size: 24px; /* Większa czcionka dla nagłówka i stopki */
+    font-weight: bold;
+    border-radius: 0px; /* Zaokrąglenie rogów nagłówka i stopki */
+    box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2); /* Subtelny cień dla głębi */
+}
+
+#middleWidget {
+    height: 60%;
+    width: 100%;
+    padding: 10px;
+    display: flex; /* Umożliwia elastyczne rozmieszczanie zawartości */
+    justify-content: space-around; /* Rozkłada widgety równomiernie */
+}
+
+#leftLabel, #rightLabel {
+    background-color: #e9ecef; /* Bardziej stonowany kolor tła */
+    padding: 20px;
+    margin: 10px;
+    border-radius: 10px; /* Delikatne zaokrąglenie rogów */
+    box-shadow: 0 4px 8px 0 rgba(0,0,0,0.1); /* Lekki cień dla efektu głębi */
+}
+
+#leftWidget {
+    border-right: 2px solid #BBB;
+}
+
+#footer {
+    border-top: 2px solid #BBB;
+}
+
+QPushButton {
+    background-color: #007bff; /* Niebieski kolor przycisków */
+    color: white;
+    font-weight: bold;
+    padding: 10px 20px;
+    border: none; /* Usunięcie domyślnej ramki */
+    border-radius: 5px; /* Zaokrąglenie rogów przycisku */
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 16px;
+    margin: 4px 2px;
+    transition-duration: 0.4s; /* Animacja zmiany koloru */
+    cursor: pointer;
+}
+
+QPushButton:hover {
+    background-color: #0056b3; /* Ciemniejszy niebieski przy najechaniu */
+    color: white;
+}
+
