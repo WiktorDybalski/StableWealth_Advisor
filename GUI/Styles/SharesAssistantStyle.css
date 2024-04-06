@@ -41,6 +41,22 @@ QLabel {
     border-right: 2px solid #BBBBBB; /* Jasniejszy odcień szarości dla linii */
 }
 
+#companyListWidget {
+    border: 2px solid #007bff; /* Niebieska obwódka */
+    border-radius: 5px; /* Zaokrąglone rogi */
+    padding: 5px;
+    background-color: white; /* Białe tło */
+    color: #0056b3; /* Kolor tekstu */
+}
+
+#companyComboBox::drop-down {
+    border-left: 1px solid #007bff; /* Linia oddzielająca od przycisku rozwijania */
+}
+
+#companyComboBox::down-arrow {
+    image: url('path_to_your_arrow_icon.png'); /* Ścieżka do ikony strzałki */
+}
+
 #footer {
     border-top: 2px solid #BBBBBB; /* Jasniejszy odcień szarości dla linii górnej */
 }

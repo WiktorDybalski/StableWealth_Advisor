@@ -1,21 +1,20 @@
-import sys
 from PySide6.QtWidgets import QApplication, QWidget, QVBoxLayout, QLabel, QHBoxLayout, QPushButton, QStackedWidget
 from PySide6.QtCore import Qt, QFile
-
-from SharesAssistant_GUI import SharesAssistant
-from Calculator_GUI import TreasuryBondCalculator
+import sys
+import SharesAssistant_GUI
+import Calculator_GUI
 
 
 class HomeWindow(QWidget):
-    def __init__(self):
+    def __init__(self, app):
         super().__init__()
-
+        self.app = app
         self.stackedWidget = QStackedWidget()
         self.initUI()
         self.setupStyles()
 
     def initUI(self):
-        screen = app.primaryScreen().size()
+        screen = self.app.primaryScreen().size()
         width = screen.width() * 0.8
         height = screen.height() * 0.8
         left = screen.width() * 0.1
@@ -32,11 +31,11 @@ class HomeWindow(QWidget):
 
         self.stackedWidget.addWidget(self.homeWidget)
 
-        self.sharesAssistant = SharesAssistant()
+        self.sharesAssistant = SharesAssistant_GUI.SharesAssistant()
         self.sharesAssistant.homeRequested.connect(self.showHome)
         self.stackedWidget.addWidget(self.sharesAssistant)
 
-        self.calculator = TreasuryBondCalculator()
+        self.calculator = Calculator_GUI.TreasuryBondCalculator()
         self.calculator.homeRequested.connect(self.showHome)
         self.stackedWidget.addWidget(self.calculator)
         self.setLayout(layout)
@@ -59,6 +58,7 @@ class HomeWindow(QWidget):
 
     def showSharesAssistant(self):
         self.stackedWidget.setCurrentWidget(self.sharesAssistant)
+
     def showCalculator(self):
         self.stackedWidget.setCurrentWidget(self.calculator)
 
@@ -75,7 +75,6 @@ class HomeWindow(QWidget):
         middleWidget = QWidget()
         middleWidget.setObjectName("middleWidget")
         middleLayout = QHBoxLayout()
-
 
         self.create_left_label(middleLayout)
         self.create_right_label(middleLayout)
@@ -120,7 +119,6 @@ class HomeWindow(QWidget):
 
 if __name__ == "__main__":
     app = QApplication(sys.argv)
-    window = HomeWindow()
-    window.show()
+    view = HomeWindow(app)
+    view.show()
     sys.exit(app.exec())
-

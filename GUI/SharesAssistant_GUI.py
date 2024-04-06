@@ -1,8 +1,8 @@
-from PySide6.QtWidgets import QApplication, QWidget, QVBoxLayout, QLabel, QHBoxLayout, QPushButton
+from PySide6.QtWidgets import QApplication, QWidget, QVBoxLayout, QLabel, QHBoxLayout, QPushButton, QComboBox, QAbstractItemView, QListWidget
 from PySide6.QtCore import Qt, QFile
 from PySide6.QtWidgets import QWidget, QVBoxLayout, QLabel
 from PySide6.QtCore import QFile, Signal
-
+from Model.companies import Companies
 class SharesAssistant(QWidget):
     homeRequested = Signal()
     def __init__(self):
@@ -20,30 +20,71 @@ class SharesAssistant(QWidget):
     def setupSharesAssistantWidget(self):
         layout = QVBoxLayout()
 
-        header = QLabel("Share Assistant")
+        # Header
+        header = QLabel("Shares Assistant")
         header.setAlignment(Qt.AlignCenter)
         header.setObjectName("header")
-        layout.addWidget(header, 2)
+        layout.addWidget(header, 5)
 
-        middleWidget = QWidget()
-        middleWidget.setObjectName("middleWidget")
-        middleLayout = QHBoxLayout()
+        # Content area
+        content = QWidget()  # A QWidget that will hold the content layout
+        content.setObjectName("middle_part")
+        contentLayout = QVBoxLayout()  # The QVBoxLayout that will be set on the content QWidget
+
+        # 'Home' button that emits the homeRequested signal
         homeButton = QPushButton("Home")
-        middleLayout.addWidget(homeButton)
         homeButton.clicked.connect(self.emitHomeRequested)
+        contentLayout.addWidget(homeButton)
 
+        # Button to show/hide the QListWidget
+        self.toggleListButton = QPushButton("Show Companies to select")
+        self.toggleListButton.clicked.connect(self.toggleCompanyList)
+        contentLayout.addWidget(self.toggleListButton)
 
-        middleWidget.setLayout(middleLayout)
+        # QListWidget with multi-selection enabled
+        self.companyListWidget = QListWidget()
+        self.companyListWidget.setSelectionMode(QAbstractItemView.MultiSelection)
+        self.companyListWidget.setVisible(False)
+        for ticker, name in Companies.companies.items():
+            self.companyListWidget.addItem(name)
+        contentLayout.addWidget(self.companyListWidget)
 
-        layout.addWidget(middleWidget, 7)
+        # 'Select' button that saves the selected companies
+        selectButton = QPushButton("Select Companies")
+        selectButton.clicked.connect(self.selectCompanies)
+        contentLayout.addWidget(selectButton)
 
+        startButton = QPushButton("Start Simulation")
+        selectButton.clicked.connect(self.start_simulation)
+        contentLayout.addWidget(startButton)
+        # Set the content layout to the content QWidget
+        content.setLayout(contentLayout)
+
+        # Add the content QWidget to the main layout
+        layout.addWidget(content, 80)
+
+        # Footer
         footer = QLabel("Footer")
         footer.setObjectName("footer")
         footer.setAlignment(Qt.AlignCenter)
-        layout.addWidget(footer, 1)
+        layout.addWidget(footer, 5)
 
+        # Set the main layout to the window
         self.setLayout(layout)
+
+    def toggleCompanyList(self):
+        # Pokaż lub ukryj QListWidget
+        isVisible = self.companyListWidget.isVisible()
+        self.companyListWidget.setVisible(not isVisible)
+        self.toggleListButton.setText("Hide Companies" if not isVisible else "Select Companies")
+    def selectCompanies(self):
+        self.selectedCompanies = [item.text() for item in self.companyListWidget.selectedItems()]
+        print("Selected companies", self.selectedCompanies)
 
     def emitHomeRequested(self):
         self.homeRequested.emit()
+
+    def start_simulation(self):
+        return self.selectedCompanies
+
 
