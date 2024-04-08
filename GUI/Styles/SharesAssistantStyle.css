@@ -1,77 +1,54 @@
 /* SharesAssistantStyle.css */
 
 QWidget {
-    background-color: #f9f9f9; /* Jasniejsze tło */
+    background-color: #f9f9f9;
 }
 
 QLabel {
-    font-size: 18px; /* Nieco większe czcionki dla lepszej czytelności */
-    color: #333333; /* Ciemny szary dla tekstu */
+    font-size: 18px;
+    color: #333;
 }
 
 #header, #footer {
-    height: 20%;
-    width: 100%;
-    background-color: #0062cc; /* Nieco ciemniejszy odcień niebieskiego */
+    background-color: #124191; /* Zmieniono odcień niebieskiego na głębszy */
     color: white;
     padding: 20px;
-    font-size: 24px; /* Większa czcionka dla nagłówka i stopki */
+    font-size: 24px;
     font-weight: bold;
-    border-radius: 5px; /* Lekkie zaokrąglenie rogów */
-    box-shadow: 0 2px 4px rgba(0,0,0,0.1); /* Dodanie subtelnych cieni */
+    border-radius: 5px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Zwiększono cień */
 }
 
-#middleWidget {
-    height: 60%;
-    width: 100%;
-    display: flex; /* Ustawienie flexbox dla lepszego rozmieszczenia elementów */
-    justify-content: space-around; /* Rozkładanie elementów równomiernie z zachowaniem odstępów */
-    padding: 10px 0; /* Dodanie paddingu tylko góra-dół */
-}
-
-#leftLabel, #rightLabel {
-    background-color: #e9ecef; /* Bardziej stonowany kolor tła */
-    padding: 20px;
+#middle_part {
     margin: 10px;
-    border-radius: 10px; /* Wyraźniejsze zaokrąglenie rogów */
-    box-shadow: 0 4px 6px rgba(0,0,0,0.1); /* Większe cienie dla lepszego efektu wizualnego */
-}
-
-#leftWidget {
-    border-right: 2px solid #BBBBBB; /* Jasniejszy odcień szarości dla linii */
+    padding: 10px;
+    border-radius: 10px; /* Dodano zaokrąglenie do środkowej części */
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1); /* Dodano cień */
 }
 
 #companyListWidget {
-    border: 2px solid #007bff; /* Niebieska obwódka */
-    border-radius: 5px; /* Zaokrąglone rogi */
+    border: 2px solid #007bff;
+    border-radius: 5px;
     padding: 5px;
-    background-color: white; /* Białe tło */
-    color: #0056b3; /* Kolor tekstu */
-}
-
-#companyComboBox::drop-down {
-    border-left: 1px solid #007bff; /* Linia oddzielająca od przycisku rozwijania */
-}
-
-#companyComboBox::down-arrow {
-    image: url('path_to_your_arrow_icon.png'); /* Ścieżka do ikony strzałki */
-}
-
-#footer {
-    border-top: 2px solid #BBBBBB; /* Jasniejszy odcień szarości dla linii górnej */
+    background-color: white;
+    color: #0056b3;
 }
 
 QPushButton {
-    background-color: #007bff; /* Jasny niebieski dla przycisków */
+    background-color: #007bff; /* Niebieski kolor przycisków */
     color: white;
+    font-size: 16px; /* Zwiększono rozmiar czcionki */
     font-weight: bold;
+    border-radius: 8px; /* Większe zaokrąglenie rogów */
     padding: 10px 20px;
-    border-radius: 5px; /* Zaokrąglenie rogów przycisku */
-    border: none; /* Usunięcie domyślnej ramki */
-    transition: background-color 0.3s, color 0.3s; /* Płynne przejście kolorów */
+    margin: 5px;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.2); /* Dodano cień dla przycisków */
+    border: none; /* Usunięcie obramowania */
+    transition: background-color 0.3s, box-shadow 0.3s; /* Płynna zmiana koloru i cienia */
 }
 
 QPushButton:hover {
     background-color: #0056b3; /* Ciemniejszy niebieski przy najechaniu */
-    color: #ffffff;
+    box-shadow: 0 6px 12px rgba(0,0,0,0.3); /* Zwiększony cień przy najechaniu */
 }
+

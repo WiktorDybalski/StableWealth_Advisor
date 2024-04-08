@@ -1,7 +1,7 @@
 from PyQt5.QtWidgets import QApplication
 import pandas as pd
 import sys
-from Controllers import Controller
+import Controller
 from Model import Scipy_simulation
 from GUI import Home_GUI
 
@@ -28,13 +28,13 @@ def main():
     # print(end - start)
 
     app = QApplication(sys.argv)
-    view = Home_GUI.HomeWindow(app)
-    view.show()
-
     model = Scipy_simulation.simulation
-    daily_returns1 = pd.read_csv('test_stock_data11.csv', index_col=0)
-    controller_instance = Controller.Controller(view, model, daily_returns1)
+    view = Home_GUI.HomeWindow(app)
+    daily_returns1 = pd.read_csv('Model/test_stock_data11.csv', index_col=0)
+    controller = Controller.Controller(view, model, daily_returns1)
+    view.setController(controller)
+    view.show()
+    print("Działa")
     sys.exit(app.exec())
-    
 if __name__ == "__main__":
     main()

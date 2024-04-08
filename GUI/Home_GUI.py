@@ -1,8 +1,8 @@
 from PySide6.QtWidgets import QApplication, QWidget, QVBoxLayout, QLabel, QHBoxLayout, QPushButton, QStackedWidget
 from PySide6.QtCore import Qt, QFile
 import sys
-import SharesAssistant_GUI
-import Calculator_GUI
+from GUI import SharesAssistant_GUI
+from GUI import Calculator_GUI
 
 
 class HomeWindow(QWidget):
@@ -12,6 +12,10 @@ class HomeWindow(QWidget):
         self.stackedWidget = QStackedWidget()
         self.initUI()
         self.setupStyles()
+        self.controller = None
+        self.sharesAssistant.companiesSelected.connect(self.sendDataToController)
+    def set_controller(self, controller):
+        self.controller = controller
 
     def initUI(self):
         screen = self.app.primaryScreen().size()
@@ -117,8 +121,12 @@ class HomeWindow(QWidget):
 
         parent_layout.addWidget(rightLabel, 6)
 
+    def sendDataToController(self, companies):
+        self.controller.runSimulation(companies)
+
 if __name__ == "__main__":
     app = QApplication(sys.argv)
     view = HomeWindow(app)
     view.show()
     sys.exit(app.exec())
+    pass
