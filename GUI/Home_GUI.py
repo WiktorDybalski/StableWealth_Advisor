@@ -13,8 +13,7 @@ class HomeWindow(QWidget):
         self.initUI()
         self.setupStyles()
         self.controller = None
-        self.sharesAssistant.companiesSelected.connect(self.sendDataToController)
-    def set_controller(self, controller):
+    def setController(self, controller):
         self.controller = controller
 
     def initUI(self):
@@ -25,6 +24,7 @@ class HomeWindow(QWidget):
         top = screen.height() * 0.1
         self.setGeometry(left, top, width, height)
         self.setWindowTitle("StableWealth Advisor")
+
 
         layout = QVBoxLayout()
 
@@ -125,8 +125,8 @@ class HomeWindow(QWidget):
         self.controller.runSimulation(companies)
 
 if __name__ == "__main__":
-    app = QApplication(sys.argv)
-    view = HomeWindow(app)
-    view.show()
-    sys.exit(app.exec())
+    # app = QApplication(sys.argv)
+    # view = HomeWindow(app)
+    # view.show()
+    # sys.exit(app.exec())
     pass

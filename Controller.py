@@ -7,7 +7,6 @@ class Controller:
         self.data = data
         self.view = view
         self.model = model
-        self.view.dataSubmitted.connect(self.runSimulation)
     def get_tickers(self, companies_list):
         companies_obj = comp()
         tickers = []
