@@ -2,9 +2,10 @@ import numpy as np
 import plotly.express as px
 import matplotlib.pyplot as plt
 from Model import Data as data
+import pandas as pd
 from scipy import optimize
 
-class simulation:
+class Simulation:
     def run_scipy_simulation(self, daily_returns):
         number_of_companies = daily_returns.shape[1]
 
@@ -51,4 +52,7 @@ class simulation:
 
 
 if __name__ == "__main__":
+    # daily_returns3 = pd.read_csv('stock_data.csv', index_col=0)
+    # print("Simulation1:")
+    # simulation.run_scipy_simulation(simulation, daily_returns3)
     pass

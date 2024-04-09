@@ -1,5 +1,5 @@
 import pandas as pd
-from Model.companies import Companies as comp
+from Data.companies import Companies as comp
 
 
 class Controller:

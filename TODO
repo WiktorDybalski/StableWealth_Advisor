@@ -1,5 +1,5 @@
 Input:
- - wybór spółek (limit do 6, więcej juz bez sensu)
+ - wybór spółek (limit do 6, więcej juz bez sensu) DONE
  - najlepsze 3,4,5
  - filtracja histori cen (użytkownik może decydować o okresie cen akcji z których aplikacja ma stworzyć
 najlepszy protfel)
@@ -16,7 +16,7 @@ GUI
         - jest kilka wykresów do pokazania użytkownikowi, można pokazać którys z nich
 
 
-Połączenie inputu z GUI z całą logiką programu
+Połączenie inputu z GUI z całą logiką programu IN PROGRESS
 
 Sugerowanie zmian w zależnosci od roznych sytuacji rynkowych (apikacja moze powiadamiac
 uzytkownika o spadkach lub wzrostach konkretnych spółek)

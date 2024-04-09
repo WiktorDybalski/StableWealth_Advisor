@@ -1,14 +1,15 @@
-from PySide6.QtWidgets import QApplication, QWidget, QVBoxLayout, QLabel, QHBoxLayout, QPushButton, QComboBox, QAbstractItemView, QListWidget
-from PySide6.QtCore import Qt, QFile
+from PySide6.QtWidgets import QHBoxLayout, QPushButton, QAbstractItemView, QListWidget
+from PySide6.QtCore import Qt
 from PySide6.QtWidgets import QWidget, QVBoxLayout, QLabel
 from PySide6.QtCore import QFile, Signal
-from Model.companies import Companies
+from Data.companies import Companies
 class SharesAssistant(QWidget):
 
     homeRequested = Signal()
     companiesSelected = Signal(list)
     def __init__(self):
         super().__init__()
+        self.start_simulation = None
         self.setWindowTitle("Shares Assistant")
         self.setupSharesAssistantWidget()
         style_file = QFile("Styles/SharesAssistantStyle.css")

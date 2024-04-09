@@ -125,8 +125,8 @@ class HomeWindow(QWidget):
         self.controller.runSimulation(companies)
 
 if __name__ == "__main__":
-    # app = QApplication(sys.argv)
-    # view = HomeWindow(app)
-    # view.show()
-    # sys.exit(app.exec())
+    app = QApplication(sys.argv)
+    view = HomeWindow(app)
+    view.show()
+    sys.exit(app.exec())
     pass
