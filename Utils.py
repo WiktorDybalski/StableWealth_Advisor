@@ -3,7 +3,9 @@ import os
 
 class Utils:
     PROJECT_PATH = os.path.dirname(os.path.abspath(__file__))
-    project_structure_dict = {"stock_data.csv": "Data", "CalculatorStyle.qss": "GUI/Styles",
+    project_structure_dict = {"stock_data.csv": "Data", "stock_data_reduced.csv": "Data",
+                              "stock_data_without_polish.csv": "Data", "stock_data_without_polish_reduced.csv": "Data",
+                              "CalculatorStyle.qss": "GUI/Styles",
                               "HomeWindowStyle.qss": "GUI/Styles", "SharesAssistantStyle.qss": "GUI/Styles"}
 
     @staticmethod

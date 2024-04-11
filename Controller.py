@@ -1,11 +1,11 @@
 import pandas as pd
 from Data.Companies import Companies as comp
-from Model import ScipySimulation as Sci_sim
-from Utils import Utils
+from Model.ScipySimulation import Simulation
 
 class Controller:
-    def __init__(self, view, model, data):
-        self.data = data
+    def __init__(self, view, model, path_data):
+        self.path_data = path_data
+        self.data = pd.read_csv(path_data, index_col=0)
         self.view = view
         self.model = model
     def get_tickers(self, companies_list):
@@ -27,10 +27,9 @@ class Controller:
         tickers = self.get_tickers(companies_list)
 
     def run_simulation(self, companies_list):
-        print("Simulation running")
         tickers_list = self.get_tickers(companies_list)
         print(tickers_list)
-        results = self.select_columns_from_csv(Utils.get_absolute_file_path("stock_data.csv"), tickers_list)
+        results = self.select_columns_from_csv(self.path_data, tickers_list)
         print("Simulation running")
-        simulation = Sci_sim.Simulation()
+        simulation = Simulation()
         simulation.run_scipy_simulation(results)

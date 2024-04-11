@@ -1,7 +1,7 @@
 import numpy as np
 import plotly.express as px
 import matplotlib.pyplot as plt
-from Model import UpdateData as data
+from Model.UpdateData import UpdateData
 from scipy import optimize
 
 class Simulation:
@@ -40,7 +40,7 @@ class Simulation:
         opt_results = optimize.minimize(neg_sr, init_guess, constraints=cons, bounds=bounds, method='SLSQP')
         optimal_weights = opt_results.x
         # optimal_weights
-        for st, i in zip(data.get_ticker_symbols(), optimal_weights):
+        for st, i in zip(UpdateData.get_ticker_symbols_without_polish(), optimal_weights):
             print(f'Stock {st} has weight {np.round(i * 100, 2)} %')
 
         print('For a given portfolio we have: (Using SciPy optimizer)\n \n')

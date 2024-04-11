@@ -58,7 +58,7 @@ class SharesAssistant(QWidget):
         self.company_list_widget = QListWidget()
         self.company_list_widget.setSelectionMode(QAbstractItemView.SelectionMode.MultiSelection)
         self.company_list_widget.setVisible(False)
-        for ticker, name in Companies.companies.items():
+        for ticker, name in Companies.get_companies_without_polish().items():
             self.company_list_widget.addItem(name)
         content_layout.addWidget(self.company_list_widget)
 
