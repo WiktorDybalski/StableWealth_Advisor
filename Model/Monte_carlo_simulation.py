@@ -1,7 +1,7 @@
 import numpy as np
 import plotly.express as px
 import matplotlib.pyplot as plt
-import Data as data
+import Update_data as data
 
 def run_monte_carlo_simulation(daily_returns):
     number_of_companies = daily_returns.shape[1]

@@ -1,9 +1,9 @@
 from PySide6.QtWidgets import QApplication, QWidget, QVBoxLayout, QLabel, QHBoxLayout, QPushButton, QStackedWidget
 from PySide6.QtCore import Qt, QFile
 import sys
-from GUI import SharesAssistant_GUI
-from GUI import Calculator_GUI
-
+from GUI import SharesAssistant
+from GUI import Calculator
+from Utils import Utils
 
 class HomeWindow(QWidget):
     def __init__(self, app):
@@ -35,11 +35,12 @@ class HomeWindow(QWidget):
 
         self.stackedWidget.addWidget(self.homeWidget)
 
-        self.sharesAssistant = SharesAssistant_GUI.SharesAssistant()
+        self.sharesAssistant = SharesAssistant.SharesAssistant()
         self.sharesAssistant.homeRequested.connect(self.showHome)
+        self.sharesAssistant.companiesSelected.connect(self.sendDataToController)
         self.stackedWidget.addWidget(self.sharesAssistant)
 
-        self.calculator = Calculator_GUI.TreasuryBondCalculator()
+        self.calculator = Calculator.TreasuryBondCalculator()
         self.calculator.homeRequested.connect(self.showHome)
         self.stackedWidget.addWidget(self.calculator)
         self.setLayout(layout)
@@ -55,7 +56,7 @@ class HomeWindow(QWidget):
         self.homeWidget.setLayout(layout)
 
     def setupStyles(self):
-        style_file = QFile("Styles/HomeWindowStyle.css")
+        style_file = QFile(Utils.get_absolute_file_path("HomeWindowStyle.css"))
         style_file.open(QFile.ReadOnly | QFile.Text)
         style_sheet = str(style_file.readAll(), encoding='utf-8')
         self.setStyleSheet(style_sheet)

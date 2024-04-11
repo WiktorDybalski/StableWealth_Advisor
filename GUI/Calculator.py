@@ -2,6 +2,7 @@ from PySide6.QtWidgets import QApplication, QWidget, QVBoxLayout, QLabel, QHBoxL
 from PySide6.QtCore import Qt, QFile
 from PySide6.QtWidgets import QWidget, QVBoxLayout, QLabel
 from PySide6.QtCore import QFile, Signal
+from Utils import Utils
 
 class TreasuryBondCalculator(QWidget):
     homeRequested = Signal()
@@ -10,7 +11,7 @@ class TreasuryBondCalculator(QWidget):
         self.setWindowTitle("Treasury Bond Calculator")
         self.setupTreasuryBondsCalculatorWidget()
 
-        style_file = QFile("Styles/CalculatorStyle.css")
+        style_file = QFile(Utils.get_absolute_file_path("CalculatorStyle.css"))
         if style_file.open(QFile.ReadOnly | QFile.Text):
             style_sheet = str(style_file.readAll(), 'utf-8')
             self.setStyleSheet(style_sheet)

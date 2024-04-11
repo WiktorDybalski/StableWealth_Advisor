@@ -1,10 +1,10 @@
 import numpy as np
 import plotly.express as px
 import matplotlib.pyplot as plt
-from Model import Data as data
+from Model import Update_data as data
 from scipy import optimize
 
-class simulation:
+class Simulation:
     def run_scipy_simulation(self, daily_returns):
         number_of_companies = daily_returns.shape[1]
 

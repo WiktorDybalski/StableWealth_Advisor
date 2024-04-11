@@ -1,17 +1,19 @@
-from PySide6.QtWidgets import QApplication, QWidget, QVBoxLayout, QLabel, QHBoxLayout, QPushButton, QComboBox, QAbstractItemView, QListWidget
-from PySide6.QtCore import Qt, QFile
+from PySide6.QtWidgets import QHBoxLayout, QPushButton, QAbstractItemView, QListWidget
+from PySide6.QtCore import Qt
 from PySide6.QtWidgets import QWidget, QVBoxLayout, QLabel
 from PySide6.QtCore import QFile, Signal
-from Model.companies import Companies
+from Data.companies import Companies
+from Utils import Utils
 class SharesAssistant(QWidget):
 
     homeRequested = Signal()
     companiesSelected = Signal(list)
+    selectedCompanies = []
     def __init__(self):
         super().__init__()
         self.setWindowTitle("Shares Assistant")
         self.setupSharesAssistantWidget()
-        style_file = QFile("Styles/SharesAssistantStyle.css")
+        style_file = QFile(Utils.get_absolute_file_path("SharesAssistantStyle.css"))
         if style_file.open(QFile.ReadOnly | QFile.Text):
             style_sheet = str(style_file.readAll(), 'utf-8')
             self.setStyleSheet(style_sheet)
@@ -56,7 +58,7 @@ class SharesAssistant(QWidget):
         contentLayout.addWidget(selectButton)
 
         startButton = QPushButton("Start Simulation")
-        startButton.clicked.connect(self.start_simulation)
+        startButton.clicked.connect(self.sendDataToHomeWindow)
         contentLayout.addWidget(startButton)
         # Set the content layout to the content QWidget
         content.setLayout(contentLayout)

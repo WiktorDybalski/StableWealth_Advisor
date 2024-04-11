@@ -1,6 +1,7 @@
 import pandas as pd
-from Model.companies import Companies as comp
-
+from Data.companies import Companies as comp
+from Model import Scipy_simulation as Sci_sim
+from Utils import Utils
 
 class Controller:
     def __init__(self, view, model, data):
@@ -25,7 +26,11 @@ class Controller:
     def calculate(self, companies_list):
         tickers = self.get_tickers(companies_list)
 
-    def runSimulation(self, data):
-        self.model.runSimulation(data)
-        results = self.model.getResults()
-        self.view.displayResults(results)
+    def runSimulation(self, companies_list):
+        print("Simulation running")
+        tickers_list = self.get_tickers(companies_list)
+        print(tickers_list)
+        results = self.select_columns_from_csv(Utils.get_absolute_file_path("stock_data.csv"), tickers_list)
+        print("Simulation running")
+        simulation = Sci_sim.Simulation()
+        simulation.run_scipy_simulation(results)
