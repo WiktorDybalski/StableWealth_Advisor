@@ -1,0 +1,50 @@
+QWidget {
+    background-color: #f9f9f9;
+}
+
+QLabel {
+    font-size: 18px;
+    color: #333;
+}
+
+#header, #footer {
+    background-color: #124191; /* Deeper shade of blue for header and footer */
+    color: white;
+    padding: 20px;
+    font-size: 24px;
+    font-weight: bold;
+    border-radius: 5px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Increased shadow for depth */
+}
+
+#middle_part {
+    margin: 10px;
+    padding: 10px;
+    border-radius: 10px; /* Rounded corners for the middle section */
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1); /* Subtle shadow for 3D effect */
+}
+
+#companyListWidget {
+    border: 2px solid #007bff;
+    border-radius: 5px;
+    padding: 5px;
+    background-color: white;
+    color: #0056b3;
+}
+
+QPushButton {
+    background-color: #007bff; /* Blue background for buttons */
+    color: white;
+    font-size: 16px; /* Larger font size for readability */
+    font-weight: bold;
+    border-radius: 8px; /* Rounded corners for buttons */
+    padding: 10px 20px;
+    margin: 5px;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.2); /* Shadow for a lifted button effect */
+    border: none; /* No border for a cleaner look */
+}
+
+QPushButton:hover {
+    background-color: #0056b3; /* Darker blue on hover */
+    box-shadow: 0 6px 12px rgba(0,0,0,0.3); /* Increased shadow on hover */
+}

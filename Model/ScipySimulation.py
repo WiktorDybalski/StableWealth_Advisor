@@ -1,7 +1,7 @@
 import numpy as np
 import plotly.express as px
 import matplotlib.pyplot as plt
-from Model import Update_data as data
+from Model import UpdateData as data
 from scipy import optimize
 
 class Simulation:

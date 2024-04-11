@@ -1,6 +1,6 @@
 import pandas as pd
-from Data.companies import Companies as comp
-from Model import Scipy_simulation as Sci_sim
+from Data.Companies import Companies as comp
+from Model import ScipySimulation as Sci_sim
 from Utils import Utils
 
 class Controller:
@@ -26,7 +26,7 @@ class Controller:
     def calculate(self, companies_list):
         tickers = self.get_tickers(companies_list)
 
-    def runSimulation(self, companies_list):
+    def run_simulation(self, companies_list):
         print("Simulation running")
         tickers_list = self.get_tickers(companies_list)
         print(tickers_list)

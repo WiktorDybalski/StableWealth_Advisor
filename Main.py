@@ -2,7 +2,7 @@ from PySide6.QtWidgets import QApplication
 import pandas as pd
 import sys
 import Controller
-from Model import Scipy_simulation as Sci_sim
+from Model import ScipySimulation as Sci_sim
 from GUI import Home
 import Utils
 

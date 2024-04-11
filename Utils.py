@@ -3,8 +3,8 @@ import os
 
 class Utils:
     PROJECT_PATH = os.path.dirname(os.path.abspath(__file__))
-    project_structure_dict = {"stock_data.csv": "Data", "CalculatorStyle.css": "GUI/Styles",
-                              "HomeWindowStyle.css": "GUI/Styles", "SharesAssistantStyle.css": "GUI/Styles"}
+    project_structure_dict = {"stock_data.csv": "Data", "CalculatorStyle.qss": "GUI/Styles",
+                              "HomeWindowStyle.qss": "GUI/Styles", "SharesAssistantStyle.qss": "GUI/Styles"}
 
     @staticmethod
     def get_absolute_file_path(file_name):
@@ -13,4 +13,4 @@ class Utils:
         return absolute_file_path
 
 
-print(Utils.get_absolute_file_path("SharesAssistantStyle.css"))
+print(Utils.get_absolute_file_path("SharesAssistantStyle.qss"))
