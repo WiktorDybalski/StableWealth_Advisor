@@ -6,7 +6,7 @@ class Utils:
     project_structure_dict = {"stock_data.csv": "Data", "stock_data_reduced.csv": "Data",
                               "stock_data_without_polish.csv": "Data", "stock_data_without_polish_reduced.csv": "Data",
                               "CalculatorStyle.qss": "GUI/Styles",
-                              "HomeWindowStyle.qss": "GUI/Styles", "SharesAssistantStyle.qss": "GUI/Styles"}
+                              "HomeWindowStyle.qss": "GUI/Styles", "SharesAssistantStyle.qss": "GUI/Styles", "SharesAssistantResultsStyle.qss": "GUI/Styles"}
 
     @staticmethod
     def get_absolute_file_path(file_name):

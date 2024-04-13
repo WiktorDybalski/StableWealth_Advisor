@@ -1,6 +1,7 @@
 from PySide6.QtWidgets import QWidget, QVBoxLayout, QLabel, QHBoxLayout, QPushButton, QStackedWidget
 from PySide6.QtCore import Qt, QFile
 from GUI.SharesAssistant import SharesAssistant
+from GUI.SharesAssistantResults import SharesAssistantResults
 from GUI.Calculator import Calculator
 from Utils import Utils
 
@@ -8,8 +9,9 @@ from Utils import Utils
 class HomeWindow(QWidget):
     def __init__(self, app):
         super().__init__()
-        self.sharesAssistant = None
         self.home_widget = None
+        self.shares_assistant_results = None
+        self.shares_assistant = None
         self.calculator = None
         self.app = app
         self.stackedWidget = QStackedWidget()  # This widget holds the different screens of the application.
@@ -17,8 +19,7 @@ class HomeWindow(QWidget):
         self.setup_styles()  # Setup the CSS styles for the window.
         self.controller = None  # Placeholder for a controller that will be set externally.
 
-    def setController(self, controller):
-        """Set the controller that handles business logic."""
+    def set_controller(self, controller):
         self.controller = controller
 
     def init_ui(self):
@@ -39,14 +40,15 @@ class HomeWindow(QWidget):
 
         self.stackedWidget.addWidget(self.home_widget)
 
-        self.sharesAssistant = SharesAssistant()
-        self.sharesAssistant.home_requested.connect(self.show_home)
-        self.sharesAssistant.companies_selected.connect(self.send_data_to_controller)
-        self.stackedWidget.addWidget(self.sharesAssistant)
+        self.shares_assistant = SharesAssistant()
+        self.shares_assistant.home_requested.connect(self.show_home)
+        self.shares_assistant.companies_selected.connect(self.send_data_to_controller)
+        self.stackedWidget.addWidget(self.shares_assistant)
 
         self.calculator = Calculator()
         self.calculator.home_requested.connect(self.show_home)
         self.stackedWidget.addWidget(self.calculator)
+
 
         self.setLayout(layout)
 
@@ -69,7 +71,7 @@ class HomeWindow(QWidget):
 
     def show_shares_assistant(self):
         """Switch the view to the shares assistant screen."""
-        self.stackedWidget.setCurrentWidget(self.sharesAssistant)
+        self.stackedWidget.setCurrentWidget(self.shares_assistant)
 
     def show_calculator(self):
         """Switch the view to the calculator screen."""
@@ -138,6 +140,11 @@ class HomeWindow(QWidget):
         """Send selected company data to the controller for processing."""
         self.controller.run_simulation(companies)
 
+    def show_shares_assistant_results(self, ticker_symbols, optimal_weights, tab):
+        self.shares_assistant_results = SharesAssistantResults(ticker_symbols, optimal_weights, tab)
+        self.shares_assistant_results.home_requested.connect(self.show_home)
+        self.stackedWidget.addWidget(self.shares_assistant_results)
+        self.stackedWidget.setCurrentWidget(self.shares_assistant_results)
 
 if __name__ == "__main__":
     pass
