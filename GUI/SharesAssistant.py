@@ -93,6 +93,8 @@ class SharesAssistant(QWidget):
         """Store the selected companies and print them."""
         self.selected_companies = [item.text() for item in self.company_list_widget.selectedItems()]
         print("Selected companies:", self.selected_companies)
+        is_visible = self.company_list_widget.isVisible()
+        self.company_list_widget.setVisible(not is_visible)
 
     def emit_home_requested(self):
         """Emit a signal to indicate a request to go to the home window."""
