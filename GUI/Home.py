@@ -120,6 +120,9 @@ class HomeWindow(QWidget):
         calculator_button = QPushButton("Treasury bond calculator")
         calculator_button.clicked.connect(self.show_calculator)
 
+        shares_button.setToolTip("Click to perform investment analysis")
+        calculator_button.setToolTip("Click to view current market trends")
+
         left_label_layout.addWidget(left_label_header, 2)
         left_label_layout.addWidget(left_label_content, 8)
         left_label_content_layout = QVBoxLayout()

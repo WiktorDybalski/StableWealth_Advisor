@@ -1,50 +1,80 @@
+/* General Widget Styles */
 QWidget {
-    background-color: #f9f9f9;
+    background-color: #f5f5f5;
+    font-family: 'Segoe UI', Arial, sans-serif;
+    font-size: 12pt;
 }
 
-QLabel {
-    font-size: 18px;
-    color: #333;
-}
-
-#header, #footer {
-    background-color: #124191; /* Deeper shade of blue for header and footer */
-    color: white;
-    padding: 20px;
-    font-size: 24px;
+/* Header and Footer Styles */
+QLabel#header, QLabel#footer {
+    background-color: #2c3e50;
+    color: #ecf0f1;
+    font-size: 14pt;
     font-weight: bold;
-    border-radius: 5px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Increased shadow for depth */
-}
-
-#middle_part {
-    margin: 10px;
     padding: 10px;
-    border-radius: 10px; /* Rounded corners for the middle section */
-    box-shadow: 0 2px 4px rgba(0,0,0,0.1); /* Subtle shadow for 3D effect */
-}
-
-#companyListWidget {
-    border: 2px solid #007bff;
     border-radius: 5px;
-    padding: 5px;
-    background-color: white;
-    color: #0056b3;
+    margin: 10px;
 }
 
+/* Button Styles */
 QPushButton {
-    background-color: #007bff; /* Blue background for buttons */
-    color: white;
-    font-size: 16px; /* Larger font size for readability */
+    background-color: #3498db;
+    color: #ffffff;
     font-weight: bold;
-    border-radius: 8px; /* Rounded corners for buttons */
-    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    padding: 10px 15px;
     margin: 5px;
-    box-shadow: 0 4px 8px rgba(0,0,0,0.2); /* Shadow for a lifted button effect */
-    border: none; /* No border for a cleaner look */
+    transition: background-color 0.3s, color 0.3s;
 }
 
 QPushButton:hover {
-    background-color: #0056b3; /* Darker blue on hover */
-    box-shadow: 0 6px 12px rgba(0,0,0,0.3); /* Increased shadow on hover */
+    background-color: #2980b9;
+}
+
+/* List Widget Styles */
+QListWidget {
+    border: 2px solid #bdc3c7;
+    border-radius: 5px;
+    padding: 5px;
+    color: #34495e;
+}
+
+QListWidget::item {
+    padding: 5px;
+    border-radius: 5px;
+}
+
+QListWidget::item:selected {
+    background-color: #3498db;
+    color: #ffffff;
+}
+
+/* Results and Labels Customization */
+QLabel[objectName="results_header"] {
+    font-size: 14pt;
+    font-weight: bold;
+    color: #16a085;
+    margin-bottom: 10px;
+}
+
+QLabel {
+    color: #34495e;
+    margin: 5px;
+}
+
+/* Middle Widget Styles */
+QWidget#middle_widget {
+    border: 1px solid #bdc3c7;
+    border-radius: 5px;
+    padding: 15px;
+    margin-top: 15px;
+    margin-bottom: 15px;
+}
+
+/* Custom Styles for Numeric Display */
+QLabel[objectName="numeric"] {
+    font-size: 12pt;
+    font-family: 'Consolas', 'Courier New', monospace;
+    color: #e74c3c;
 }

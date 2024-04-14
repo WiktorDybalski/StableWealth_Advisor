@@ -1,6 +1,8 @@
 import numpy as np
+from PySide6.QtCharts import QPieSeries, QChart, QChartView, QPieSlice
+from PySide6.QtGui import QPainter
 from PySide6.QtCore import Qt, QFile, Signal
-from PySide6.QtWidgets import QWidget, QVBoxLayout, QLabel, QHBoxLayout, QPushButton
+from PySide6.QtWidgets import QWidget, QVBoxLayout, QLabel, QHBoxLayout
 from Utils import Utils
 
 class SharesAssistantResults(QWidget):
@@ -40,20 +42,43 @@ class SharesAssistantResults(QWidget):
         self.setLayout(layout)
 
     def setup_middle_widget(self, layout):
-        """Create and set up the middle widget with a home button."""
+        """Create and set up the middle widget with a home button and results layout."""
+        # Create the main horizontal layout to hold results and the pie chart
+        middle_layout = QHBoxLayout()
+
+        # Create the layout for the results (left side)
+        results_layout = QVBoxLayout()
+        results_layout.addWidget(self.create_label("Portfolio Analysis Results:", "results_header", Qt.AlignCenter))
+        self.create_results_labels(results_layout)
+        middle_layout.addLayout(results_layout, 50)  # Assign weight to the results layout
+
+        # Create the chart (right side)
+        chart_view = self.create_pie_chart()
+        middle_layout.addWidget(chart_view, 50)  # Assign weight to the chart layout
+
         middle_widget = QWidget()
-        middle_widget.setObjectName("middle_widget")
-        middle_layout = QVBoxLayout()
+        middle_widget.setLayout(middle_layout)
         layout.addWidget(middle_widget, 90)
 
-        home_button = QPushButton("Home")
-        home_button.clicked.connect(self.emit_home_requested)
-        middle_layout.addWidget(home_button, 90)
+    def create_pie_chart(self):
+        # Create Pie series
+        series = QPieSeries()
+        total = sum(self.optimal_weights)
+        for ticker, weight in zip(self.ticker_symbols, self.optimal_weights):
+            if weight > 0:
+                slice = QPieSlice(f"{ticker}: {weight / total * 100:.2f}%", weight)
+                slice.setLabelVisible(True)
+                series.append(slice)
 
-        self.create_results_labels(middle_layout)
+        # Create Chart and set its animation options
+        chart = QChart()
+        chart.addSeries(series)
+        chart.setAnimationOptions(QChart.SeriesAnimations)
 
-        middle_widget.setLayout(middle_layout)
-        layout.addWidget(middle_widget)
+        # Create ChartView and set it to be anti-aliased
+        chart_view = QChartView(chart)
+        chart_view.setRenderHint(QPainter.Antialiasing, True)
+        return chart_view
 
     def create_label(self, text, object_name, alignment):
         """Create a QLabel with specified properties."""
@@ -64,9 +89,6 @@ class SharesAssistantResults(QWidget):
         return label
 
     def create_results_labels(self, layout):
-        # Display header for the results section
-        results_header = self.create_label("Portfolio Analysis Results:", "results_header", Qt.AlignCenter)
-        layout.addWidget(results_header)
 
         # Display stock weights
         for st, weight in zip(self.ticker_symbols, self.optimal_weights):
