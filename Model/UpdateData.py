@@ -1,8 +1,47 @@
+import datetime
+import os
+
 import pandas as pd
 import yfinance as yf
 
+from Utils import Utils
+
 
 class UpdateData:
+    @staticmethod
+    def is_already_updated():
+        if not os.path.exists(Utils.get_absolute_file_path("recently_updated_day.txt")):
+            return False
+        with open(Utils.get_absolute_file_path("recently_updated_day.txt"), 'r') as recently_updated_file:
+            lines = recently_updated_file.readlines()
+            line = ""
+            if lines:
+                line = lines[-1].strip()
+            date = datetime.datetime.strptime(line, '%Y-%m-%d').date()
+            today = datetime.date.today()
+            if today == date:
+                return True
+        return False
+
+    @staticmethod
+    def update_data():
+        if UpdateData.is_already_updated():
+            return True
+        else:
+            today = datetime.date.today()
+            if not os.path.exists(Utils.get_absolute_file_path("recently_updated_day.txt")):
+                with open(Utils.get_absolute_file_path("recently_updated_day.txt"), 'x') as recently_updated_day:
+                    recently_updated_day.write(str(today) + '\n')
+                    print("Creating file")
+            else:
+                with open(Utils.get_absolute_file_path("recently_updated_day.txt"), 'a') as recently_updated_file:
+                    recently_updated_file.write(str(today) + '\n')
+                    print("Updating file")
+
+    @staticmethod
+    def update_csv_file(last_app_start):
+        pass
+
     @staticmethod
     def get_reduced_ticker_symbols_without_polish():
         # 40 companies
