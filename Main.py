@@ -1,5 +1,4 @@
 from PySide6.QtWidgets import QApplication
-import pandas as pd
 import sys
 import Controller
 from Model.ScipySimulation import Simulation

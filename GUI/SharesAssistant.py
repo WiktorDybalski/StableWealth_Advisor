@@ -1,5 +1,5 @@
 from PySide6.QtCore import QFile, Qt, Signal
-from PySide6.QtWidgets import QWidget, QVBoxLayout, QLabel, QHBoxLayout, QPushButton, QListWidget, QAbstractItemView
+from PySide6.QtWidgets import QWidget, QVBoxLayout, QLabel, QHBoxLayout, QPushButton, QListWidget, QAbstractItemView, QMessageBox
 from Data.Companies import Companies
 from Utils import Utils
 
@@ -92,6 +92,33 @@ class SharesAssistant(QWidget):
     def select_companies(self):
         """Store the selected companies and print them."""
         self.selected_companies = [item.text() for item in self.company_list_widget.selectedItems()]
+        if len(self.selected_companies) > 10:
+            msg_box = QMessageBox()
+            msg_box.setWindowTitle('Invalid number of selected companies')
+            msg_box.setText('You are allowed to select only 10 companies!')
+            msg_box.setStyleSheet("""
+                QMessageBox {
+                    background-color: #f5f5f5;
+                    font-family: 'Segoe UI', Arial, sans-serif;
+                    font-size: 12pt;
+                    color: #34495e;
+                }
+                QPushButton {
+                    background-color: #3498db;
+                    color: #ffffff;
+                    font-weight: bold;
+                    border: none;
+                    border-radius: 5px;
+                    padding: 10px 15px;
+                    margin: 5px;
+                    transition: background-color 0.3s, color 0.3s;
+                }
+                QPushButton:hover {
+                    background-color: #2980b9;
+                }
+            """)
+            msg_box.exec()
+            return
         print("Selected companies:", self.selected_companies)
         is_visible = self.company_list_widget.isVisible()
         self.company_list_widget.setVisible(not is_visible)

@@ -2,7 +2,7 @@ import numpy as np
 from PySide6.QtCharts import QPieSeries, QChart, QChartView, QPieSlice
 from PySide6.QtGui import QPainter
 from PySide6.QtCore import Qt, QFile, Signal
-from PySide6.QtWidgets import QWidget, QVBoxLayout, QLabel, QHBoxLayout
+from PySide6.QtWidgets import QWidget, QVBoxLayout, QLabel, QHBoxLayout, QPushButton
 from Utils import Utils
 from Data.Companies import Companies
 
@@ -48,6 +48,7 @@ class SharesAssistantResults(QWidget):
         middle_layout = QHBoxLayout()
 
         # Create the layout for the results (left side)
+        self.create_buttons_label(middle_layout)
         results_layout = QVBoxLayout()
         results_layout.addWidget(self.create_label("Portfolio Analysis Results:", "results_header", Qt.AlignCenter))
         self.create_results_labels(results_layout)
@@ -60,6 +61,30 @@ class SharesAssistantResults(QWidget):
         middle_widget = QWidget()
         middle_widget.setLayout(middle_layout)
         layout.addWidget(middle_widget, 90)
+
+    def create_buttons_label(self, middle_layout):
+        buttons_label = QLabel()
+        buttons_layout = QHBoxLayout()  # Inicjalizacja QHBoxLayout
+        buttons_label.setLayout(buttons_layout)
+
+        # Tworzenie przycisków
+        home_button = QPushButton("Home")
+        additional_info_button = QPushButton("Get Additional Information")
+        change_companies_button = QPushButton("Change Companies")
+
+        # Podłączenie sygnałów do slotów
+        home_button.clicked.connect(self.emit_home_requested)
+        change_companies_button.clicked.connect(self.emit_shares_assistant_requested)
+        additional_info_button.clicked.connect(self.show_advanced_data)
+
+        # Dodawanie przycisków do layoutu
+        buttons_layout.addWidget(home_button)
+        buttons_layout.addWidget(additional_info_button)
+        buttons_layout.addWidget(change_companies_button)
+
+        # Dodanie całego layoutu przycisków do środkowego layoutu
+        middle_layout.addLayout(buttons_layout)
+
 
     def create_pie_chart(self):
         # Create Pie series
@@ -104,3 +129,10 @@ class SharesAssistantResults(QWidget):
     def emit_home_requested(self):
         """Emit a signal when the home button is pressed."""
         self.home_requested.emit()
+
+    def emit_shares_assistant_requested(self):
+        """Emit a signal when the home button is pressed."""
+        self.home_requested.emit()
+
+    def show_advanced_data(self):
+        pass
