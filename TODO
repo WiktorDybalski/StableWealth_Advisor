@@ -15,9 +15,6 @@ GUI
     Wizualizacja:
         - jest kilka wykresów do pokazania użytkownikowi, można pokazać którys z nich
 
-
-Połączenie inputu z GUI z całą logiką programu
-
 Sugerowanie zmian w zależnosci od roznych sytuacji rynkowych (apikacja moze powiadamiac
 uzytkownika o spadkach lub wzrostach konkretnych spółek)
 

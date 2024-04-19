@@ -4,6 +4,7 @@ from PySide6.QtGui import QPainter
 from PySide6.QtCore import Qt, QFile, Signal
 from PySide6.QtWidgets import QWidget, QVBoxLayout, QLabel, QHBoxLayout
 from Utils import Utils
+from Data.Companies import Companies
 
 class SharesAssistantResults(QWidget):
     home_requested = Signal()
@@ -66,7 +67,7 @@ class SharesAssistantResults(QWidget):
         total = sum(self.optimal_weights)
         for ticker, weight in zip(self.ticker_symbols, self.optimal_weights):
             if weight > 0:
-                slice = QPieSlice(f"{ticker}: {weight / total * 100:.2f}%", weight)
+                slice = QPieSlice(f"{Companies.companies_without_polish.get(ticker)}: {weight / total * 100:.2f}%", weight)
                 slice.setLabelVisible(True)
                 series.append(slice)
 
@@ -92,7 +93,7 @@ class SharesAssistantResults(QWidget):
 
         # Display stock weights
         for st, weight in zip(self.ticker_symbols, self.optimal_weights):
-            stock_label = self.create_label(f'Stock {st} has weight {np.round(weight * 100, 2)}%', None, Qt.AlignLeft)
+            stock_label = self.create_label(f'{Companies.companies_without_polish.get(st)} has weight:  {np.round(weight * 100, 2)}%', None, Qt.AlignLeft)
             layout.addWidget(stock_label)
 
         # Display portfolio metrics
