@@ -11,8 +11,11 @@ def main():
     app = QApplication(sys.argv)
     view = Home.HomeWindow(app)
     model = Simulation()
-    UpdateData.update_data()
-    daily_returns1 = Utils.get_absolute_file_path("stock_data_without_polish.csv")
+    file_path = Utils.get_absolute_file_path("stock_data_without_polish.csv")
+    # TODO
+    # Something went wrong with updating data
+    updated_file_path = UpdateData.update_data(file_path)
+    daily_returns1 = file_path
     controller = Controller.Controller(view, model, daily_returns1)
     model.set_controller(controller)
     view.set_controller(controller)

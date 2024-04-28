@@ -25,9 +25,9 @@ class HomeWindow(QWidget):
     def init_ui(self):
         """Initialize the main user interface of the window."""
         screen = self.app.primaryScreen().size()
-        width = screen.width() * 0.8
+        width = screen.width() * 0.9
         height = screen.height() * 0.8
-        left = screen.width() * 0.1
+        left = screen.width() * 0.05
         top = screen.height() * 0.1
         self.setGeometry(left, top, width, height)
         self.setWindowTitle("StableWealth Advisor")
@@ -86,7 +86,7 @@ class HomeWindow(QWidget):
         header = QLabel("StableWealth Advisor")
         header.setAlignment(Qt.AlignCenter)
         header.setObjectName("header")
-        layout.addWidget(header, 2)
+        layout.addWidget(header, 10)
 
     def create_middle_part(self, layout):
         """Create and set up the central part of the home widget."""
@@ -98,7 +98,7 @@ class HomeWindow(QWidget):
         self.create_right_label(middle_layout)
 
         middle_widget.setLayout(middle_layout)
-        layout.addWidget(middle_widget, 7)
+        layout.addWidget(middle_widget, 88)
 
     def create_footer(self, layout):
         """Create and configure the footer section."""

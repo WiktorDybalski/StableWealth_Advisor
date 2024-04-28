@@ -1,6 +1,5 @@
 import datetime
 import os
-
 import pandas as pd
 import yfinance as yf
 
@@ -10,37 +9,50 @@ from Utils import Utils
 class UpdateData:
     @staticmethod
     def is_already_updated():
-        if not os.path.exists(Utils.get_absolute_file_path("recently_updated_day.txt")):
+        file_path = Utils.get_absolute_file_path("recently_updated_day.txt")
+        if not os.path.exists(file_path):
             return False
-        with open(Utils.get_absolute_file_path("recently_updated_day.txt"), 'r') as recently_updated_file:
-            lines = recently_updated_file.readlines()
-            line = ""
-            if lines:
-                line = lines[-1].strip()
-            date = datetime.datetime.strptime(line, '%Y-%m-%d').date()
-            today = datetime.date.today()
-            if today == date:
-                return True
-        return False
+        with open(file_path, 'r') as file:
+            last_line = file.readlines()[-1].strip()
+        last_update_date = datetime.datetime.strptime(last_line, '%Y-%m-%d').date()
+        return last_update_date == datetime.date.today()
 
     @staticmethod
-    def update_data():
+    def update_data(stock_data_path):
         if UpdateData.is_already_updated():
+            print("Data is already updated today.")
             return True
+
+        today = datetime.date.today()
+        file_path = Utils.get_absolute_file_path("recently_updated_day.txt")
+
+        if not os.path.exists(file_path):
+            with open(file_path, 'w') as file:
+                file.write(today.strftime('%Y-%m-%d') + '\n')
+            UpdateData.update_csv_file(stock_data_path, "../Data/new_stock_data.csv")
+            print("Data file created and updated.")
         else:
-            today = datetime.date.today()
-            if not os.path.exists(Utils.get_absolute_file_path("recently_updated_day.txt")):
-                with open(Utils.get_absolute_file_path("recently_updated_day.txt"), 'x') as recently_updated_day:
-                    recently_updated_day.write(str(today) + '\n')
-                    print("Creating file")
-            else:
-                with open(Utils.get_absolute_file_path("recently_updated_day.txt"), 'a') as recently_updated_file:
-                    recently_updated_file.write(str(today) + '\n')
-                    print("Updating file")
+            with open(file_path, 'a') as file:
+                file.write(today.strftime('%Y-%m-%d') + '\n')
+            last_date = UpdateData.get_last_update_date(file_path)
+            next_day_string = (last_date + datetime.timedelta(days=1)).strftime('%Y-%m-%d')
+            UpdateData.create_csv_data_with_start(UpdateData.get_ticker_symbols(), "../Data/new_stock_data.csv",
+                                                  next_day_string)
+            UpdateData.update_csv_file(stock_data_path, "../Data/new_stock_data.csv")
+            print("Data file updated with new data.")
 
     @staticmethod
-    def update_csv_file(last_app_start):
-        pass
+    def get_last_update_date(file_path):
+        with open(file_path, 'r') as file:
+            last_line = file.readlines()[-1].strip()
+        return datetime.datetime.strptime(last_line, '%Y-%m-%d').date()
+
+    @staticmethod
+    def update_csv_file(old_data_file, new_data_file):
+        df_old = pd.read_csv(old_data_file)
+        df_new = pd.read_csv(new_data_file)
+        df_combined = pd.concat([df_old, df_new], ignore_index=True)
+        df_combined.to_csv(old_data_file, index=False)
 
     @staticmethod
     def get_reduced_ticker_symbols_without_polish():
@@ -92,6 +104,23 @@ class UpdateData:
             "MDT", "GSK", "BA", "HON", "QCOM", "SIEGY", "UL", "DE", "BLK", "GS",
             "MMM", "F", "ISNPY", "CRWD", "CARR", "AMAT", "MO", "COP", "PM", "LMT"
         ]
+
+    @staticmethod
+    def create_csv_data_with_start(tickers, file_name, start_time):
+        merged_df = pd.DataFrame()
+
+        for ticker in tickers:
+            # Fetch historical data for the ticker
+            ticker_data = yf.Ticker(ticker)
+            data = ticker_data.history(period='1d', start=start_time)
+
+            close_prices = data[['Close']].rename(columns={'Close': ticker})
+
+            if merged_df.empty:
+                merged_df = close_prices
+            else:
+                merged_df = merged_df.join(close_prices, how='outer')
+        merged_df.to_csv(file_name)
 
     @staticmethod
     def create_csv_data(tickers, file_name):
