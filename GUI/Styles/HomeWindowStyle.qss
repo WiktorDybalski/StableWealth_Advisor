@@ -10,48 +10,38 @@ QWidget {
 QLabel#header, QLabel#footer {
     background-color: #2c3e50;
     color: #ecf0f1;
-    font-size: 14pt;
+    font-size: 20px;
     font-weight: bold;
-    padding: 10px;
+    padding: 2px;
     border-radius: 10px;
-    margin: 10px;
+    margin: 1px 10px;
+    max-height: 300px;
 }
 
-/* Button Styling */
+QLabel#footer {
+    font-size: 15px;
+    padding: 0;
+}
 QPushButton {
-    background-color: #3498db;
-    color: #ffffff;
-    font-weight: bold;
-    border: none;
-    border-radius: 5px;
-    padding: 10px 15px;
-    margin: 10px;
-    transition: background-color 0.5s, color 0.3s;
+    background-color: #3498db; /* Podstawowy kolor tła */
+    background-image: linear-gradient(to right, #3498db, #5dade2);
+    color: #ffffff; /* Biały tekst */
+    font-weight: bold; /* Pogrubiona czcionka */
+    border: 2px solid #2980b9;
+    border-radius: 10px;
+    padding: 12px 20px;
+    margin: 5px;
+    transition: background-color 0.5s ease, box-shadow 0.5s ease;
+    font-size: 17px;
+    max-width: 350px;
+    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.5);
+    text-align: center;
 }
 
 QPushButton:hover {
     background-color: #2980b9;
-}
-
-/* Styles for List Widgets */
-QListWidget {
-    border: 2px solid #bdc3c7;
-    border-radius: 5px;
-    padding: 5px;
-    color: #34495e;
-}
-
-QListWidget::item {
-    padding: 5px;
-    border-radius: 5px;
-}
-
-/* Styles for Labels in the Results Section */
-QLabel[objectName="results_header"] {
-    font-size: 14pt;
-    font-weight: bold;
-    color: #16a085;
-    margin-bottom: 10px;
+    box-shadow: 0 6px 12px 0 rgba(0, 0, 0, 0.5);
+    border-color: #21618c;
 }
 
 QLabel {
@@ -61,22 +51,40 @@ QLabel {
 
 /* Middle Widget Styling */
 QWidget#middle_widget {
-    border: 1px solid #bdc3c7;
-    border-radius: 5px;
-    padding: 15px;
-    margin-top: 15px;
-    margin-bottom: 15px;
+    border: 5px solid #bdc3c7;
+    border-radius: 10px;
+    padding: 10px;
+    margin: 10px;
 }
 
-/* Custom Styling for Numeric Displays */
-QLabel[objectName="numeric"] {
-    font-size: 12pt;
-    font-family: 'Consolas', 'Courier New', monospace;
-    color: #e74c3c;
+#upper_label {
+    font-weight: bolder;
+    font-size: 30px;
+}
+QLabel#tag_label, QLabel#additional_info_label {
+    background-color: #2c3e50;
+    color: white;
+    padding: 15px;
+    margin: 0;
+    border-radius: 0;
+    text-align: center;
+    width: 50%;
+}
+
+QLabel#tag_label {
+    width: 40%
+}
+
+QLabel#additional_info_label {
+    width: 60%
 }
 
 QToolTip {
     color: #ffffff;
     background-color: #2c3e50;
-    border: 1px solid #ffffff;
+    border: 2px solid #ffffff;
+    border-radius: 10px;
+    padding: 6px;
+    font-size: 16px;
+    margin: 0;
 }

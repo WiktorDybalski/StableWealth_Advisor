@@ -34,6 +34,8 @@ class HomeWindow(QWidget):
 
         layout = QVBoxLayout()
         layout.addWidget(self.stackedWidget)
+        layout.setContentsMargins(0, 0, 0, 0)
+        layout.setSpacing(0)
 
         self.home_widget = QWidget()
         self.setup_home_widget()
@@ -55,6 +57,8 @@ class HomeWindow(QWidget):
     def setup_home_widget(self):
         """Setup the layout and widgets of the home screen."""
         layout = QVBoxLayout()
+        layout.setContentsMargins(0, 0, 0, 0)
+        layout.setSpacing(0)
 
         self.create_header(layout)
         self.create_middle_part(layout)
@@ -87,18 +91,20 @@ class HomeWindow(QWidget):
         header.setAlignment(Qt.AlignCenter)
         header.setObjectName("header")
         layout.addWidget(header, 10)
+        layout.setContentsMargins(0, 0, 0, 0)
+        layout.setSpacing(0)
 
     def create_middle_part(self, layout):
         """Create and set up the central part of the home widget."""
         middle_widget = QWidget()
         middle_widget.setObjectName("middle_widget")
-        middle_layout = QHBoxLayout()
-
-        self.create_left_label(middle_layout)
-        self.create_right_label(middle_layout)
-
+        middle_layout = QVBoxLayout()
         middle_widget.setLayout(middle_layout)
-        layout.addWidget(middle_widget, 88)
+
+        self.create_upper_label(middle_layout)
+        self.create_down_label(middle_layout)
+
+        layout.addWidget(middle_widget, 70)
 
     def create_footer(self, layout):
         """Create and configure the footer section."""
@@ -110,28 +116,31 @@ class HomeWindow(QWidget):
         footer.setLayout(footer_layout)
 
         label = QLabel("WealthStable Advisor - © 2024")
+        label.setObjectName("tag_label")
         label.setAlignment(Qt.AlignCenter)
 
-        # Dodatkowa etykieta z informacją
-        additional_info = QLabel("Created by Your Company Name")
+        additional_info = QLabel("Created by Wiktor Dybalski, Maksymilian Katolik")
+        additional_info.setObjectName("additional_info_label")
         additional_info.setAlignment(Qt.AlignCenter)
 
-        # Dodanie etykiet do układu stopki
         footer_layout.addWidget(label)
         footer_layout.addWidget(additional_info)
-        footer.setMinimumHeight(100)
-        footer.setContentsMargins(0, 0, 0, 0)
-        footer.setMargin(0)
 
-        layout.addWidget(footer, 1)
+        layout.addWidget(footer, 8)
 
-    def create_left_label(self, parent_layout):
-        """Create the left section of the middle part with buttons for navigation."""
-        left_label = QLabel()
-        left_label.setObjectName("left_label")
-        left_label_layout = QVBoxLayout()
-        left_label_header = QLabel("Choose what you need")
-        left_label_content = QLabel()
+    def create_upper_label(self, parent_layout):
+        upper_label = QLabel("Choose one of our products:")
+        upper_label.setObjectName("upper_label")
+        upper_label.setAlignment(Qt.AlignCenter)
+
+        parent_layout.addWidget(upper_label, 30)
+
+    def create_down_label(self, parent_layout):
+        down_label = QLabel()
+        down_label.setObjectName("down_label")
+        down_label_layout = QHBoxLayout()
+        down_label.setLayout(down_label_layout)
+
         shares_button = QPushButton("Shares assistant")
         shares_button.clicked.connect(self.show_shares_assistant)
 
@@ -141,21 +150,10 @@ class HomeWindow(QWidget):
         shares_button.setToolTip("Click to perform investment analysis")
         calculator_button.setToolTip("Click to view current market trends")
 
-        left_label_layout.addWidget(left_label_header, 2)
-        left_label_layout.addWidget(left_label_content, 8)
-        left_label_content_layout = QVBoxLayout()
-        left_label_content.setLayout(left_label_content_layout)
-        left_label_content_layout.addWidget(shares_button)
-        left_label_content_layout.addWidget(calculator_button)
-        left_label.setLayout(left_label_layout)
-        parent_layout.addWidget(left_label, 4)
+        down_label_layout.addWidget(shares_button)
+        down_label_layout.addWidget(calculator_button)
 
-    def create_right_label(self, parent_layout):
-        """Create the right section of the middle part, initially just a placeholder."""
-        rightLabel = QLabel("Right Widget")
-        rightLabel.setObjectName("right_label")
-
-        parent_layout.addWidget(rightLabel, 6)
+        parent_layout.addWidget(down_label, 70)
 
     def send_data_to_controller(self, companies):
         """Send selected company data to the controller for processing."""
