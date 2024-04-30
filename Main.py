@@ -12,10 +12,8 @@ def main():
     view = Home.HomeWindow(app)
     model = Simulation()
     file_path = Utils.get_absolute_file_path("stock_data_without_polish.csv")
-    # TODO
-    # Something went wrong with updating data
-    updated_file_path = UpdateData.update_data(file_path)
-    daily_returns1 = file_path
+    # We have to load a GUI waiting screen when user has to wait for updating data
+    daily_returns1 = UpdateData.update_data(file_path)
     controller = Controller.Controller(view, model, daily_returns1)
     model.set_controller(controller)
     view.set_controller(controller)

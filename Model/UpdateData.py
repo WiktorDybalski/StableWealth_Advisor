@@ -21,25 +21,19 @@ class UpdateData:
     def update_data(stock_data_path):
         if UpdateData.is_already_updated():
             print("Data is already updated today.")
-            return True
+            return stock_data_path
 
         today = datetime.date.today()
         file_path = Utils.get_absolute_file_path("recently_updated_day.txt")
+        last_date = UpdateData.get_last_update_date(file_path)
+        next_day_string = (last_date + datetime.timedelta(days=1)).strftime('%Y-%m-%d')
+        UpdateData.create_csv_data_with_start(UpdateData.get_ticker_symbols_without_polish(), Utils.get_absolute_file_path("new_stock_data.csv"),
+                                              next_day_string)
+        UpdateData.update_csv_file(stock_data_path, Utils.get_absolute_file_path("new_stock_data.csv"))
+        with open(file_path, 'a') as file:
+            file.write(today.strftime('%Y-%m-%d') + '\n')
 
-        if not os.path.exists(file_path):
-            with open(file_path, 'w') as file:
-                file.write(today.strftime('%Y-%m-%d') + '\n')
-            UpdateData.update_csv_file(stock_data_path, "../Data/new_stock_data.csv")
-            print("Data file created and updated.")
-        else:
-            with open(file_path, 'a') as file:
-                file.write(today.strftime('%Y-%m-%d') + '\n')
-            last_date = UpdateData.get_last_update_date(file_path)
-            next_day_string = (last_date + datetime.timedelta(days=1)).strftime('%Y-%m-%d')
-            UpdateData.create_csv_data_with_start(UpdateData.get_ticker_symbols(), "../Data/new_stock_data.csv",
-                                                  next_day_string)
-            UpdateData.update_csv_file(stock_data_path, "../Data/new_stock_data.csv")
-            print("Data file updated with new data.")
+        print("Data file updated with new data.")
 
     @staticmethod
     def get_last_update_date(file_path):

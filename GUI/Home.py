@@ -102,9 +102,27 @@ class HomeWindow(QWidget):
 
     def create_footer(self, layout):
         """Create and configure the footer section."""
-        footer = QLabel("Footer")
+        footer = QLabel()
         footer.setObjectName("footer")
         footer.setAlignment(Qt.AlignCenter)
+
+        footer_layout = QHBoxLayout()
+        footer.setLayout(footer_layout)
+
+        label = QLabel("WealthStable Advisor - © 2024")
+        label.setAlignment(Qt.AlignCenter)
+
+        # Dodatkowa etykieta z informacją
+        additional_info = QLabel("Created by Your Company Name")
+        additional_info.setAlignment(Qt.AlignCenter)
+
+        # Dodanie etykiet do układu stopki
+        footer_layout.addWidget(label)
+        footer_layout.addWidget(additional_info)
+        footer.setMinimumHeight(100)
+        footer.setContentsMargins(0, 0, 0, 0)
+        footer.setMargin(0)
+
         layout.addWidget(footer, 1)
 
     def create_left_label(self, parent_layout):
