@@ -1,5 +1,6 @@
-from PySide6.QtCore import QFile, Qt, Signal
-from PySide6.QtWidgets import QWidget, QVBoxLayout, QLabel, QHBoxLayout, QPushButton, QListWidget, QAbstractItemView, QMessageBox
+from PySide6.QtCore import Qt, QPoint, QFile, Qt, Signal, QPropertyAnimation, QRect
+from PySide6.QtWidgets import QWidget, QVBoxLayout, QLabel, QHBoxLayout, QPushButton, QListWidget, QAbstractItemView, \
+    QMessageBox, QCheckBox
 from Data.Companies import Companies
 from Utils import Utils
 
@@ -39,13 +40,12 @@ class SharesAssistant(QWidget):
         header.setObjectName("header")
         self.layout.addWidget(header, 10)
 
+
     def _setup_content_area(self):
         """Setup the central content area of the widget."""
         content = QWidget(self)
-        content_layout = QVBoxLayout()  # Changed from QHBoxLayout to QVBoxLayout
+        content_layout = QVBoxLayout()
         content.setObjectName("middle_part")
-
-        # Setup buttons in a horizontal layout
         button_layout = QHBoxLayout()
         button_layout.setAlignment(Qt.AlignTop)
         self._add_button(button_layout, "Home", self.emit_home_requested)
@@ -54,11 +54,12 @@ class SharesAssistant(QWidget):
         self._add_button(button_layout, "Start Simulation", self.send_data_to_home_window)
         content_layout.addLayout(button_layout)  # Add button layout to the content layout
 
-        # Setup company list below the buttons
-        self._setup_company_list(content_layout)  # This adds the company list to the vertical layout
+
+        self._setup_company_list(content_layout)
 
         content.setLayout(content_layout)
         self.layout.addWidget(content, 55)
+
 
     def create_footer(self, layout):
         """Create and configure the footer section."""
