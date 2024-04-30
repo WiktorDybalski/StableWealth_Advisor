@@ -37,8 +37,7 @@ class SharesAssistantResults(QWidget):
 
         self.setup_middle_widget(layout)
 
-        footer = self.create_label("Footer", "footer", Qt.AlignCenter)
-        layout.addWidget(footer, 5)
+        self.create_footer(layout)
 
         self.setLayout(layout)
 
@@ -56,6 +55,7 @@ class SharesAssistantResults(QWidget):
 
         # Create the chart (right side)
         chart_view = self.create_pie_chart()
+        chart_view.setObjectName("chart_view")
         middle_layout.addWidget(chart_view, 50)  # Assign weight to the chart layout
 
         middle_widget = QWidget()
@@ -126,6 +126,27 @@ class SharesAssistantResults(QWidget):
             metrics_label = self.create_label(f'{name} is: {value:.2f}', None, Qt.AlignLeft)
             layout.addWidget(metrics_label)
 
+    def create_footer(self, layout):
+        """Create and configure the footer section."""
+        footer = QLabel()
+        footer.setObjectName("footer")
+        footer.setAlignment(Qt.AlignCenter)
+
+        footer_layout = QHBoxLayout()
+        footer.setLayout(footer_layout)
+
+        label = QLabel("WealthStable Advisor - © 2024")
+        label.setObjectName("tag_label")
+        label.setAlignment(Qt.AlignCenter)
+
+        additional_info = QLabel("Created by Wiktor Dybalski, Maksymilian Katolik")
+        additional_info.setObjectName("additional_info_label")
+        additional_info.setAlignment(Qt.AlignCenter)
+
+        footer_layout.addWidget(label)
+        footer_layout.addWidget(additional_info)
+
+        layout.addWidget(footer, 8)
     def emit_home_requested(self):
         """Emit a signal when the home button is pressed."""
         self.home_requested.emit()

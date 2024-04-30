@@ -1,4 +1,5 @@
-from PySide6.QtWidgets import QWidget, QVBoxLayout, QLabel, QHBoxLayout, QPushButton, QStackedWidget
+from PySide6.QtGui import QIcon, QCursor, QAction
+from PySide6.QtWidgets import QWidget, QVBoxLayout, QLabel, QHBoxLayout, QPushButton, QStackedWidget, QToolBar
 from PySide6.QtCore import Qt, QFile
 from GUI.SharesAssistant import SharesAssistant
 from GUI.SharesAssistantResults import SharesAssistantResults
@@ -33,6 +34,7 @@ class HomeWindow(QWidget):
         self.setWindowTitle("StableWealth Advisor")
 
         layout = QVBoxLayout()
+        layout.addWidget(self.create_toolbar())
         layout.addWidget(self.stackedWidget)
         layout.setContentsMargins(0, 0, 0, 0)
         layout.setSpacing(0)
@@ -53,6 +55,36 @@ class HomeWindow(QWidget):
 
 
         self.setLayout(layout)
+
+    def create_toolbar(self):
+        toolbar = QToolBar("Main Toolbar")
+        home_action = QAction("Home", self)
+        home_action.triggered.connect(self.show_home)
+        shares_action = QAction("Shares Assistant", self)
+        shares_action.triggered.connect(self.show_shares_assistant)
+        calculator_action = QAction("Calculator", self)
+        calculator_action.triggered.connect(self.show_calculator)
+        stock_informations_action = QAction("Stock Informations", self)
+
+        # TODO
+        # Widget for stock informations
+        # Widget for Settings
+        # Widget for Help
+
+        # stock_informations_action.triggered.connect(self.stock_informations)
+        settings_action = QAction("Settings", self)
+        # settings_action.triggered.connect(self.settings)
+        help_action = QAction("Help", self)
+        # help_action.triggered.connect(self.help)
+
+
+        toolbar.addAction(home_action)
+        toolbar.addAction(shares_action)
+        toolbar.addAction(calculator_action)
+        toolbar.addAction(stock_informations_action)
+        toolbar.addAction(settings_action)
+        toolbar.addAction(help_action)
+        return toolbar
 
     def setup_home_widget(self):
         """Setup the layout and widgets of the home screen."""
@@ -104,7 +136,7 @@ class HomeWindow(QWidget):
         self.create_upper_label(middle_layout)
         self.create_down_label(middle_layout)
 
-        layout.addWidget(middle_widget, 70)
+        layout.addWidget(middle_widget, 60)
 
     def create_footer(self, layout):
         """Create and configure the footer section."""

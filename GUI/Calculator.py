@@ -26,13 +26,12 @@ class Calculator(QWidget):
         layout = QVBoxLayout()
 
         header = self.create_label("Header", "header", Qt.AlignCenter)
-        layout.addWidget(header, 2)
+        layout.addWidget(header, 10)
 
         middle_widget = self.setup_middle_widget()
-        layout.addWidget(middle_widget, 7)
+        layout.addWidget(middle_widget, 60)
 
-        footer = self.create_label("Footer", "footer", Qt.AlignCenter)
-        layout.addWidget(footer, 1)
+        self.create_footer(layout)
 
         self.setLayout(layout)
 
@@ -55,7 +54,27 @@ class Calculator(QWidget):
         label.setAlignment(alignment)
         label.setObjectName(object_name)
         return label
+    def create_footer(self, layout):
+        """Create and configure the footer section."""
+        footer = QLabel()
+        footer.setObjectName("footer")
+        footer.setAlignment(Qt.AlignCenter)
 
+        footer_layout = QHBoxLayout()
+        footer.setLayout(footer_layout)
+
+        label = QLabel("WealthStable Advisor - © 2024")
+        label.setObjectName("tag_label")
+        label.setAlignment(Qt.AlignCenter)
+
+        additional_info = QLabel("Created by Wiktor Dybalski, Maksymilian Katolik")
+        additional_info.setObjectName("additional_info_label")
+        additional_info.setAlignment(Qt.AlignCenter)
+
+        footer_layout.addWidget(label)
+        footer_layout.addWidget(additional_info)
+
+        layout.addWidget(footer, 8)
     def emit_home_requested(self):
         """Emit a signal when the home button is pressed."""
         self.home_requested.emit()

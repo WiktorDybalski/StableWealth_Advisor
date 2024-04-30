@@ -20,7 +20,7 @@ class SharesAssistant(QWidget):
         self.layout = QVBoxLayout()
         self._setup_header()
         self._setup_content_area()
-        self._setup_footer()
+        self.create_footer(self.layout)
         self.setLayout(self.layout)
 
     def _load_styles(self):
@@ -37,7 +37,7 @@ class SharesAssistant(QWidget):
         header = QLabel("Shares Assistant", self)
         header.setAlignment(Qt.AlignCenter)
         header.setObjectName("header")
-        self.layout.addWidget(header, 5)
+        self.layout.addWidget(header, 10)
 
     def _setup_content_area(self):
         """Setup the central content area of the widget."""
@@ -58,14 +58,29 @@ class SharesAssistant(QWidget):
         self._setup_company_list(content_layout)  # This adds the company list to the vertical layout
 
         content.setLayout(content_layout)
-        self.layout.addWidget(content, 90)
+        self.layout.addWidget(content, 55)
 
-    def _setup_footer(self):
-        """Setup the footer of the window."""
-        footer = QLabel("Footer", self)
+    def create_footer(self, layout):
+        """Create and configure the footer section."""
+        footer = QLabel()
         footer.setObjectName("footer")
         footer.setAlignment(Qt.AlignCenter)
-        self.layout.addWidget(footer, 5)
+
+        footer_layout = QHBoxLayout()
+        footer.setLayout(footer_layout)
+
+        label = QLabel("WealthStable Advisor - © 2024")
+        label.setObjectName("tag_label")
+        label.setAlignment(Qt.AlignCenter)
+
+        additional_info = QLabel("Created by Wiktor Dybalski, Maksymilian Katolik")
+        additional_info.setObjectName("additional_info_label")
+        additional_info.setAlignment(Qt.AlignCenter)
+
+        footer_layout.addWidget(label)
+        footer_layout.addWidget(additional_info)
+
+        layout.addWidget(footer, 8)
 
     def _add_button(self, layout, text, handler):
         """Helper method to create and add a button."""
@@ -96,27 +111,7 @@ class SharesAssistant(QWidget):
             msg_box = QMessageBox()
             msg_box.setWindowTitle('Invalid number of selected companies')
             msg_box.setText('You are allowed to select only 10 companies!')
-            msg_box.setStyleSheet("""
-                QMessageBox {
-                    background-color: #f5f5f5;
-                    font-family: 'Segoe UI', Arial, sans-serif;
-                    font-size: 12pt;
-                    color: #34495e;
-                }
-                QPushButton {
-                    background-color: #3498db;
-                    color: #ffffff;
-                    font-weight: bold;
-                    border: none;
-                    border-radius: 5px;
-                    padding: 10px 15px;
-                    margin: 5px;
-                    transition: background-color 0.3s, color 0.3s;
-                }
-                QPushButton:hover {
-                    background-color: #2980b9;
-                }
-            """)
+            msg_box.setObjectName("msg_box")
             msg_box.exec()
             return
         print("Selected companies:", self.selected_companies)
