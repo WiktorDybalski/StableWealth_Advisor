@@ -27,9 +27,12 @@ class UpdateData:
         file_path = Utils.get_absolute_file_path("recently_updated_day.txt")
         last_date = UpdateData.get_last_update_date(file_path)
         next_day_string = (last_date + datetime.timedelta(days=1)).strftime('%Y-%m-%d')
-        UpdateData.create_csv_data_with_start(UpdateData.get_ticker_symbols_without_polish(), Utils.get_absolute_file_path("new_stock_data.csv"),
-                                              next_day_string)
-        UpdateData.update_csv_file(stock_data_path, Utils.get_absolute_file_path("new_stock_data.csv"))
+
+        # TODO
+        # Fix UpdateData -> data should be updated when we have > 1 day. 1 day doesn't work always
+
+        # UpdateData.create_csv_data_with_start(UpdateData.get_ticker_symbols_without_polish(), Utils.get_absolute_file_path("new_stock_data.csv"),
+        #                                       next_day_string)
         with open(file_path, 'a') as file:
             file.write(today.strftime('%Y-%m-%d') + '\n')
 
