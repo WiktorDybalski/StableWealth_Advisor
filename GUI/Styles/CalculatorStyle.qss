@@ -18,7 +18,6 @@ QLabel {
     font-size: 24px; /* Większa czcionka dla nagłówka i stopki */
     font-weight: bold;
     border-radius: 5px; /* Lekkie zaokrąglenie rogów */
-    box-shadow: 0 2px 4px rgba(0,0,0,0.1); /* Dodanie subtelnych cieni */
 }
 
 #middleWidget {
@@ -34,7 +33,6 @@ QLabel {
     padding: 20px;
     margin: 10px;
     border-radius: 10px; /* Wyraźniejsze zaokrąglenie rogów */
-    box-shadow: 0 4px 6px rgba(0,0,0,0.1); /* Większe cienie dla lepszego efektu wizualnego */
 }
 
 #leftWidget {
@@ -52,7 +50,6 @@ QPushButton {
     padding: 10px 20px;
     border-radius: 5px; /* Zaokrąglenie rogów przycisku */
     border: none; /* Usunięcie domyślnej ramki */
-    transition: background-color 0.3s, color 0.3s; /* Płynne przejście kolorów */
 }
 
 QPushButton:hover {

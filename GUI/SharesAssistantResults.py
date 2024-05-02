@@ -15,7 +15,7 @@ class SharesAssistantResults(QWidget):
         self.optimal_weights = optimal_weights
         self.tab = tab
         self.setWindowTitle("Shares Assistant Results")
-        self.setup_shares_assistant_results_widget()
+        self._init_ui()
         self.load_styles()
 
     def load_styles(self):
@@ -28,18 +28,26 @@ class SharesAssistantResults(QWidget):
         else:
             print("Shares Assistant Results StyleSheet Load Error.")
 
-    def setup_shares_assistant_results_widget(self):
+    def _init_ui(self):
         """Set up the layout and widgets of the shares_assistant_results."""
-        layout = QVBoxLayout()
+        self.layout = QVBoxLayout()
 
-        header = self.create_label("Shares Assistant Results", "header", Qt.AlignCenter)
-        layout.addWidget(header, 5)
+        self.create_header(self.layout)
 
-        self.setup_middle_widget(layout)
+        self.setup_middle_widget(self.layout)
 
-        self.create_footer(layout)
+        self.create_footer(self.layout)
 
-        self.setLayout(layout)
+        self.setLayout(self.layout)
+
+    def create_header(self, layout):
+        """Create and configure the header section."""
+        header = QLabel("StableWealth Advisor")
+        header.setAlignment(Qt.AlignCenter)
+        header.setObjectName("header")
+        layout.addWidget(header, 10)
+        layout.setContentsMargins(0, 0, 0, 0)
+        layout.setSpacing(0)
 
     def setup_middle_widget(self, layout):
         """Create and set up the middle widget with a home button and results layout."""
@@ -60,7 +68,7 @@ class SharesAssistantResults(QWidget):
 
         middle_widget = QWidget()
         middle_widget.setLayout(middle_layout)
-        layout.addWidget(middle_widget, 90)
+        layout.addWidget(middle_widget, 60)
 
     def create_buttons_label(self, middle_layout):
         buttons_label = QLabel()

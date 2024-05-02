@@ -4,11 +4,11 @@ from PySide6.QtCore import Qt, QFile, Signal
 from Utils import Utils
 
 
-class CalculatorResults(QWidget):
+class StockInformation(QWidget):
     home_requested = Signal()
     def __init__(self):
         super().__init__()
-        self.setWindowTitle("Calculator results")
+        self.setWindowTitle("Stock Informations")
         self._init_ui()
 
     def _init_ui(self):
@@ -30,7 +30,7 @@ class CalculatorResults(QWidget):
 
     def create_header(self, layout):
         """Create and configure the header section."""
-        header = QLabel("Calculator results")
+        header = QLabel("Stock informations")
         header.setAlignment(Qt.AlignCenter)
         header.setObjectName("header")
         layout.addWidget(header, 10)

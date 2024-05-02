@@ -16,5 +16,5 @@ class Utils:
         absolute_file_path = absolute_file_path.replace('\\', '/')
         return absolute_file_path
 
-
-print(Utils.get_absolute_file_path("SharesAssistantStyle.qss"))
+if (__name__ == "__main__" ):
+    pass

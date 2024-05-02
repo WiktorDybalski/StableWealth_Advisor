@@ -1,6 +1,6 @@
 from PySide6.QtCore import Qt, QPoint, QFile, Qt, Signal, QPropertyAnimation, QRect
 from PySide6.QtWidgets import QWidget, QVBoxLayout, QLabel, QHBoxLayout, QPushButton, QListWidget, QAbstractItemView, \
-    QMessageBox, QCheckBox
+    QMessageBox, QAbstractItemView
 from Data.Companies import Companies
 from Utils import Utils
 
@@ -19,9 +19,9 @@ class SharesAssistant(QWidget):
     def _init_ui(self):
         """Initialize the user interface components of the SharesAssistant."""
         self.layout = QVBoxLayout()
-        self._setup_header()
-        self._setup_content_area()
-        self.create_footer(self.layout)
+        self._create_header(self.layout)
+        self._create_content_area()
+        self._create_footer(self.layout)
         self.setLayout(self.layout)
 
     def _load_styles(self):
@@ -33,15 +33,17 @@ class SharesAssistant(QWidget):
         else:
             print("SharesAssistant StyleSheet Load Error.")
 
-    def _setup_header(self):
-        """Setup the header of the window."""
-        header = QLabel("Shares Assistant", self)
+    def _create_header(self, layout):
+        """Create and configure the header section."""
+        header = QLabel("Shares Assistant")
         header.setAlignment(Qt.AlignCenter)
         header.setObjectName("header")
-        self.layout.addWidget(header, 10)
+        layout.addWidget(header, 10)
+        layout.setContentsMargins(0, 0, 0, 0)
+        layout.setSpacing(0)
 
 
-    def _setup_content_area(self):
+    def _create_content_area(self):
         """Setup the central content area of the widget."""
         content = QWidget(self)
         content_layout = QVBoxLayout()
@@ -58,10 +60,10 @@ class SharesAssistant(QWidget):
         self._setup_company_list(content_layout)
 
         content.setLayout(content_layout)
-        self.layout.addWidget(content, 55)
+        self.layout.addWidget(content, 60)
 
 
-    def create_footer(self, layout):
+    def _create_footer(self, layout):
         """Create and configure the footer section."""
         footer = QLabel()
         footer.setObjectName("footer")

@@ -1,9 +1,13 @@
-from PySide6.QtGui import QIcon, QCursor, QAction
+from PySide6.QtGui import QAction
 from PySide6.QtWidgets import QWidget, QVBoxLayout, QLabel, QHBoxLayout, QPushButton, QStackedWidget, QToolBar
 from PySide6.QtCore import Qt, QFile
 from GUI.SharesAssistant import SharesAssistant
 from GUI.SharesAssistantResults import SharesAssistantResults
 from GUI.Calculator import Calculator
+from GUI.StockInformation import StockInformation
+from GUI.CalculatorResults import CalculatorResults
+from GUI.Settings import Settings
+from GUI.Help import Help
 from Utils import Utils
 
 
@@ -14,46 +18,65 @@ class HomeWindow(QWidget):
         self.shares_assistant_results = None
         self.shares_assistant = None
         self.calculator = None
+        self.calculator_results = None
+        self.stock_information = None
+        self.help = None
+        self.controller = None
+        self.settings = None
         self.app = app
-        self.stackedWidget = QStackedWidget()  # This widget holds the different screens of the application.
-        self.init_ui()  # Initialize the user interface components.
-        self.setup_styles()  # Setup the CSS styles for the window.
-        self.controller = None  # Placeholder for a controller that will be set externally.
+        self.stackedWidget = QStackedWidget()
+        self._init_ui()
+        self._setup_styles()
 
     def set_controller(self, controller):
         self.controller = controller
 
-    def init_ui(self):
-        """Initialize the main user interface of the window."""
+    def setup_window_size(self):
         screen = self.app.primaryScreen().size()
         width = screen.width() * 0.9
-        height = screen.height() * 0.8
+        height = screen.height() * 0.82
         left = screen.width() * 0.05
-        top = screen.height() * 0.1
+        top = screen.height() * 0.09
         self.setGeometry(left, top, width, height)
         self.setWindowTitle("StableWealth Advisor")
 
+    def init_others_widgets(self):
+
+        self.shares_assistant = SharesAssistant()
+        self.calculator = Calculator()
+        self.calculator_results = CalculatorResults()
+        self.stock_information = StockInformation()
+        self.settings = Settings()
+        self.help = Help()
+
+        self.shares_assistant.home_requested.connect(self.show_home)
+        self.shares_assistant.companies_selected.connect(self.send_data_to_controller)
+        self.calculator.home_requested.connect(self.show_home)
+        self.stock_information.home_requested.connect(self.show_home)
+        self.settings.home_requested.connect(self.show_home)
+        self.help.home_requested.connect(self.show_home)
+
+        self.stackedWidget.addWidget(self.shares_assistant)
+        self.stackedWidget.addWidget(self.calculator)
+        self.stackedWidget.addWidget(self.stock_information)
+        self.stackedWidget.addWidget(self.settings)
+        self.stackedWidget.addWidget(self.help)
+
+    def _init_ui(self):
+        """Initialize the main user interface of the window."""
+        self.setup_window_size()
+
         layout = QVBoxLayout()
-        layout.addWidget(self.create_toolbar())
+        toolbar = self.create_toolbar()
+        layout.addWidget(toolbar)
         layout.addWidget(self.stackedWidget)
         layout.setContentsMargins(0, 0, 0, 0)
         layout.setSpacing(0)
 
         self.home_widget = QWidget()
         self.setup_home_widget()
-
         self.stackedWidget.addWidget(self.home_widget)
-
-        self.shares_assistant = SharesAssistant()
-        self.shares_assistant.home_requested.connect(self.show_home)
-        self.shares_assistant.companies_selected.connect(self.send_data_to_controller)
-        self.stackedWidget.addWidget(self.shares_assistant)
-
-        self.calculator = Calculator()
-        self.calculator.home_requested.connect(self.show_home)
-        self.stackedWidget.addWidget(self.calculator)
-
-
+        self.init_others_widgets()
         self.setLayout(layout)
 
     def create_toolbar(self):
@@ -65,17 +88,11 @@ class HomeWindow(QWidget):
         calculator_action = QAction("Calculator", self)
         calculator_action.triggered.connect(self.show_calculator)
         stock_informations_action = QAction("Stock Informations", self)
-
-        # TODO
-        # Widget for stock informations
-        # Widget for Settings
-        # Widget for Help
-
-        # stock_informations_action.triggered.connect(self.stock_informations)
+        stock_informations_action.triggered.connect(self.show_stock_information)
         settings_action = QAction("Settings", self)
-        # settings_action.triggered.connect(self.settings)
+        settings_action.triggered.connect(self.show_settings)
         help_action = QAction("Help", self)
-        # help_action.triggered.connect(self.help)
+        help_action.triggered.connect(self.show_help)
 
 
         toolbar.addAction(home_action)
@@ -89,8 +106,6 @@ class HomeWindow(QWidget):
     def setup_home_widget(self):
         """Setup the layout and widgets of the home screen."""
         layout = QVBoxLayout()
-        layout.setContentsMargins(0, 0, 0, 0)
-        layout.setSpacing(0)
 
         self.create_header(layout)
         self.create_middle_part(layout)
@@ -98,24 +113,13 @@ class HomeWindow(QWidget):
 
         self.home_widget.setLayout(layout)
 
-    def setup_styles(self):
+    def _setup_styles(self):
         """Read and apply the CSS stylesheet to the window."""
         style_file = QFile(Utils.get_absolute_file_path("HomeWindowStyle.qss"))
         style_file.open(QFile.ReadOnly | QFile.Text)
         style_sheet = str(style_file.readAll(), encoding='utf-8')
         self.setStyleSheet(style_sheet)
 
-    def show_shares_assistant(self):
-        """Switch the view to the shares assistant screen."""
-        self.stackedWidget.setCurrentWidget(self.shares_assistant)
-
-    def show_calculator(self):
-        """Switch the view to the calculator screen."""
-        self.stackedWidget.setCurrentWidget(self.calculator)
-
-    def show_home(self):
-        """Return to the home screen view."""
-        self.stackedWidget.setCurrentWidget(self.home_widget)
 
     def create_header(self, layout):
         """Create and configure the header section."""
@@ -191,11 +195,39 @@ class HomeWindow(QWidget):
         """Send selected company data to the controller for processing."""
         self.controller.run_simulation(companies)
 
+    def show_home(self):
+        """Return to the home screen view."""
+        self.stackedWidget.setCurrentWidget(self.home_widget)
+
+    def show_shares_assistant(self):
+        """Switch the view to the shares assistant screen."""
+        self.stackedWidget.setCurrentWidget(self.shares_assistant)
+
     def show_shares_assistant_results(self, ticker_symbols, optimal_weights, tab):
         self.shares_assistant_results = SharesAssistantResults(ticker_symbols, optimal_weights, tab)
         self.shares_assistant_results.home_requested.connect(self.show_home)
         self.stackedWidget.addWidget(self.shares_assistant_results)
         self.stackedWidget.setCurrentWidget(self.shares_assistant_results)
+
+    def show_calculator(self):
+        """Switch the view to the calculator screen."""
+        self.stackedWidget.setCurrentWidget(self.calculator)
+
+    def show_calculator_results(self):
+        """Return to the home screen view."""
+        self.stackedWidget.setCurrentWidget(self.calculator_results)
+
+    def show_stock_information(self):
+        """Return to the home screen view."""
+        self.stackedWidget.setCurrentWidget(self.stock_information)
+
+    def show_settings(self):
+        """Switch the view to the shares assistant screen."""
+        self.stackedWidget.setCurrentWidget(self.settings)
+
+    def show_help(self):
+        """Switch the view to the calculator screen."""
+        self.stackedWidget.setCurrentWidget(self.help)
 
 if __name__ == "__main__":
     pass

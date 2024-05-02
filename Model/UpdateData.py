@@ -15,7 +15,7 @@ class UpdateData:
         with open(file_path, 'r') as file:
             last_line = file.readlines()[-1].strip()
         last_update_date = datetime.datetime.strptime(last_line, '%Y-%m-%d').date()
-        return last_update_date == datetime.date.today()
+        return last_update_date >= datetime.date.today() - datetime.timedelta(days=1)
 
     @staticmethod
     def update_data(stock_data_path):
@@ -25,18 +25,17 @@ class UpdateData:
 
         today = datetime.date.today()
         file_path = Utils.get_absolute_file_path("recently_updated_day.txt")
+        new_stock_data_path = Utils.get_absolute_file_path("new_stock_data.csv")
         last_date = UpdateData.get_last_update_date(file_path)
+
         next_day_string = (last_date + datetime.timedelta(days=1)).strftime('%Y-%m-%d')
+        UpdateData.create_csv_data_with_start(UpdateData.get_ticker_symbols_without_polish(), new_stock_data_path,
+                                              next_day_string)
 
-        # TODO
-        # Fix UpdateData -> data should be updated when we have > 1 day. 1 day doesn't work always
-
-        # UpdateData.create_csv_data_with_start(UpdateData.get_ticker_symbols_without_polish(), Utils.get_absolute_file_path("new_stock_data.csv"),
-        #                                       next_day_string)
         with open(file_path, 'a') as file:
             file.write(today.strftime('%Y-%m-%d') + '\n')
-
         print("Data file updated with new data.")
+        return stock_data_path
 
     @staticmethod
     def get_last_update_date(file_path):

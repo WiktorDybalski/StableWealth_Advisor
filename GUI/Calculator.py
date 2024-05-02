@@ -1,59 +1,51 @@
-from PySide6.QtCore import Qt, QFile, Signal
 from PySide6.QtWidgets import QWidget, QVBoxLayout, QLabel, QHBoxLayout, QPushButton
+from PySide6.QtCore import Qt, QFile, Signal
+
 from Utils import Utils
+
 
 class Calculator(QWidget):
     home_requested = Signal()
-
     def __init__(self):
         super().__init__()
-        self.setWindowTitle("Treasury Bond Calculator")
-        self.setup_calculator_widget()
-        self.load_styles()
+        self.setWindowTitle("Calculator")
+        self._init_ui()
 
-    def load_styles(self):
-        """Load the QSS style sheet for the calculator widget."""
-        style_file = QFile(Utils.get_absolute_file_path("CalculatorStyle.qss"))
-        if style_file.open(QFile.ReadOnly | QFile.Text):
-            style_sheet = str(style_file.readAll(), 'utf-8')
-            self.setStyleSheet(style_sheet)
-            style_file.close()  # Always good practice to close the file after reading
-        else:
-            print("Calculator StyleSheet Load Error.")
+    def _init_ui(self):
+        """Setup the layout and widgets of the home screen."""
+        self.layout = QVBoxLayout()
 
-    def setup_calculator_widget(self):
-        """Set up the layout and widgets of the treasury bonds calculator."""
-        layout = QVBoxLayout()
+        self.create_header(self.layout)
+        self.create_middle_part(self.layout)
+        self.create_footer(self.layout)
+        self.setLayout(self.layout)
 
-        header = self.create_label("Header", "header", Qt.AlignCenter)
+    def setup_styles(self):
+        """Read and apply the CSS stylesheet to the window."""
+        style_file = QFile(Utils.get_absolute_file_path("HomeWindowStyle.qss"))
+        style_file.open(QFile.ReadOnly | QFile.Text)
+        style_sheet = str(style_file.readAll(), encoding='utf-8')
+        self.setStyleSheet(style_sheet)
+
+
+    def create_header(self, layout):
+        """Create and configure the header section."""
+        header = QLabel("Calculator")
+        header.setAlignment(Qt.AlignCenter)
+        header.setObjectName("header")
         layout.addWidget(header, 10)
+        layout.setContentsMargins(0, 0, 0, 0)
+        layout.setSpacing(0)
 
-        middle_widget = self.setup_middle_widget()
-        layout.addWidget(middle_widget, 60)
-
-        self.create_footer(layout)
-
-        self.setLayout(layout)
-
-    def setup_middle_widget(self):
-        """Create and set up the middle widget with a home button."""
+    def create_middle_part(self, layout):
+        """Create and set up the central part of the home widget."""
         middle_widget = QWidget()
         middle_widget.setObjectName("middle_widget")
-        middle_layout = QHBoxLayout()
-
-        home_button = QPushButton("Home")
-        home_button.clicked.connect(self.emit_home_requested)
-        middle_layout.addWidget(home_button)
-
+        middle_layout = QVBoxLayout()
         middle_widget.setLayout(middle_layout)
-        return middle_widget
 
-    def create_label(self, text, object_name, alignment):
-        """Create a QLabel with specified properties."""
-        label = QLabel(text)
-        label.setAlignment(alignment)
-        label.setObjectName(object_name)
-        return label
+        layout.addWidget(middle_widget, 60)
+
     def create_footer(self, layout):
         """Create and configure the footer section."""
         footer = QLabel()
@@ -76,5 +68,5 @@ class Calculator(QWidget):
 
         layout.addWidget(footer, 8)
     def emit_home_requested(self):
-        """Emit a signal when the home button is pressed."""
+        """Emit a signal to indicate a request to go to the home window."""
         self.home_requested.emit()
