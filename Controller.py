@@ -31,7 +31,7 @@ class Controller:
         print(tickers_list)
         results = self.select_columns_from_csv(self.path_data, tickers_list)
         print("Simulation running")
-        self.model.run_scipy_simulation(results)
+        self.model.run_standard_scipy_simulation(results)
 
     def show_data_in_GUI(self, ticker_symbols, optimal_weights, tab):
         self.view.show_shares_assistant_results(ticker_symbols, optimal_weights, tab)
