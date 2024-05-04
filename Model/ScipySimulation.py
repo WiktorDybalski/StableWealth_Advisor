@@ -70,8 +70,8 @@ class Simulation:
 
         def get_ret_vol_sr(weights):
             weights = np.array(weights)
-            ret = log_mean.dot(weights)
-            vol = np.sqrt(weights.T.dot(cov.dot(weights)))
+            ret = log_mean.dot(weights) * 100
+            vol = np.sqrt(weights.T.dot(cov.dot(weights))) * 100
             sr = ret / vol
             return np.array([ret, vol, sr])
 

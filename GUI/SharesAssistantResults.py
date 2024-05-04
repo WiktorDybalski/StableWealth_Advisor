@@ -99,7 +99,7 @@ class SharesAssistantResults(QWidget):
         series = QPieSeries()
         total = sum(self.optimal_weights)
         for company, weight in zip(self.companies_list, self.optimal_weights):
-            if weight > 0:
+            if weight > 0.01:
                 slice = QPieSlice(f"{company}: {weight / total * 100:.2f}%", weight)
                 slice.setLabelVisible(True)
                 series.append(slice)
@@ -123,16 +123,20 @@ class SharesAssistantResults(QWidget):
         return label
 
     def create_results_labels(self, layout):
-
         # Display stock weights
         for company, weight in zip(self.companies_list, self.optimal_weights):
-            stock_label = self.create_label(f'{company} has weight:  {np.round(weight * 100, 2)}%', None, Qt.AlignLeft)
-            layout.addWidget(stock_label)
-
+            if weight > 0.01:
+                stock_label = self.create_label(f'{company} has weight:  {np.round(weight * 100, 2)}%', None, Qt.AlignLeft)
+                layout.addWidget(stock_label)
+        names = ["Expected profit", "Expected investment risk"]
+        profit_risk_ratio_name = "Profit to risk ratio"
         # Display portfolio metrics
-        for name, value in zip('Return Volatility SharpeRatio'.split(), self.tab):
-            metrics_label = self.create_label(f'{name} is: {value:.2f}', None, Qt.AlignLeft)
+        for name, value in zip(names, self.tab):
+            metrics_label = self.create_label(f'{name} is: {value:.2f}%', None, Qt.AlignLeft)
             layout.addWidget(metrics_label)
+        last_value_formatted = f'{float(self.tab[-1]):.2f}'
+        metrics_label = self.create_label(f'{profit_risk_ratio_name} is: {last_value_formatted}', None, Qt.AlignLeft)
+        layout.addWidget(metrics_label)
 
     def create_footer(self, layout):
         """Create and configure the footer section."""
