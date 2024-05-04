@@ -23,7 +23,7 @@ class Simulation:
 
     def process_combination(self, data, columns):
         selected_df = data.iloc[:, columns]
-        optimal_weights, metrics = self.run_standard_scipy_simulation(selected_df)
+        optimal_weights, metrics = self.run_scipy_simulation(selected_df)
         return (optimal_weights, metrics, columns)
 
     def run_best_of_three(self, stock_data_path):
@@ -55,7 +55,11 @@ class Simulation:
     def run_best_of_five(self):
         pass
 
-    def run_standard_scipy_simulation(self, daily_returns):
+    def run_scipy_simulation_with_vol(self, daily_returns, vol):
+        pass
+    def run_scipy_simulation_with_ret(self, daily_returns, ret):
+        pass
+    def run_scipy_simulation(self, daily_returns):
         number_of_companies = daily_returns.shape[1]
         tickers = [daily_returns.columns[i] for i in range(number_of_companies)]
         companies_list = [Companies.get_companies_without_polish().get(ticker) for ticker in tickers]
