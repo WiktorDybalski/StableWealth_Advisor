@@ -193,7 +193,8 @@ class HomeWindow(QWidget):
 
     def send_data_to_controller(self, companies):
         """Send selected company data to the controller for processing."""
-        self.controller.run_simulation(companies)
+        self.controller.set_companies_list(companies)
+        self.controller.run_simulation()
 
     def show_home(self):
         """Return to the home screen view."""
@@ -203,8 +204,8 @@ class HomeWindow(QWidget):
         """Switch the view to the shares assistant screen."""
         self.stackedWidget.setCurrentWidget(self.shares_assistant)
 
-    def show_shares_assistant_results(self, ticker_symbols, optimal_weights, tab):
-        self.shares_assistant_results = SharesAssistantResults(ticker_symbols, optimal_weights, tab)
+    def show_shares_assistant_results(self, companies_list, optimal_weights, tab):
+        self.shares_assistant_results = SharesAssistantResults(companies_list, optimal_weights, tab)
         self.shares_assistant_results.home_requested.connect(self.show_home)
         self.stackedWidget.addWidget(self.shares_assistant_results)
         self.stackedWidget.setCurrentWidget(self.shares_assistant_results)

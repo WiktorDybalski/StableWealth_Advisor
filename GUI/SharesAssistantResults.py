@@ -9,9 +9,9 @@ from Data.Companies import Companies
 class SharesAssistantResults(QWidget):
     home_requested = Signal()
 
-    def __init__(self, ticker_symbols, optimal_weights, tab):
+    def __init__(self, companies_list, optimal_weights, tab):
         super().__init__()
-        self.ticker_symbols = ticker_symbols
+        self.companies_list = companies_list
         self.optimal_weights = optimal_weights
         self.tab = tab
         self.setWindowTitle("Shares Assistant Results")
@@ -98,9 +98,9 @@ class SharesAssistantResults(QWidget):
         # Create Pie series
         series = QPieSeries()
         total = sum(self.optimal_weights)
-        for ticker, weight in zip(self.ticker_symbols, self.optimal_weights):
+        for company, weight in zip(self.companies_list, self.optimal_weights):
             if weight > 0:
-                slice = QPieSlice(f"{Companies.companies_without_polish.get(ticker)}: {weight / total * 100:.2f}%", weight)
+                slice = QPieSlice(f"{company}: {weight / total * 100:.2f}%", weight)
                 slice.setLabelVisible(True)
                 series.append(slice)
 
@@ -125,8 +125,8 @@ class SharesAssistantResults(QWidget):
     def create_results_labels(self, layout):
 
         # Display stock weights
-        for st, weight in zip(self.ticker_symbols, self.optimal_weights):
-            stock_label = self.create_label(f'{Companies.companies_without_polish.get(st)} has weight:  {np.round(weight * 100, 2)}%', None, Qt.AlignLeft)
+        for company, weight in zip(self.companies_list, self.optimal_weights):
+            stock_label = self.create_label(f'{company} has weight:  {np.round(weight * 100, 2)}%', None, Qt.AlignLeft)
             layout.addWidget(stock_label)
 
         # Display portfolio metrics

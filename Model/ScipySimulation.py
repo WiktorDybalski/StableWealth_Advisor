@@ -1,10 +1,11 @@
+import os
 import numpy as np
 import pandas
-import plotly.express as px
-import matplotlib.pyplot as plt
+
+from Data.Companies import Companies
 from Model.UpdateData import UpdateData
 from scipy import optimize
-
+import multiprocessing
 from Utils import Utils
 
 
@@ -20,29 +21,33 @@ class Simulation:
         selected_columns = df[columns]
         return selected_columns
 
+    def process_combination(self, data, columns):
+        selected_df = data.iloc[:, columns]
+        optimal_weights, metrics = self.run_standard_scipy_simulation(selected_df)
+        return (optimal_weights, metrics, columns)
+
     def run_best_of_three(self, stock_data_path):
         stock_data = pandas.read_csv(stock_data_path)
         n = stock_data.shape[1]
-        weights = []
-        tab = []
         max_sr = 0
-        ret = 0
-        vol = 0
-        best_companies = []
-        cnt = 0
+        best_result = None
+        tasks = []
+        num_cores = os.cpu_count()
         for i in range(1, n):
             for j in range(i + 1, n):
                 for k in range(j + 1, n):
-                    selected_df = stock_data.iloc[:, [i, j, k]]
-                    optimal_weights, metrics = self.run_standard_scipy_simulation(selected_df)
-                    cnt += 1
-                    if max_sr < metrics[2]:
-                        weights, max_sr, vol, ret = optimal_weights, metrics[2], metrics[1], metrics[0]
-                        best_companies = [stock_data.columns[i], stock_data.columns[j], stock_data.columns[k]]
-                    print(cnt)
-            tab = [ret, vol, max_sr]
-        print(weights, tab, best_companies)
-        return weights, tab, best_companies
+                    tasks.append((stock_data, [i, j, k]))
+
+        with multiprocessing.Pool(processes=num_cores - 1) as pool:
+            results = pool.starmap(self.process_combination, tasks)
+
+        for weights, metrics, columns in results:
+            if metrics[2] > max_sr:
+                max_sr = metrics[2]
+                best_result = (weights, metrics, [stock_data.columns[i] for i in columns])
+
+        print(best_result[1], best_result[0], best_result[2])
+        return best_result
 
     def run_best_of_four(self):
         pass
@@ -52,7 +57,8 @@ class Simulation:
 
     def run_standard_scipy_simulation(self, daily_returns):
         number_of_companies = daily_returns.shape[1]
-        companies_names = [daily_returns.columns[i] for i in range(number_of_companies)]
+        tickers = [daily_returns.columns[i] for i in range(number_of_companies)]
+        companies_list = [Companies.get_companies_without_polish().get(ticker) for ticker in tickers]
         log_ret = np.log(daily_returns / daily_returns.shift(1))
 
         log_mean = log_ret.mean() * 252
@@ -86,20 +92,20 @@ class Simulation:
         optimal_weights = opt_results.x
         # optimal_weights
         ticker_symbols_without_polish = UpdateData.get_ticker_symbols_without_polish()
-        # for st, i in zip(companies_names, optimal_weights):
-        #     print(f'Stock {st} has weight {np.round(i * 100, 2)} %')
-        #
-        # print('For a given portfolio we have: (Using SciPy optimizer)\n \n')
+        for st, i in zip(companies_list, optimal_weights):
+            print(f'Stock {st} has weight {np.round(i * 100, 2)} %')
+
+        print('For a given portfolio we have: (Using SciPy optimizer)\n \n')
 
         tab = []
         for i, j in enumerate('Return Volatility SharpeRatio'.split()):
-        #     print(f'{j} is : {get_ret_vol_sr(optimal_weights)[i]}\n')
+            print(f'{j} is : {get_ret_vol_sr(optimal_weights)[i]}\n')
             tab.append(get_ret_vol_sr(optimal_weights)[i])
-        # self.send_data_to_controller(ticker_symbols_without_polish, optimal_weights, tab)
+        self.send_data_to_controller(companies_list, optimal_weights, tab)
         return optimal_weights, tab
 
-    def send_data_to_controller(self, ticker_symbols, optimal_weights, tab):
-        self.controller.show_data_in_GUI(ticker_symbols, optimal_weights, tab)
+    def send_data_to_controller(self, companies_list, optimal_weights, tab):
+        self.controller.show_data_in_GUI(companies_list, optimal_weights, tab)
 
 
 if __name__ == "__main__":
