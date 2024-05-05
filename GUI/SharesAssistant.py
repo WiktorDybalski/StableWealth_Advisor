@@ -1,6 +1,6 @@
 from PySide6.QtCore import Qt, QPoint, QFile, Qt, Signal, QPropertyAnimation, QRect
 from PySide6.QtWidgets import QWidget, QVBoxLayout, QLabel, QHBoxLayout, QPushButton, QListWidget, QAbstractItemView, \
-    QMessageBox, QAbstractItemView
+    QMessageBox, QAbstractItemView, QLineEdit
 from Data.Companies import Companies
 from Utils import Utils
 
@@ -15,6 +15,8 @@ class SharesAssistant(QWidget):
         self.selected_companies = []
         self._init_ui()
         self._load_styles()
+        self.desired_return = None
+        self.desired_risk = None
 
     def _init_ui(self):
         """Initialize the user interface components of the SharesAssistant."""
@@ -48,6 +50,20 @@ class SharesAssistant(QWidget):
         content = QWidget(self)
         content_layout = QVBoxLayout()
         content.setObjectName("middle_part")
+
+        # Input fields for desired return and risk
+        self.return_input = QLineEdit(self)
+        self.return_input.setPlaceholderText("Enter desired return (0-100%)")
+        self.risk_input = QLineEdit(self)
+        self.risk_input.setPlaceholderText("Enter desired risk (0-100%)")
+
+        input_layout = QHBoxLayout()
+        input_layout.addWidget(QLabel("Desired Return:"))
+        input_layout.addWidget(self.return_input)
+        input_layout.addWidget(QLabel("Desired Risk:"))
+        input_layout.addWidget(self.risk_input)
+        content_layout.addLayout(input_layout)
+
         button_layout = QHBoxLayout()
         button_layout.setAlignment(Qt.AlignTop)
         self._add_button(button_layout, "Home", self.emit_home_requested)
@@ -125,7 +141,34 @@ class SharesAssistant(QWidget):
         """Emit a signal to indicate a request to go to the home window."""
         self.home_requested.emit()
 
+
+    def is_valid_input(self, value):
+        """Check if the input is a valid percentage (0-100)."""
+        try:
+            val = float(value)
+            return 0 <= val <= 100
+        except ValueError:
+            return False if value else True  # Allow empty string which represents None
+
     def send_data_to_home_window(self):
+
+        """Validate inputs and start the portfolio simulation."""
+        self.desired_return = self.return_input.text().strip()
+        self.desired_risk = self.risk_input.text().strip()
+
+        # Check if inputs are valid
+        if not self.is_valid_input(self.desired_return) or not self.is_valid_input(self.desired_risk):
+            msg_box = QMessageBox()
+            msg_box.setWindowTitle('Input Error')
+            msg_box.setText('Please enter valid values for return and risk (0-100).')
+            msg_box.exec()
+            return
+
+        # Convert inputs to float or None if empty
+        self.desired_return = float(self.desired_return) if self.desired_return else None
+        self.desired_return = float(self.desired_return) if self.desired_return else None
+
+
         """Emit a signal with selected companies to send data to the home window."""
         print("Sending to Home Window")
         self.companies_selected.emit(self.selected_companies)

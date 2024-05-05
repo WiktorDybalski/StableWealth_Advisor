@@ -9,6 +9,12 @@ class Controller:
         self.view = view
         self.model = model
         self.companies_list = []
+        self.desired_return = None
+        self.desired_risk = None
+
+    def set_desired_risk_and_return(self, des_return, des_risk):
+        self.desired_return = des_return
+        self.desired_risk = des_risk
 
     def set_companies_list(self, companies):
         self.companies_list = companies
@@ -27,12 +33,12 @@ class Controller:
         selected_columns = df[columns]
         return selected_columns
 
-    def run_simulation(self):
+    def run_simulation(self, desired_return, desired_risk):
         tickers_list = self.get_tickers()
         print(tickers_list)
         results = self.select_columns_from_csv(self.path_data, tickers_list)
         print("Simulation running")
-        self.model.run_scipy_simulation(results)
+        self.model.run_scipy_simulation(results, desired_return, desired_risk)
 
     def show_data_in_GUI(self, companies_list, optimal_weights, tab):
         self.view.show_shares_assistant_results(companies_list, optimal_weights, tab)

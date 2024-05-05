@@ -191,9 +191,12 @@ class HomeWindow(QWidget):
 
         parent_layout.addWidget(down_label, 70)
 
-    def send_data_to_controller(self, companies):
+    def send_data_to_controller(self, companies, desired_return, desired_risk):
         """Send selected company data to the controller for processing."""
         self.controller.set_companies_list(companies)
+
+        # set the return/risk from input
+        self.controller.set_desired_risk_and_return(desired_return, desired_risk)
         self.controller.run_simulation()
 
     def show_home(self):
