@@ -34,7 +34,7 @@ class HomeWindow(QWidget):
     def setup_window_size(self):
         screen = self.app.primaryScreen().size()
         width = screen.width() * 1
-        height = screen.height() * 0.9
+        height = screen.height() * 0.91
         left = screen.width() * 0
         top = screen.height() * 0
         self.setGeometry(left, top, width, height)
