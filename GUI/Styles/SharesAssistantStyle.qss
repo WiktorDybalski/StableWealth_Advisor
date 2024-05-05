@@ -16,6 +16,13 @@ QListWidget::item:selected {
     color: #ffffff;
 }
 
+/* Middle Widget Styling */
+QWidget#middle_widget {
+    border: 5px solid #bdc3c7;
+    border-radius: 10px;
+    padding: 20px;
+    margin: 10px;
+}
 
 QMessageBox {
     background-color: #f5f5f5;
@@ -36,4 +43,9 @@ QPushButton {
 
 QPushButton:hover {
     background-color: #2980b9;
+}
+
+#input_layout {
+    margin: 20px;
+    padding: 20px
 }

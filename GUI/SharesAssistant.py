@@ -53,7 +53,7 @@ class SharesAssistant(QWidget):
         """Setup the central content area of the widget."""
         content = QWidget(self)
         content_layout = QVBoxLayout()
-        content.setObjectName("middle_part")
+        content.setObjectName("middle_widget")
 
         # Input fields for desired return and risk
         self.return_input_min = QLineEdit(self)
@@ -71,6 +71,7 @@ class SharesAssistant(QWidget):
         self.risk_input_max.textChanged.connect(self.on_risk_input_changed)
 
         input_layout = QHBoxLayout()
+        input_layout.setObjectName("input_layout")
         input_layout.addWidget(QLabel("Desired minimum Return:"))
         input_layout.addWidget(self.return_input_min)
         input_layout.addWidget(QLabel("Desired maximum Return:"))

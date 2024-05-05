@@ -1,7 +1,7 @@
-from PySide6.QtGui import QIcon
+from PySide6.QtGui import QIcon, QPixmap
 from PySide6.QtWidgets import QWidget, QVBoxLayout, QLabel, QHBoxLayout, QPushButton, QTableWidgetItem, QTableWidget, \
-    QComboBox
-from PySide6.QtCore import Qt, QFile, Signal
+    QComboBox, QHeaderView, QSizePolicy, QFrame, QScrollBar, QToolButton
+from PySide6.QtCore import Qt, QFile, Signal, QSize
 
 from Utils import Utils
 
@@ -11,8 +11,11 @@ class StockInformation(QWidget):
 
     def __init__(self):
         super().__init__()
-        self.setWindowTitle("Stock Informations")
+        self.scale_combo = None
+        self.table_widget = None
+        self.setWindowTitle("Stock Information")
         self._init_ui()
+        self.setup_styles()
 
     def _init_ui(self):
         """Setup the layout and widgets of the home screen."""
@@ -25,14 +28,14 @@ class StockInformation(QWidget):
 
     def setup_styles(self):
         """Read and apply the CSS stylesheet to the window."""
-        style_file = QFile(Utils.get_absolute_file_path("HomeWindowStyle.qss"))
+        style_file = QFile(Utils.get_absolute_file_path("StockInformationStyle.qss"))
         style_file.open(QFile.ReadOnly | QFile.Text)
         style_sheet = str(style_file.readAll(), encoding='utf-8')
         self.setStyleSheet(style_sheet)
 
     def create_header(self, layout):
         """Create and configure the header section."""
-        header = QLabel("Stock informations")
+        header = QLabel("Stock information")
         header.setAlignment(Qt.AlignCenter)
         header.setObjectName("header")
         layout.addWidget(header, 10)
@@ -40,30 +43,47 @@ class StockInformation(QWidget):
         layout.setSpacing(0)
 
     def create_middle_part(self, layout):
-        """Create and set up the central part of the home widget."""
-        middle_widget = QWidget()
+        """Create and set up the central part of the stock information widget."""
+        middle_widget = QFrame()
         middle_widget.setObjectName("middle_widget")
         middle_layout = QVBoxLayout()
         middle_widget.setLayout(middle_layout)
+        middle_layout.setAlignment(Qt.AlignCenter)
+        middle_layout.setContentsMargins(15, 15, 15, 15)
+        middle_layout.setSpacing(15)
 
         # Scale selection combo box and refresh button
         controls_layout = QHBoxLayout()
+        controls_layout.setSpacing(10)
+        controls_layout.setContentsMargins(0, 0, 0, 0)
+
         self.scale_combo = QComboBox()
         self.scale_combo.addItems(["Day", "Month", "Year"])
+        self.scale_combo.setMinimumWidth(120)
+
         refresh_button = QPushButton("Refresh")
         refresh_button.clicked.connect(self.update_table)
+        refresh_button.setFixedHeight(50)
+        refresh_button.setFixedWidth(150)
 
-        controls_layout.addWidget(QLabel("Select Scale:"))
+        controls_layout.addWidget(QLabel("Select a time period:"))
         controls_layout.addWidget(self.scale_combo)
+        controls_layout.addStretch()
         controls_layout.addWidget(refresh_button)
+
         middle_layout.addLayout(controls_layout)
 
         # Create the table widget
-        self.table_widget = QTableWidget(10, 3)
-        self.table_widget.setHorizontalHeaderLabels(["Company Name", "Growth", "Trend"])
-        self.table_widget.horizontalHeader()
+        self.table_widget = QTableWidget(0, 6)
+        self.table_widget.setHorizontalHeaderLabels(["Nr", "Company Name", "Growth", "Percentage growth", "Trend", "Show a period plot"])
+        header = self.table_widget.horizontalHeader()
+        header.setSectionResizeMode(QHeaderView.Stretch)
+        self.table_widget.verticalHeader().setVisible(False)
         self.table_widget.setSelectionBehavior(QTableWidget.SelectRows)
         self.table_widget.setSelectionMode(QTableWidget.SingleSelection)
+        self.table_widget.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
+        self.table_widget.setShowGrid(False)
+        self.table_widget.setVerticalScrollBar(QScrollBar())
         middle_layout.addWidget(self.table_widget)
 
         # Add the middle widget to the main layout
@@ -77,52 +97,61 @@ class StockInformation(QWidget):
         data = self.get_growth_data(self.scale_combo.currentText())
         self.table_widget.setRowCount(len(data))
 
-        column_widths = [200, 100, 100, 100]  # Adjust the first column (Nr) width to 80
-        for col in range(4):
-            self.table_widget.setColumnWidth(col, column_widths[col])
-
         for row, (company_name, growth) in enumerate(data):
+            # Nr column
+            nr_item = QTableWidgetItem(str(row + 1))
+            nr_item.setFlags(nr_item.flags() & ~Qt.ItemIsEditable)
+            nr_item.setTextAlignment(Qt.AlignCenter)
+            self.table_widget.setItem(row, 0, nr_item)
 
-            self.table_widget.setItem(row, 0, QTableWidgetItem(company_name))
-            self.table_widget.setItem(row, 1, QTableWidgetItem(f"{growth:.2f}%"))
-            self.table_widget.setRowHeight(row, 60)
-            icon_directory = r"C:\Users\wikto\Desktop\Everything\Studies\Term4\Python\Images"
+            # Company name
+            company_item = QTableWidgetItem(company_name)
+            company_item.setFlags(company_item.flags() & ~Qt.ItemIsEditable)
+            company_item.setTextAlignment(Qt.AlignCenter)
+            self.table_widget.setItem(row, 1, company_item)
 
-            trend_icon = "up" if growth > 0 else "down"
-            trend_color = "green" if growth > 0 else "red"
-            icon_path = f"{icon_directory}\\{trend_icon}_{trend_color}.png"
-            icon = QIcon(icon_path)
+            # Growth
+            growth_item = QTableWidgetItem(f"{growth:.2f}%")
+            growth_item.setFlags(growth_item.flags() & ~Qt.ItemIsEditable)
+            growth_item.setTextAlignment(Qt.AlignCenter)
+            self.table_widget.setItem(row, 2, growth_item)
 
-            trend_item = QTableWidgetItem()
-            trend_item.setIcon(icon)
-            trend_item.setTextAlignment(Qt.AlignCenter)
-            self.table_widget.setItem(row, 2, trend_item)
-            self.table_widget.horizontalHeader().setStyleSheet(
-                "QHeaderView::section {"
-                "background-color: #2C3E50;"
-                "color: white;"
-                "font-weight: bold;"
-                "font-size: 10pt;"
-                "border: 1px solid #34495E;"
-                "padding: 5px;"
-                "}"
-            )
-            self.table_widget.setStyleSheet(
-                "QTableWidget {"
-                "font-size: 10pt;"
-                "}"
-                "QTableWidget::item {"
-                "padding: 5px;"
-                "}"
-                "QTableWidget::item:selected {"
-                "background-color: #1ABC9C;"
-                "color: white;"
-                "}"
+            # Percentage growth (duplicate of growth)
+            percentage_growth_item = QTableWidgetItem(f"{growth:.2f}%")
+            percentage_growth_item.setFlags(percentage_growth_item.flags() & ~Qt.ItemIsEditable)
+            percentage_growth_item.setTextAlignment(Qt.AlignCenter)
+            self.table_widget.setItem(row, 3, percentage_growth_item)
 
-            )
-            self.table_widget.setAlternatingRowColors(True)
-            self.table_widget.setAlternatingRowColors(True)
-            self.table_widget.setAlternatingRowColors(True)
+            # Trend icon
+            trend_label = QLabel()
+            trend_label.setFixedSize(50, 50)
+            trend_label.setAlignment(Qt.AlignCenter)
+            icon_path = Utils.get_absolute_file_path("up_green.png") if growth > 0 else Utils.get_absolute_file_path(
+                "down_red.png")
+            trend_label.setPixmap(QPixmap(icon_path).scaled(32, 32, Qt.KeepAspectRatio, Qt.SmoothTransformation))
+            trend_label.setStyleSheet("background-color: white; border: none;")
+            trend_widget = QWidget()
+            trend_widget.setStyleSheet("background-color: white; border: none;")
+            trend_layout = QHBoxLayout(trend_widget)
+            trend_layout.setAlignment(Qt.AlignCenter)
+            trend_layout.setContentsMargins(0, 0, 0, 0)
+            trend_layout.addWidget(trend_label)
+            self.table_widget.setCellWidget(row, 4, trend_widget)
+
+            # Show period plot button
+            plot_button = QToolButton()
+            plot_button.setText("Show more")
+            plot_button.setIcon(QIcon(Utils.get_absolute_file_path("chart_icon.png")))
+            plot_button.setIconSize(QSize(30, 30))
+            plot_button.setToolButtonStyle(Qt.ToolButtonTextBesideIcon)
+            plot_button.setProperty("row", row)
+            plot_button.clicked.connect(self.show_plot)
+            self.table_widget.setCellWidget(row, 5, plot_button)
+
+            self.table_widget.setRowHeight(row, 50)
+
+        # Adjust the trend column width for larger icons
+        self.table_widget.setColumnWidth(4, 70)
 
 
     def get_growth_data(self, scale):
@@ -163,6 +192,10 @@ class StockInformation(QWidget):
 
         layout.addWidget(footer, 8)
 
+    def show_plot(self):
+        pass
+
     def emit_home_requested(self):
         """Emit a signal to indicate a request to go to the home window."""
         self.home_requested.emit()
+

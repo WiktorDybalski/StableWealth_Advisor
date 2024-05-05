@@ -8,7 +8,8 @@ class Utils:
                               "CalculatorStyle.qss": "GUI/Styles",
                               "HomeWindowStyle.qss": "GUI/Styles", "SharesAssistantStyle.qss": "GUI/Styles",
                               "SharesAssistantResultsStyle.qss": "GUI/Styles", "recently_updated_day.txt": "Data",
-                              "new_stock_data.csv": "Data"}
+                              "new_stock_data.csv": "Data", "down_red.png": "Images", "up_green.png": "Images", "StockInformationStyle.qss": "GUI/Styles",
+                              "chart_icon.png": "Images"}
 
     @staticmethod
     def get_absolute_file_path(file_name):

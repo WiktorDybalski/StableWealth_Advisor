@@ -132,7 +132,7 @@ class Simulation:
             raise BaseException("Optimization failed: " + opt_results.message)
 
         optimal_weights = opt_results.x
-        # optimal_weights
+        optimal_weights
         for st, i in zip(companies_list, optimal_weights):
             print(f'Stock {st} has weight {np.round(i * 100, 2)} %')
 
@@ -149,6 +149,7 @@ class Simulation:
         self.config.weights = optimal_weights
         self.config.results = results
         self.send_data_to_controller()
+        return optimal_weights, results
 
     def send_data_to_controller(self):
         self.controller.show_data_in_GUI()
