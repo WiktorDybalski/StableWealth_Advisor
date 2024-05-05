@@ -3,15 +3,17 @@ from PySide6.QtWidgets import QWidget, QVBoxLayout, QLabel, QHBoxLayout, QPushBu
     QMessageBox, QAbstractItemView, QLineEdit
 from Data.Companies import Companies
 from Utils import Utils
+from Configurators.SharesAssistantConfigurator import SharesAssistantConfigurator as config
 
 
 class SharesAssistant(QWidget):
     home_requested = Signal()
-    companies_selected = Signal(list)
+    simulation_requested = Signal()
 
     def __init__(self):
         super().__init__()
         self.setWindowTitle("Shares Assistant")
+        self.config = config()
         self.selected_companies = []
         self._init_ui()
         self._load_styles()
@@ -57,6 +59,9 @@ class SharesAssistant(QWidget):
         self.risk_input = QLineEdit(self)
         self.risk_input.setPlaceholderText("Enter desired risk (0-100%)")
 
+        self.return_input.textChanged.connect(self.on_return_input_changed)
+        self.risk_input.textChanged.connect(self.on_risk_input_changed)
+
         input_layout = QHBoxLayout()
         input_layout.addWidget(QLabel("Desired Return:"))
         input_layout.addWidget(self.return_input)
@@ -64,13 +69,13 @@ class SharesAssistant(QWidget):
         input_layout.addWidget(self.risk_input)
         content_layout.addLayout(input_layout)
 
-        button_layout = QHBoxLayout()
-        button_layout.setAlignment(Qt.AlignTop)
-        self._add_button(button_layout, "Home", self.emit_home_requested)
-        self.toggle_list_button = self._add_button(button_layout, "Show Companies", self.toggle_company_list)
-        self._add_button(button_layout, "Select Companies", self.select_companies)
-        self._add_button(button_layout, "Start Simulation", self.send_data_to_home_window)
-        content_layout.addLayout(button_layout)  # Add button layout to the content layout
+        buttons_layout = QHBoxLayout()
+        buttons_layout.setAlignment(Qt.AlignTop)
+        self._add_button(buttons_layout, "Home", self.emit_home_requested)
+        self.toggle_list_button = self._add_button(buttons_layout, "Show Companies", self.toggle_company_list)
+        self._add_button(buttons_layout, "Select Companies", self.select_companies)
+        self._add_button(buttons_layout, "Start Simulation", self.send_data_to_home_window)
+        content_layout.addLayout(buttons_layout)  # Add button layout to the content layout
 
 
         self._setup_company_list(content_layout)
@@ -150,6 +155,20 @@ class SharesAssistant(QWidget):
         except ValueError:
             return False if value else True  # Allow empty string which represents None
 
+    def on_return_input_changed(self, text):
+        """Disable the risk input if return input has text, else enable it."""
+        if text:
+            self.risk_input.setDisabled(True)
+        else:
+            self.risk_input.setDisabled(False)
+
+    def on_risk_input_changed(self, text):
+        """Disable the return input if risk input has text, else enable it."""
+        if text:
+            self.return_input.setDisabled(True)
+        else:
+            self.return_input.setDisabled(False)
+
     def send_data_to_home_window(self):
 
         """Validate inputs and start the portfolio simulation."""
@@ -165,11 +184,11 @@ class SharesAssistant(QWidget):
             return
 
         # Convert inputs to float or None if empty
-        self.desired_return = float(self.desired_return) if self.desired_return else None
-        self.desired_return = float(self.desired_return) if self.desired_return else None
+        self.config.desired_return = float(self.desired_return) if self.desired_return else None
+        self.config.desired_risk = float(self.desired_risk) if self.desired_risk else None
+        self.config.companies = self.selected_companies
 
-
-        """Emit a signal with selected companies to send data to the home window."""
-        print("Sending to Home Window")
-        self.companies_selected.emit(self.selected_companies)
+        """Emit a signal with config to send data to the home window."""
+        print("Sending config to Home Window")
+        self.simulation_requested.emit()
 

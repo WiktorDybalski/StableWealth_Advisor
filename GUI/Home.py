@@ -33,10 +33,10 @@ class HomeWindow(QWidget):
 
     def setup_window_size(self):
         screen = self.app.primaryScreen().size()
-        width = screen.width() * 0.9
-        height = screen.height() * 0.82
-        left = screen.width() * 0.05
-        top = screen.height() * 0.09
+        width = screen.width() * 1
+        height = screen.height() * 0.9
+        left = screen.width() * 0
+        top = screen.height() * 0
         self.setGeometry(left, top, width, height)
         self.setWindowTitle("StableWealth Advisor")
 
@@ -50,7 +50,7 @@ class HomeWindow(QWidget):
         self.help = Help()
 
         self.shares_assistant.home_requested.connect(self.show_home)
-        self.shares_assistant.companies_selected.connect(self.send_data_to_controller)
+        self.shares_assistant.simulation_requested.connect(self.send_data_to_controller)
         self.calculator.home_requested.connect(self.show_home)
         self.stock_information.home_requested.connect(self.show_home)
         self.settings.home_requested.connect(self.show_home)
@@ -191,12 +191,7 @@ class HomeWindow(QWidget):
 
         parent_layout.addWidget(down_label, 70)
 
-    def send_data_to_controller(self, companies, desired_return, desired_risk):
-        """Send selected company data to the controller for processing."""
-        self.controller.set_companies_list(companies)
-
-        # set the return/risk from input
-        self.controller.set_desired_risk_and_return(desired_return, desired_risk)
+    def send_data_to_controller(self):
         self.controller.run_simulation()
 
     def show_home(self):
@@ -207,8 +202,8 @@ class HomeWindow(QWidget):
         """Switch the view to the shares assistant screen."""
         self.stackedWidget.setCurrentWidget(self.shares_assistant)
 
-    def show_shares_assistant_results(self, companies_list, optimal_weights, tab):
-        self.shares_assistant_results = SharesAssistantResults(companies_list, optimal_weights, tab)
+    def show_shares_assistant_results(self):
+        self.shares_assistant_results = SharesAssistantResults()
         self.shares_assistant_results.home_requested.connect(self.show_home)
         self.stackedWidget.addWidget(self.shares_assistant_results)
         self.stackedWidget.setCurrentWidget(self.shares_assistant_results)

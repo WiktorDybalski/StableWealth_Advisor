@@ -8,3 +8,4 @@ plotly
 tqdm
 matplotlib
 PySide6
+seaborn

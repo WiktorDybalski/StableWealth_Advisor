@@ -1,4 +1,4 @@
-from PySide6.QtWidgets import QWidget, QVBoxLayout, QLabel, QHBoxLayout, QPushButton
+from PySide6.QtWidgets import QWidget, QVBoxLayout, QLabel, QHBoxLayout, QPushButton, QScrollArea
 from PySide6.QtCore import Qt, QFile, Signal
 
 from Utils import Utils
@@ -43,7 +43,6 @@ class Calculator(QWidget):
         middle_widget.setObjectName("middle_widget")
         middle_layout = QVBoxLayout()
         middle_widget.setLayout(middle_layout)
-
         layout.addWidget(middle_widget, 60)
 
     def create_footer(self, layout):

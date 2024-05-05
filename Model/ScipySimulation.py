@@ -9,11 +9,12 @@ from Model.UpdateData import UpdateData
 from scipy import optimize
 import multiprocessing
 from Utils import Utils
-
+from Configurators.SharesAssistantConfigurator import SharesAssistantConfigurator as config
 
 class Simulation:
     def __init__(self):
         self.controller = None
+        self.config = config()
 
     def set_controller(self, controller):
         self.controller = controller
@@ -26,7 +27,7 @@ class Simulation:
     def process_combination(self, data, columns):
         selected_df = data.iloc[:, columns]
         optimal_weights, metrics = self.run_scipy_simulation(selected_df)
-        return (optimal_weights, metrics, columns)
+        return optimal_weights, metrics, columns
 
     def run_best_of_three(self, stock_data_path):
         stock_data = pandas.read_csv(stock_data_path)
@@ -63,7 +64,7 @@ class Simulation:
     def run_scipy_simulation_with_ret(self, daily_returns, ret):
         pass
 
-    def run_scipy_simulation(self, daily_returns, desired_return, desired_risk):
+    def run_scipy_simulation(self, daily_returns, desired_return=None, desired_risk=None):
         # desired_return = 15
         # desired_risk = None
         number_of_companies = daily_returns.shape[1]
@@ -105,22 +106,18 @@ class Simulation:
         # elif user_constraint_type == 'return':
         #     cons.append({'type': 'eq', 'fun': return_constraint})
 
-        if desired_return is not None:
+        if desired_return is not None and desired_risk is None:
             def return_constraint(weights):
                 return get_ret_vol_sr(weights)[0] - desired_return
 
             cons.append({'type': 'eq', 'fun': return_constraint})
-
-        if desired_risk is not None:
+        elif desired_return is None and desired_risk is not None:
             def risk_constraint(weights):
                 return get_ret_vol_sr(weights)[1] - desired_risk
 
             cons.append({'type': 'eq', 'fun': risk_constraint})
 
-
-
         # bounds on weights
-        # bounds = ((0, 1), (0, 1), (0, 1), (0, 1))
         bounds = ((0, 1) for _ in range(number_of_companies))
         # initial guess for optimization to start with
         init_guess = [1. / number_of_companies] * number_of_companies
@@ -142,43 +139,44 @@ class Simulation:
 
         optimal_weights = opt_results.x
         # optimal_weights
-        ticker_symbols_without_polish = UpdateData.get_ticker_symbols_without_polish()
         for st, i in zip(companies_list, optimal_weights):
             print(f'Stock {st} has weight {np.round(i * 100, 2)} %')
 
         print('For a given portfolio we have: (Using SciPy optimizer)\n \n')
 
-        tab = []
+        results = []
         for i, j in enumerate('Return Volatility SharpeRatio'.split()):
             print(f'{j} is : {get_ret_vol_sr(optimal_weights)[i]}\n')
-            tab.append(get_ret_vol_sr(optimal_weights)[i])
-        self.send_data_to_controller(companies_list, optimal_weights, tab)
+            results.append(get_ret_vol_sr(optimal_weights)[i])
 
-        def portfolio_performance(weights):
-            ret = log_mean.dot(weights) * 100
-            vol = np.sqrt(weights.T.dot(cov.dot(weights))) * 100
-            return vol, ret
+        self.config.companies = companies_list
+        self.config.weights = optimal_weights
+        self.config.results = results
+        self.send_data_to_controller()
 
-        vols, rets = [], []
-        for _ in range(10000):
-            weights = np.random.random(number_of_companies)
-            weights /= np.sum(weights)
-            vol, ret = portfolio_performance(weights)
-            vols.append(vol)
-            rets.append(ret)
+        # def portfolio_performance(weights):
+        #     ret = log_mean.dot(weights) * 100
+        #     vol = np.sqrt(weights.T.dot(cov.dot(weights))) * 100
+        #     return vol, ret
+        #
+        # vols, rets = [], []
+        # for _ in range(10000):
+        #     weights = np.random.random(number_of_companies)
+        #     weights /= np.sum(weights)
+        #     vol, ret = portfolio_performance(weights)
+        #     vols.append(vol)
+        #     rets.append(ret)
+        #
+        # plt.figure(figsize=(10, 6))
+        # plt.scatter(vols, rets, c=(np.array(rets) / np.array(vols)), cmap='viridis')
+        # plt.colorbar(label='Sharpe Ratio')
+        # plt.xlabel('Volatility (%)')
+        # plt.ylabel('Return (%)')
+        # plt.title('Efficient Frontier')
+        # plt.show()
 
-        plt.figure(figsize=(10, 6))
-        plt.scatter(vols, rets, c=(np.array(rets) / np.array(vols)), cmap='viridis')
-        plt.colorbar(label='Sharpe Ratio')
-        plt.xlabel('Volatility (%)')
-        plt.ylabel('Return (%)')
-        plt.title('Efficient Frontier')
-        plt.show()
-
-        return optimal_weights, tab
-
-    def send_data_to_controller(self, companies_list, optimal_weights, tab, desired_return, desired_risk):
-        self.controller.show_data_in_GUI(companies_list, optimal_weights, tab, desired_return, desired_risk)
+    def send_data_to_controller(self):
+        self.controller.show_data_in_GUI()
 
 
 if __name__ == "__main__":

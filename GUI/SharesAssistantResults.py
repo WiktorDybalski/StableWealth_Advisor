@@ -4,17 +4,14 @@ from PySide6.QtGui import QPainter
 from PySide6.QtCore import Qt, QFile, Signal
 from PySide6.QtWidgets import QWidget, QVBoxLayout, QLabel, QHBoxLayout, QPushButton
 from Utils import Utils
-from Data.Companies import Companies
+from Configurators.SharesAssistantConfigurator import SharesAssistantConfigurator as config
 
 class SharesAssistantResults(QWidget):
     home_requested = Signal()
 
-    def __init__(self, companies_list, optimal_weights, tab):
+    def __init__(self):
         super().__init__()
-        self.companies_list = companies_list
-        self.optimal_weights = optimal_weights
-        self.tab = tab
-        self.setWindowTitle("Shares Assistant Results")
+        self.config = config()
         self._init_ui()
         self.load_styles()
 
@@ -97,8 +94,8 @@ class SharesAssistantResults(QWidget):
     def create_pie_chart(self):
         # Create Pie series
         series = QPieSeries()
-        total = sum(self.optimal_weights)
-        for company, weight in zip(self.companies_list, self.optimal_weights):
+        total = sum(self.config.weights)
+        for company, weight in zip(self.config.companies, self.config.weights):
             if weight > 0.01:
                 slice = QPieSlice(f"{company}: {weight / total * 100:.2f}%", weight)
                 slice.setLabelVisible(True)
@@ -124,17 +121,17 @@ class SharesAssistantResults(QWidget):
 
     def create_results_labels(self, layout):
         # Display stock weights
-        for company, weight in zip(self.companies_list, self.optimal_weights):
+        for company, weight in zip(self.config.companies, self.config.weights):
             if weight > 0.01:
                 stock_label = self.create_label(f'{company} has weight:  {np.round(weight * 100, 2)}%', None, Qt.AlignLeft)
                 layout.addWidget(stock_label)
         names = ["Expected profit", "Expected investment risk"]
         profit_risk_ratio_name = "Profit to risk ratio"
         # Display portfolio metrics
-        for name, value in zip(names, self.tab):
+        for name, value in zip(names, self.config.results):
             metrics_label = self.create_label(f'{name} is: {value:.2f}%', None, Qt.AlignLeft)
             layout.addWidget(metrics_label)
-        last_value_formatted = f'{float(self.tab[-1]):.2f}'
+        last_value_formatted = f'{float(self.config.results[-1]):.2f}'
         metrics_label = self.create_label(f'{profit_risk_ratio_name} is: {last_value_formatted}', None, Qt.AlignLeft)
         layout.addWidget(metrics_label)
 
