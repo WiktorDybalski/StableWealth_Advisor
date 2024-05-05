@@ -30,12 +30,12 @@ class Controller:
         tickers_list = self.get_tickers()
         print(tickers_list)
         results = self.select_columns_from_csv(self.path_data, tickers_list)
-        if not self.config.desired_return and not self.config.desired_risk:
+        if not self.config.desired_return_min and not self.config.desired_return_max and not self.config.desired_risk_min and not self.config.desired_risk_max:
             self.model.run_scipy_simulation(results)
-        elif self.config.desired_risk is not None:
-            self.model.run_scipy_simulation(results, None, self.config.desired_risk)
-        elif self.config.desired_return is not None:
-            self.model.run_scipy_simulation(results, self.config.desired_return)
+        elif self.config.desired_risk_min is not None and self.config.desired_risk_max is not None:
+            self.model.run_scipy_simulation(results, None, None, self.config.desired_risk_min, self.config.desired_risk_max)
+        elif self.config.desired_return_min is not None and self.config.desired_return_min is not None:
+            self.model.run_scipy_simulation(results, self.config.desired_return_min, self.config.desired_return_max)
         print("Simulation done")
 
     def show_data_in_GUI(self):

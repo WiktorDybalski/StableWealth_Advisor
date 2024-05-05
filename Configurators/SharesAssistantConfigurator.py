@@ -7,10 +7,12 @@ class SharesAssistantConfigurator:
             cls._instance = super(SharesAssistantConfigurator, cls).__new__(cls)
         return cls._instance
 
-    def __init__(self, desired_risk=None, desired_return=None, companies=None, weights=None, results=None):
+    def __init__(self, desired_risk_min=None, desired_risk_max=None, desired_return_min=None, desired_return_max=None, companies=None, weights=None, results=None):
         if not hasattr(self, '_initialized'):
-            self._desired_risk = desired_risk
-            self._desired_return = desired_return
+            self._desired_risk_min = desired_risk_min
+            self._desired_risk_max = desired_risk_max
+            self._desired_return_min = desired_return_min
+            self._desired_return_max = desired_return_max
             self._companies = companies
             self._type_of_simulation = "standard"
             self._weights = weights
@@ -18,20 +20,36 @@ class SharesAssistantConfigurator:
             self._initialized = True
 
     @property
-    def desired_risk(self):
-        return self._desired_risk
+    def desired_risk_min(self):
+        return self._desired_risk_min
 
-    @desired_risk.setter
-    def desired_risk(self, value):
-        self._desired_risk = value
+    @desired_risk_min.setter
+    def desired_risk_min(self, value):
+        self._desired_risk_min = value
 
     @property
-    def desired_return(self):
-        return self._desired_return
+    def desired_risk_max(self):
+        return self._desired_risk_max
 
-    @desired_return.setter
-    def desired_return(self, value):
-        self._desired_return = value
+    @desired_risk_max.setter
+    def desired_risk_max(self, value):
+        self._desired_risk_max = value
+
+    @property
+    def desired_return_min(self):
+        return self._desired_return_min
+
+    @desired_return_min.setter
+    def desired_return_min(self, value):
+        self._desired_return_min = value
+
+    @property
+    def desired_return_max(self):
+        return self._desired_return_max
+
+    @desired_return_max.setter
+    def desired_return_max(self, value):
+        self._desired_return_max = value
 
     @property
     def companies(self):

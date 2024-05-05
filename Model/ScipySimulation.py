@@ -64,9 +64,7 @@ class Simulation:
     def run_scipy_simulation_with_ret(self, daily_returns, ret):
         pass
 
-    def run_scipy_simulation(self, daily_returns, desired_return=None, desired_risk=None):
-        # desired_return = 15
-        # desired_risk = None
+    def run_scipy_simulation(self, daily_returns, desired_return_min=None, desired_return_max=None, desired_risk_min=None, desired_risk_max=None):
         number_of_companies = daily_returns.shape[1]
         tickers = [daily_returns.columns[i] for i in range(number_of_companies)]
         companies_list = [Companies.get_companies_without_polish().get(ticker) for ticker in tickers]
@@ -90,32 +88,34 @@ class Simulation:
         def check_sum(weights):
             return np.sum(weights) - 1
 
-        # def risk_constraint(weights):
-        #     vol = np.sqrt(weights.T.dot(cov.dot(weights))) * 100
-        #     return vol - 20  # Ograniczenie, aby ryzyko wynosiło 20%
-        #
-        # def return_constraint(weights):
-        #     ret = log_mean.dot(weights) * 100
-        #     return ret - 10  # Ograniczenie, aby zwrot wynosił 10%
 
         # Constraints for the optimization problem
         cons = [{'type': 'eq', 'fun': check_sum}]
-        # # Constraints for the optimization proble
-        # if user_constraint_type == 'risk':
-        #     cons.append({'type': 'eq', 'fun': risk_constraint}) # meq oznacza funkcja musi zwrocic 0
-        # elif user_constraint_type == 'return':
-        #     cons.append({'type': 'eq', 'fun': return_constraint})
 
-        if desired_return is not None and desired_risk is None:
-            def return_constraint(weights):
-                return get_ret_vol_sr(weights)[0] - desired_return
 
-            cons.append({'type': 'eq', 'fun': return_constraint})
-        elif desired_return is None and desired_risk is not None:
-            def risk_constraint(weights):
-                return get_ret_vol_sr(weights)[1] - desired_risk
+        if desired_return_min is not None:
+            def return_min_constraint(weights):
+                return get_ret_vol_sr(weights)[0] - desired_return_min
 
-            cons.append({'type': 'eq', 'fun': risk_constraint})
+            cons.append({'type': 'ineq', 'fun': return_min_constraint})
+
+        if desired_return_max is not None:
+            def return_max_constraint(weights):
+                return desired_return_max - get_ret_vol_sr(weights)[0]
+
+            cons.append({'type': 'ineq', 'fun': return_max_constraint})
+
+        if desired_risk_min is not None:
+            def risk_min_constraint(weights):
+                return get_ret_vol_sr(weights)[1] - desired_risk_min
+
+            cons.append({'type': 'ineq', 'fun': risk_min_constraint})
+
+        if desired_risk_max is not None:
+            def risk_max_constraint(weights):
+                return desired_risk_max - get_ret_vol_sr(weights)[1]
+
+            cons.append({'type': 'ineq', 'fun': risk_max_constraint})
 
         # bounds on weights
         bounds = ((0, 1) for _ in range(number_of_companies))

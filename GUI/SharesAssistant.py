@@ -17,8 +17,10 @@ class SharesAssistant(QWidget):
         self.selected_companies = []
         self._init_ui()
         self._load_styles()
-        self.desired_return = None
-        self.desired_risk = None
+        self.desired_return_min = None
+        self.desired_return_max = None
+        self.desired_risk_min = None
+        self.desired_risk_max = None
 
     def _init_ui(self):
         """Initialize the user interface components of the SharesAssistant."""
@@ -54,19 +56,30 @@ class SharesAssistant(QWidget):
         content.setObjectName("middle_part")
 
         # Input fields for desired return and risk
-        self.return_input = QLineEdit(self)
-        self.return_input.setPlaceholderText("Enter desired return (0-100%)")
-        self.risk_input = QLineEdit(self)
-        self.risk_input.setPlaceholderText("Enter desired risk (0-100%)")
+        self.return_input_min = QLineEdit(self)
+        self.return_input_min.setPlaceholderText("Enter desired minimal return (0-100%)")
+        self.return_input_max = QLineEdit(self)
+        self.return_input_max.setPlaceholderText("Enter desired maximum return (0-100%)")
+        self.risk_input_min = QLineEdit(self)
+        self.risk_input_min.setPlaceholderText("Enter desired minimal risk (0-100%)")
+        self.risk_input_max = QLineEdit(self)
+        self.risk_input_max.setPlaceholderText("Enter desired maximum risk (0-100%)")
 
-        self.return_input.textChanged.connect(self.on_return_input_changed)
-        self.risk_input.textChanged.connect(self.on_risk_input_changed)
+        self.return_input_min.textChanged.connect(self.on_return_input_changed)
+        self.return_input_max.textChanged.connect(self.on_return_input_changed)
+        self.risk_input_min.textChanged.connect(self.on_risk_input_changed)
+        self.risk_input_max.textChanged.connect(self.on_risk_input_changed)
 
         input_layout = QHBoxLayout()
-        input_layout.addWidget(QLabel("Desired Return:"))
-        input_layout.addWidget(self.return_input)
-        input_layout.addWidget(QLabel("Desired Risk:"))
-        input_layout.addWidget(self.risk_input)
+        input_layout.addWidget(QLabel("Desired minimum Return:"))
+        input_layout.addWidget(self.return_input_min)
+        input_layout.addWidget(QLabel("Desired maximum Return:"))
+        input_layout.addWidget(self.return_input_max)
+
+        input_layout.addWidget(QLabel("Desired minimum Risk:"))
+        input_layout.addWidget(self.risk_input_min)
+        input_layout.addWidget(QLabel("Desired maximum Risk:"))
+        input_layout.addWidget(self.risk_input_max)
         content_layout.addLayout(input_layout)
 
         buttons_layout = QHBoxLayout()
@@ -155,37 +168,97 @@ class SharesAssistant(QWidget):
         except ValueError:
             return False if value else True  # Allow empty string which represents None
 
+    def is_valid_max_min(self, min_value, max_value):
+        """Validate that the minimum value is less than or equal to the maximum value."""
+        try:
+            min_val = float(min_value)
+            max_val = float(max_value)
+            return min_val <= max_val
+        except ValueError:
+            return False if min_value or max_value else True   # if both are empty (so if risks are not filled and returns are then allow None)
+
+    def paired_inputs_filled(self, input_min, input_max):
+        """Check that both inputs in a pair are filled or both are empty."""
+        # Both fields are empty
+        if not input_min and not input_max:
+            return True
+        # Both fields are filled
+        if input_min and input_max:
+            return True
+        # One field is filled and the other is not
+        return False
+
     def on_return_input_changed(self, text):
         """Disable the risk input if return input has text, else enable it."""
         if text:
-            self.risk_input.setDisabled(True)
+            self.risk_input_min.setDisabled(True)
+            self.risk_input_max.setDisabled(True)
         else:
-            self.risk_input.setDisabled(False)
+            self.risk_input_min.setDisabled(False)
+            self.risk_input_max.setDisabled(False)
 
     def on_risk_input_changed(self, text):
         """Disable the return input if risk input has text, else enable it."""
         if text:
-            self.return_input.setDisabled(True)
+            self.return_input_min.setDisabled(True)
+            self.return_input_max.setDisabled(True)
+
         else:
-            self.return_input.setDisabled(False)
+            self.return_input_min.setDisabled(False)
+            self.return_input_max.setDisabled(False)
 
     def send_data_to_home_window(self):
 
         """Validate inputs and start the portfolio simulation."""
-        self.desired_return = self.return_input.text().strip()
-        self.desired_risk = self.risk_input.text().strip()
+        self.desired_return_min = self.return_input_min.text().strip()
+        self.desired_return_max = self.return_input_max.text().strip()
+        self.desired_risk_min = self.risk_input_min.text().strip()
+        self.desired_risk_max = self.risk_input_max.text().strip()
+
+        # Check that if one is filled, both are filled in each pair
+        if not self.paired_inputs_filled(self.desired_return_min, self.desired_return_max):
+            msg_box = QMessageBox()
+            msg_box.setWindowTitle('Input Error')
+            msg_box.setText('Both maximum and minimum values of return should be entered (to set an exact value instead of a range enter the same value in both boxes)')
+            msg_box.exec()
+            return
+
+        if not self.paired_inputs_filled(self.desired_risk_min, self.desired_risk_max):
+            msg_box = QMessageBox()
+            msg_box.setWindowTitle('Input Error')
+            msg_box.setText('Both maximum and minimum values of risk should be entered (to set an exact value instead of a range enter the same value in both boxes)')
+            msg_box.exec()
+            return
 
         # Check if inputs are valid
-        if not self.is_valid_input(self.desired_return) or not self.is_valid_input(self.desired_risk):
+        if not self.is_valid_input(self.desired_return_min) or not self.is_valid_input(self.desired_return_max) or not self.is_valid_input(self.desired_risk_min) or not self.is_valid_input(self.desired_risk_max):
             msg_box = QMessageBox()
             msg_box.setWindowTitle('Input Error')
             msg_box.setText('Please enter valid values for return and risk (0-100).')
             msg_box.exec()
             return
 
+        # Check if min values are less than or equal to max values
+        if not self.is_valid_max_min(self.desired_return_min, self.desired_return_max):
+            msg_box = QMessageBox()
+            msg_box.setWindowTitle('Input Error')
+            msg_box.setText('Maximum return must be greater than or equal to minimum return.')
+            msg_box.exec()
+            return
+
+        if not self.is_valid_max_min(self.desired_risk_min, self.desired_risk_max):
+            msg_box = QMessageBox()
+            msg_box.setWindowTitle('Input Error')
+            msg_box.setText('Maximum risk must be greater than or equal to minimum risk.')
+            msg_box.exec()
+            return
+
+
         # Convert inputs to float or None if empty
-        self.config.desired_return = float(self.desired_return) if self.desired_return else None
-        self.config.desired_risk = float(self.desired_risk) if self.desired_risk else None
+        self.config.desired_return_min = float(self.desired_return_min) if self.desired_return_min else None
+        self.config.desired_return_max = float(self.desired_return_max) if self.desired_return_max else None
+        self.config.desired_risk_min = float(self.desired_risk_min) if self.desired_risk_min else None
+        self.config.desired_risk_max = float(self.desired_risk_max) if self.desired_risk_max else None
         self.config.companies = self.selected_companies
 
         """Emit a signal with config to send data to the home window."""
