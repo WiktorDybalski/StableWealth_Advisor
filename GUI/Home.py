@@ -21,7 +21,8 @@ class HomeWindow(QWidget):
         self.calculator_results = None
         self.stock_information = None
         self.help = None
-        self.controller = None
+        self.shares_assistant_controller = None
+        self.stock_controller = None
         self.settings = None
         self.app = app
         self.stackedWidget = QStackedWidget()
@@ -29,7 +30,7 @@ class HomeWindow(QWidget):
         self._setup_styles()
 
     def set_controller(self, controller):
-        self.controller = controller
+        self.shares_assistant_controller = controller
 
     def setup_window_size(self):
         screen = self.app.primaryScreen().size()
@@ -53,6 +54,7 @@ class HomeWindow(QWidget):
         self.shares_assistant.simulation_requested.connect(self.send_data_to_controller)
         self.calculator.home_requested.connect(self.show_home)
         self.stock_information.home_requested.connect(self.show_home)
+        self.stock_information.stock_data_requested.connect(self.send_stock_data_to_stock_controller)
         self.settings.home_requested.connect(self.show_home)
         self.help.home_requested.connect(self.show_home)
 
@@ -191,8 +193,11 @@ class HomeWindow(QWidget):
 
         parent_layout.addWidget(down_label, 70)
 
+    def send_stock_data_to_stock_controller(self):
+        self.stock_controller.create_data()
+
     def send_data_to_controller(self):
-        self.controller.run_simulation()
+        self.shares_assistant_controller.run_simulation()
 
     def show_home(self):
         """Return to the home screen view."""

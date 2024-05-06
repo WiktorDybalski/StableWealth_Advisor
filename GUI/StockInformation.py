@@ -2,18 +2,20 @@ from PySide6.QtGui import QIcon, QPixmap
 from PySide6.QtWidgets import QWidget, QVBoxLayout, QLabel, QHBoxLayout, QPushButton, QTableWidgetItem, QTableWidget, \
     QComboBox, QHeaderView, QSizePolicy, QFrame, QScrollBar, QToolButton
 from PySide6.QtCore import Qt, QFile, Signal, QSize
-
+from Configurators.StockInformationConfigurator import StockInformationConfigurator as config
 from Utils import Utils
 
 
 class StockInformation(QWidget):
     home_requested = Signal()
+    stock_data_requested = Signal()
 
     def __init__(self):
         super().__init__()
+        self.config = config("day")
+        self.create_data()
         self.scale_combo = None
         self.table_widget = None
-        self.setWindowTitle("Stock Information")
         self._init_ui()
         self.setup_styles()
 
@@ -94,7 +96,7 @@ class StockInformation(QWidget):
 
     def update_table(self):
         """Populate the table based on the selected scale."""
-        data = self.get_growth_data(self.scale_combo.currentText())
+        data = self.get_data(self.scale_combo.currentText())
         self.table_widget.setRowCount(len(data))
 
         for row, (company_name, growth) in enumerate(data):
@@ -154,7 +156,7 @@ class StockInformation(QWidget):
         self.table_widget.setColumnWidth(4, 70)
 
 
-    def get_growth_data(self, scale):
+    def get_data(self, scale):
         """Simulate fetching growth data based on the selected scale."""
 
         data = {
@@ -191,6 +193,9 @@ class StockInformation(QWidget):
         footer_layout.addWidget(additional_info)
 
         layout.addWidget(footer, 8)
+
+    def create_data(self):
+        self.stock_data_requested.emit()
 
     def show_plot(self):
         pass

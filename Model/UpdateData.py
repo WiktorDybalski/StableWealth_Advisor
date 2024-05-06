@@ -1,3 +1,4 @@
+import csv
 import datetime
 import os
 import pandas as pd
@@ -31,6 +32,8 @@ class UpdateData:
         next_day_string = (last_date + datetime.timedelta(days=1)).strftime('%Y-%m-%d')
         UpdateData.create_csv_data_with_start(UpdateData.get_ticker_symbols_without_polish(), new_stock_data_path,
                                               next_day_string)
+        print("new_stock_data.csv")
+        UpdateData.update_csv_file(stock_data_path, new_stock_data_path)
 
         with open(file_path, 'a') as file:
             file.write(today.strftime('%Y-%m-%d') + '\n')
@@ -134,6 +137,34 @@ class UpdateData:
             else:
                 merged_df = merged_df.join(close_prices, how='outer')
         merged_df.to_csv(file_name)
+
+    def remove_last_n_rows(self, input_csv_path, output_csv_path, n):
+        # Czytamy wszystkie wiersze z pliku CSV
+        with open(input_csv_path, newline='', encoding='utf-8') as csv_file:
+            rows = list(csv.reader(csv_file))
+
+        # Usuwamy n ostatnich wierszy
+        if n < len(rows):
+            rows = rows[:-n]
+        else:
+            rows = rows[:1]  # Zachowujemy tylko nagłówki, jeśli n >= liczba wierszy
+
+        # Zapisujemy zmodyfikowane dane do nowego pliku CSV
+        with open(output_csv_path, mode='w', newline='', encoding='utf-8') as csv_file:
+            writer = csv.writer(csv_file)
+            writer.writerows(rows)
+    def remove_empty_rows_except_date(self, input_csv_path, output_csv_path, date_column="Date"):
+        # Wczytujemy dane z pliku CSV
+        df = pd.read_csv(input_csv_path)
+
+        # Wypełniamy puste wartości w kolumnie `date_column`
+        df[date_column] = df[date_column].fillna("Missing Date")
+
+        # Usuwamy wiersze z pustymi wartościami, z wyjątkiem kolumny `date_column`
+        df_cleaned = df.dropna(how='any', subset=[col for col in df.columns if col != date_column])
+
+        # Zapisujemy oczyszczone dane do nowego pliku CSV
+        df_cleaned.to_csv(output_csv_path, index=False)
 
 
 if __name__ == "__main__":
