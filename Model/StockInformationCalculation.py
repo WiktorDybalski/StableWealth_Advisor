@@ -23,30 +23,29 @@ class StockInformationCalculation:
         return result
 
     def create_month_data(self):
-        end_date = self.data['Date'].max()
-        start_date = end_date - pd.DateOffset(months=2)
-
-        df_last_two_months = self.data[(self.data['Date'] >= start_date) & (self.data['Date'] <= end_date)]
-        monthly_difference = df_last_two_months.set_index('Date').resample('M').last().diff().tail(1)
+        # 42 trading days for two months
+        df_last_42_rows = self.data.tail(42)
+        monthly_difference = df_last_42_rows.set_index('Date').diff().tail(1)
         monthly_difference.reset_index(inplace=True)
 
-        result = pd.concat([df_last_two_months.head(1), monthly_difference])
+        result = pd.concat([df_last_42_rows.head(1), monthly_difference])
         result['Percent Change'] = (result['Close'].pct_change() * 100).round(2)
         print(result)
         return result
 
     def create_year_data(self):
-        end_date = self.data['Date'].max()
-        start_date = end_date - pd.DateOffset(years=2)
-
-        df_last_two_years = self.data[(self.data['Date'] >= start_date) & (self.data['Date'] <= end_date)]
-        yearly_difference = df_last_two_years.set_index('Date').resample('Y').last().diff().tail(1)
+        # 504 trading days for two years
+        df_last_504_rows = self.data.tail(504)
+        yearly_difference = df_last_504_rows.set_index('Date').diff().tail(1)
         yearly_difference.reset_index(inplace=True)
 
-        result = pd.concat([df_last_two_years.head(1), yearly_difference])
+        result = pd.concat([df_last_504_rows.head(1), yearly_difference])
         result['Percent Change'] = (result['Close'].pct_change() * 100).round(2)
         print(result)
-        return  result
+        return result
 
 if __name__ == "__main__":
-    sic = StockInformationCalculation()
+    stock_calc = StockInformationCalculation()
+    daily_data = stock_calc.create_day_data()
+    monthly_data = stock_calc.create_month_data()
+    yearly_data = stock_calc.create_year_data()

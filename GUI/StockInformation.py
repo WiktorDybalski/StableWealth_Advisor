@@ -4,15 +4,18 @@ from PySide6.QtWidgets import QWidget, QVBoxLayout, QLabel, QHBoxLayout, QPushBu
 from PySide6.QtCore import Qt, QFile, Signal, QSize
 from Configurators.StockInformationConfigurator import StockInformationConfigurator as config
 from Utils import Utils
+from Configurators.CompanyConfigurator import CompanyConfigurator as config
 
 
 class StockInformation(QWidget):
     home_requested = Signal()
     stock_data_requested = Signal()
-
+    company_details_requested = Signal()
+    company_details_button_requested = Signal()
     def __init__(self):
         super().__init__()
         self.config = config("day")
+        self.company_details_button_requested.connect(self.show_company_button_details)
         self.create_data()
         self.scale_combo = None
         self.table_widget = None
@@ -77,7 +80,8 @@ class StockInformation(QWidget):
 
         # Create the table widget
         self.table_widget = QTableWidget(0, 6)
-        self.table_widget.setHorizontalHeaderLabels(["Nr", "Company Name", "Growth", "Percentage growth", "Trend", "Show a period plot"])
+        self.table_widget.setHorizontalHeaderLabels(
+            ["Nr", "Company Name", "Growth", "Percentage growth", "Trend", "Show a period plot"])
         header = self.table_widget.horizontalHeader()
         header.setSectionResizeMode(QHeaderView.Stretch)
         self.table_widget.verticalHeader().setVisible(False)
@@ -144,17 +148,21 @@ class StockInformation(QWidget):
             plot_button = QToolButton()
             plot_button.setText("Show more")
             plot_button.setIcon(QIcon(Utils.get_absolute_file_path("chart_icon.png")))
-            plot_button.setIconSize(QSize(30, 30))
             plot_button.setToolButtonStyle(Qt.ToolButtonTextBesideIcon)
-            plot_button.setProperty("row", row)
-            plot_button.clicked.connect(self.show_plot)
+            plot_button.setProperty("company_name", company_name)
+            plot_button.setProperty("growth", growth)
+            price = 100
+            plot_button.setProperty("percentage_growth", (growth / price) * 100)
+
+
+            plot_button.clicked.connect(lambda _, btn=plot_button: self.show_company_button_details(btn))
             self.table_widget.setCellWidget(row, 5, plot_button)
+
 
             self.table_widget.setRowHeight(row, 50)
 
         # Adjust the trend column width for larger icons
-        self.table_widget.setColumnWidth(4, 70)
-
+        self.table_widget.setColumnWidth(4, 40)
 
     def get_data(self, scale):
         """Simulate fetching growth data based on the selected scale."""
@@ -197,10 +205,16 @@ class StockInformation(QWidget):
     def create_data(self):
         self.stock_data_requested.emit()
 
-    def show_plot(self):
-        pass
+    def show_company_button_details(self, button):
+        """Update the configuration and emit a signal to show company details."""
+        company_name = button.property("company_name")
+        growth = button.property("growth")
+        percentage_growth = button.property("percentage_growth")
+        self.config.company_name = company_name
+        self.config.growth = growth
+        self.config.percentage_growth = percentage_growth
+        self.company_details_requested.emit()
 
     def emit_home_requested(self):
         """Emit a signal to indicate a request to go to the home window."""
         self.home_requested.emit()
-

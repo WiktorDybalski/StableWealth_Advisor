@@ -1,16 +1,9 @@
 Input:
  - najlepsze 3,4,5
- - filtracja histori cen (użytkownik może decydować o okresie cen akcji z których aplikacja ma stworzyć
-najlepszy protfel)
  - zapisywanie wyników do pliku
- - ustawienie jakie uzytkownik moze podjąć ryzyko oraz jaki zysk go interesuje
 
 
 Pobieranie danych przy wejsciu uzytkownika do aplikacji (raz dziennie) -> zrobione ale trzeba lekko zmodyfikować logikę oraz
-zrobić Widget który przedstawia, że dane są ładowane
-
-Walidacja historii cen (Jak uzytkownik wybierze powiedzmy 3 firmy, to bierzemy dane od najstarszej ceny
-jeden z tych 3 spółek)
 
 GUI
     Wizualizacja:

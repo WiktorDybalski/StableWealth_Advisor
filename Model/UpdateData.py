@@ -6,6 +6,9 @@ import yfinance as yf
 
 from Utils import Utils
 
+# TODO
+# Add data_validation
+# Fix UpdateData class
 
 class UpdateData:
     @staticmethod

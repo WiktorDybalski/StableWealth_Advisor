@@ -8,8 +8,9 @@ from GUI.StockInformation import StockInformation
 from GUI.CalculatorResults import CalculatorResults
 from GUI.Settings import Settings
 from GUI.Help import Help
+from GUI.CompanyDetails import CompanyDetails
+from Configurators.CompanyConfigurator import CompanyConfigurator as company_config
 from Utils import Utils
-
 
 class HomeWindow(QWidget):
     def __init__(self, app):
@@ -24,6 +25,8 @@ class HomeWindow(QWidget):
         self.shares_assistant_controller = None
         self.stock_controller = None
         self.settings = None
+        self.company_details = None
+        self.company_config = company_config()
         self.app = app
         self.stackedWidget = QStackedWidget()
         self._init_ui()
@@ -55,6 +58,7 @@ class HomeWindow(QWidget):
         self.calculator.home_requested.connect(self.show_home)
         self.stock_information.home_requested.connect(self.show_home)
         self.stock_information.stock_data_requested.connect(self.send_stock_data_to_stock_controller)
+        self.stock_information.company_details_requested.connect(self.show_company_details)
         self.settings.home_requested.connect(self.show_home)
         self.help.home_requested.connect(self.show_home)
 
@@ -232,6 +236,11 @@ class HomeWindow(QWidget):
     def show_help(self):
         """Switch the view to the calculator screen."""
         self.stackedWidget.setCurrentWidget(self.help)
+
+    def show_company_details(self):
+        self.company_details = CompanyDetails(self.company_config.company_name, self.company_config.growth, self.company_config.percentage_growth)
+        self.stackedWidget.addWidget(self.company_details)
+        self.stackedWidget.setCurrentWidget(self.company_details)
 
 if __name__ == "__main__":
     pass

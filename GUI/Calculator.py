@@ -25,7 +25,7 @@ class Calculator(QWidget):
 
     def setup_styles(self):
         """Read and apply the CSS stylesheet to the window."""
-        style_file = QFile(Utils.get_absolute_file_path("HomeWindowStyle.qss"))
+        style_file = QFile(Utils.get_absolute_file_path("CalculatorStyle.qss"))
         style_file.open(QFile.ReadOnly | QFile.Text)
         style_sheet = str(style_file.readAll(), encoding='utf-8')
         self.setStyleSheet(style_sheet)
@@ -44,12 +44,13 @@ class Calculator(QWidget):
         middle_widget = QWidget()
         middle_widget.setObjectName("middle_widget")
         middle_layout = QHBoxLayout()
+        middle_layout.setAlignment(Qt.AlignTop)
 
         # Create the buttons widget and layout
         buttons = QWidget()
-        buttons_layout = QVBoxLayout()
+        buttons_layout = QHBoxLayout()
         buttons.setLayout(buttons_layout)
-        buttons_layout.setAlignment(Qt.AlignTop)
+        buttons_layout.setAlignment(Qt.AlignCenter)
 
         bonds_type_checkbox = QComboBox()
         bonds_type_checkbox.setObjectName("bonds_type_checkbox")
