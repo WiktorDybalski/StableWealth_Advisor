@@ -1,6 +1,6 @@
 import numpy as np
 from PySide6.QtCharts import QPieSeries, QChart, QChartView, QPieSlice
-from PySide6.QtGui import QPainter
+from PySide6.QtGui import QPainter, QFont
 from PySide6.QtCore import Qt, QFile, Signal
 from PySide6.QtWidgets import QWidget, QVBoxLayout, QLabel, QHBoxLayout, QPushButton
 from Utils import Utils
@@ -119,6 +119,14 @@ class SharesAssistantResults(QWidget):
             label.setObjectName(object_name)
         return label
 
+    def create_label_bold(self, text, parent=None, alignment=Qt.AlignLeft, bold=False):
+        label = QLabel(text, parent)
+        font = QFont()
+        font.setBold(bold)
+        label.setFont(font)
+        label.setAlignment(alignment)
+        return label
+
     def create_results_labels(self, layout):
         # Display stock weights
         for company, weight in zip(self.config.companies, self.config.weights):
@@ -129,10 +137,10 @@ class SharesAssistantResults(QWidget):
         profit_risk_ratio_name = "Profit to risk ratio"
         # Display portfolio metrics
         for name, value in zip(names, self.config.results):
-            metrics_label = self.create_label(f'{name} is: {value:.2f}%', None, Qt.AlignLeft)
+            metrics_label = self.create_label_bold(f'{name} is: {value:.2f}%', None, Qt.AlignLeft, True)
             layout.addWidget(metrics_label)
         last_value_formatted = f'{float(self.config.results[-1]):.2f}'
-        metrics_label = self.create_label(f'{profit_risk_ratio_name} is: {last_value_formatted}', None, Qt.AlignLeft)
+        metrics_label = self.create_label_bold(f'{profit_risk_ratio_name} is: {last_value_formatted}', None, Qt.AlignLeft, True)
         layout.addWidget(metrics_label)
 
     def create_footer(self, layout):

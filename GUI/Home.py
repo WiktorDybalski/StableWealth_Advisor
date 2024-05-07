@@ -42,6 +42,7 @@ class HomeWindow(QWidget):
         left = screen.width() * 0
         top = screen.height() * 0
         self.setGeometry(left, top, width, height)
+        self.showMaximized()
         self.setWindowTitle("StableWealth Advisor")
 
     def init_others_widgets(self):

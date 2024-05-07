@@ -1,3 +1,5 @@
+from functools import partial
+
 from PySide6.QtGui import QIcon, QPixmap
 from PySide6.QtWidgets import QWidget, QVBoxLayout, QLabel, QHBoxLayout, QPushButton, QTableWidgetItem, QTableWidget, \
     QComboBox, QHeaderView, QSizePolicy, QFrame, QScrollBar, QToolButton
@@ -11,14 +13,13 @@ class StockInformation(QWidget):
     home_requested = Signal()
     stock_data_requested = Signal()
     company_details_requested = Signal()
-    company_details_button_requested = Signal()
     def __init__(self):
         super().__init__()
         self.config = config("day")
-        self.company_details_button_requested.connect(self.show_company_button_details)
         self.create_data()
         self.scale_combo = None
         self.table_widget = None
+        self.buttons_dict = {}
         self._init_ui()
         self.setup_styles()
 
@@ -102,6 +103,7 @@ class StockInformation(QWidget):
         """Populate the table based on the selected scale."""
         data = self.get_data(self.scale_combo.currentText())
         self.table_widget.setRowCount(len(data))
+        self.buttons_dict = {}
 
         for row, (company_name, growth) in enumerate(data):
             # Nr column
@@ -154,10 +156,11 @@ class StockInformation(QWidget):
             price = 100
             plot_button.setProperty("percentage_growth", (growth / price) * 100)
 
+            if not company_name in self.buttons_dict:
+                self.buttons_dict[company_name] = plot_button
 
-            plot_button.clicked.connect(lambda _, btn=plot_button: self.show_company_button_details(btn))
-            self.table_widget.setCellWidget(row, 5, plot_button)
-
+            plot_button.clicked.connect(partial(self.show_company_button_details, plot_button))
+            self.table_widget.setCellWidget(row, 5, self.buttons_dict[company_name])
 
             self.table_widget.setRowHeight(row, 50)
 
@@ -166,17 +169,17 @@ class StockInformation(QWidget):
 
     def get_data(self, scale):
         """Simulate fetching growth data based on the selected scale."""
-
         data = {
-            "Day": [("Apple Inc.", 1.5), ("Microsoft Corporation", -0.3), ("Alphabet Inc.", 2.2), ("Apple Inc.", 1.5),
-                    ("Microsoft Corporation", -0.3), ("Alphabet Inc.", 2.2), ("Apple Inc.", 1.5),
-                    ("Microsoft Corporation", -0.3), ("Alphabet Inc.", 2.2)],
+            "Day": [("Apple Inc.", 1.5), ("Microsoft Corporation", -0.3), ("Alphabet Inc.", 2.2), ("Amazon.com Inc.", 1.5),
+                    ("Berkshire Hathaway Inc.", -0.3), ("Tesla Inc.", 2.2), ("UnitedHealth Group Incorporated", 1.5),
+                    ("Johnson & Johnson", -0.3), ("Visa Inc.", 2.2), ("NVIDIA Corporation", 2.2), ("Exxon Mobil Corporation", 2.2), ("Taiwan Semiconductor Manufacturing Company Limited", 2.2)],
             "Month": [("Apple Inc.", -1.2), ("Microsoft Corporation", 3.4), ("Alphabet Inc.", 0.8),
-                      ("Apple Inc.", -1.2), ("Microsoft Corporation", 3.4), ("Alphabet Inc.", 0.8),
-                      ("Apple Inc.", -1.2), ("Microsoft Corporation", 3.4), ("Alphabet Inc.", 0.8)],
+                      ("Amazon.com Inc.", -1.2), ("Berkshire Hathaway Inc.", 3.4), ("Tesla Inc.", 0.8),
+                      ("UnitedHealth Group Incorporated", -1.2), ("Johnson & Johnson", 3.4), ("Visa Inc.", 0.8), ("NVIDIA Corporation", 0.8), ("Exxon Mobil Corporation", 0.8), ("Taiwan Semiconductor Manufacturing Company Limited", 0.8)],
             "Year": [("Apple Inc.", 10.5), ("Microsoft Corporation", -2.1), ("Alphabet Inc.", 6.3),
-                     ("Apple Inc.", 10.5), ("Microsoft Corporation", -2.1), ("Alphabet Inc.", 6.3),
-                     ("Apple Inc.", 10.5), ("Microsoft Corporation", -2.1), ("Alphabet Inc.", 6.3)]
+                     ("Amazon.com Inc.", 10.5), ("Berkshire Hathaway Inc.", -2.1), ("Tesla Inc.", 6.3),
+                     ("UnitedHealth Group Incorporated", 10.5), ("Microsoft Corporation", -2.1), ("Visa Inc.", 6.3),
+                     ("NVIDIA Corporation", 6.3), ("Exxon Mobil Corporation", 6.3), ("Taiwan Semiconductor Manufacturing Company Limited", 6.3)]
         }
         return data.get(scale, [])
 

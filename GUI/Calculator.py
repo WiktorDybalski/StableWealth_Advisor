@@ -97,11 +97,11 @@ class Calculator(QWidget):
 
         footer_layout.addWidget(label)
         footer_layout.addWidget(additional_info)
-
         layout.addWidget(footer, 8)
 
     def display_calculator_results(bond_type):
         pass
+
 
     def emit_home_requested(self):
         """Emit a signal to indicate a request to go to the home window."""
