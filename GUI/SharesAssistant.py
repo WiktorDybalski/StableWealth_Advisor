@@ -1,6 +1,6 @@
 from PySide6.QtCore import Qt, QPoint, QFile, Qt, Signal, QPropertyAnimation, QRect
 from PySide6.QtWidgets import QWidget, QVBoxLayout, QLabel, QHBoxLayout, QPushButton, QListWidget, QAbstractItemView, \
-    QMessageBox, QAbstractItemView, QLineEdit
+    QMessageBox, QAbstractItemView, QLineEdit, QFrame, QGridLayout
 from Data.Companies import Companies
 from Utils import Utils
 from Configurators.SharesAssistantConfigurator import SharesAssistantConfigurator as config
@@ -45,43 +45,62 @@ class SharesAssistant(QWidget):
         content_layout = QVBoxLayout()
         content.setObjectName("middle_widget")
 
+        # Divider Line
+        divider = QFrame()
+        divider.setObjectName("divider")
+        divider.setFrameShape(QFrame.HLine)
+        divider.setFrameShadow(QFrame.Sunken)
+        content_layout.addWidget(divider)
+
         # Input fields for desired return and risk
+        input_layout = QGridLayout()
+        input_layout.setObjectName("input_layout")
+        input_layout.setHorizontalSpacing(15)
+        input_layout.setVerticalSpacing(8)
+
         self.return_input_min = QLineEdit(self)
-        self.return_input_min.setPlaceholderText("Enter desired minimal return (0-100%)")
+        self.return_input_min.setPlaceholderText("Minimum Return (%)")
+        self.return_input_min.setObjectName("input_field")
+
         self.return_input_max = QLineEdit(self)
-        self.return_input_max.setPlaceholderText("Enter desired maximum return (0-100%)")
+        self.return_input_max.setPlaceholderText("Maximum Return (%)")
+        self.return_input_max.setObjectName("input_field")
+
         self.risk_input_min = QLineEdit(self)
-        self.risk_input_min.setPlaceholderText("Enter desired minimal risk (0-100%)")
+        self.risk_input_min.setPlaceholderText("Minimum Risk (%)")
+        self.risk_input_min.setObjectName("input_field")
+
         self.risk_input_max = QLineEdit(self)
-        self.risk_input_max.setPlaceholderText("Enter desired maximum risk (0-100%)")
+        self.risk_input_max.setPlaceholderText("Maximum Risk (%)")
+        self.risk_input_max.setObjectName("input_field")
 
         self.return_input_min.textChanged.connect(self.on_return_input_changed)
         self.return_input_max.textChanged.connect(self.on_return_input_changed)
         self.risk_input_min.textChanged.connect(self.on_risk_input_changed)
         self.risk_input_max.textChanged.connect(self.on_risk_input_changed)
 
-        input_layout = QHBoxLayout()
-        input_layout.setObjectName("input_layout")
-        input_layout.addWidget(QLabel("Desired minimum Return:"))
-        input_layout.addWidget(self.return_input_min)
-        input_layout.addWidget(QLabel("Desired maximum Return:"))
-        input_layout.addWidget(self.return_input_max)
+        input_layout.addWidget(QLabel("Desired Min Return:"), 0, 0)
+        input_layout.addWidget(self.return_input_min, 0, 1)
+        input_layout.addWidget(QLabel("Desired Max Return:"), 1, 0)
+        input_layout.addWidget(self.return_input_max, 1, 1)
 
-        input_layout.addWidget(QLabel("Desired minimum Risk:"))
-        input_layout.addWidget(self.risk_input_min)
-        input_layout.addWidget(QLabel("Desired maximum Risk:"))
-        input_layout.addWidget(self.risk_input_max)
+        input_layout.addWidget(QLabel("Desired Min Risk:"), 2, 0)
+        input_layout.addWidget(self.risk_input_min, 2, 1)
+        input_layout.addWidget(QLabel("Desired Max Risk:"), 3, 0)
+        input_layout.addWidget(self.risk_input_max, 3, 1)
+
         content_layout.addLayout(input_layout)
 
+        # Buttons Layout
         buttons_layout = QHBoxLayout()
         buttons_layout.setAlignment(Qt.AlignTop)
         self._add_button(buttons_layout, "Home", self.emit_home_requested)
         self.toggle_list_button = self._add_button(buttons_layout, "Show Companies", self.toggle_company_list)
         self._add_button(buttons_layout, "Select Companies", self.select_companies)
         self._add_button(buttons_layout, "Start Simulation", self.send_data_to_home_window)
-        content_layout.addLayout(buttons_layout)  # Add button layout to the content layout
+        content_layout.addLayout(buttons_layout)
 
-
+        # Company List Setup
         self._setup_company_list(content_layout)
 
         content.setLayout(content_layout)

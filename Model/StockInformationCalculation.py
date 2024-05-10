@@ -47,5 +47,5 @@ class StockInformationCalculation:
 if __name__ == "__main__":
     stock_calc = StockInformationCalculation()
     daily_data = stock_calc.create_day_data()
-    monthly_data = stock_calc.create_month_data()
-    yearly_data = stock_calc.create_year_data()
+    # monthly_data = stock_calc.create_month_data()
+    # yearly_data = stock_calc.create_year_data()
