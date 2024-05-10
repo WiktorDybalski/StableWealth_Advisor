@@ -1,5 +1,4 @@
-/* HomeWindowStyle.css */
-
+/* General Window Styles */
 QWidget {
     background-color: #f5f5f5;
     font-family: 'Segoe UI', Arial, sans-serif;
@@ -22,11 +21,13 @@ QLabel#footer {
     font-size: 15px;
     padding: 0;
 }
+
+/* Button Styles */
 QPushButton {
-    background-color: #3498db; /* Podstawowy kolor tła */
+    background-color: #3498db; /* Primary Background Color */
     background-image: linear-gradient(to right, #3498db, #5dade2);
-    color: #ffffff; /* Biały tekst */
-    font-weight: bold; /* Pogrubiona czcionka */
+    color: #ffffff; /* White Text */
+    font-weight: bold; /* Bold Font */
     border: 2px solid #2980b9;
     border-radius: 10px;
     padding: 12px 20px;
@@ -68,20 +69,47 @@ QLabel#tag_label, QLabel#additional_info_label {
     width: 50%;
 }
 
-QLabel#tag_label {
-    width: 40%
-}
-
 QLabel#additional_info_label {
     width: 60%
 }
 
-QToolTip {
-    color: #ffffff;
-    background-color: #2c3e50;
-    border: 2px solid #ffffff;
-    border-radius: 10px;
-    padding: 6px;
-    font-size: 16px;
+#toolbar_container {
     margin: 0;
+    padding: 0;
+    border: 0;
+    background-color: transparent;
+}
+
+#mainToolbar {
+    background: #2c3e50;
+    margin: 0;
+    padding: 0;
+    border: 0;
+    border-radius: 10px;
+    transition: all 0.3s ease;
+}
+
+QToolButton {
+    margin: 0;
+    padding: 5px;
+    border: 0;
+    border-radius: 8px;
+    background: #2c3e50;
+    color: white;
+    border: 2px solid #2c3e50;
+}
+
+QToolButton:pressed {
+    background: #18222c;
+    color: white;
+}
+
+QToolButton:checked {
+    background: #18222c;
+    color: white;
+}
+
+QToolButton:hover {
+    border: 2px solid white;
+    opacity: 0.9;
 }

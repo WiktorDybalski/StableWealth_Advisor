@@ -1,6 +1,7 @@
 from PySide6.QtGui import QAction
-from PySide6.QtWidgets import QWidget, QVBoxLayout, QLabel, QHBoxLayout, QPushButton, QStackedWidget, QToolBar
-from PySide6.QtCore import Qt, QFile
+from PySide6.QtWidgets import QWidget, QVBoxLayout, QLabel, QHBoxLayout, QPushButton, QStackedWidget, QToolBar, \
+    QSizePolicy
+from PySide6.QtCore import Qt, QFile, QPropertyAnimation, QEasingCurve
 from GUI.SharesAssistant import SharesAssistant
 from GUI.SharesAssistantResults import SharesAssistantResults
 from GUI.Calculator import Calculator
@@ -15,6 +16,7 @@ from Utils import Utils
 class HomeWindow(QWidget):
     def __init__(self, app):
         super().__init__()
+        self.toolbar = None
         self.home_widget = None
         self.shares_assistant_results = None
         self.shares_assistant = None
@@ -74,8 +76,18 @@ class HomeWindow(QWidget):
         self.setup_window_size()
 
         layout = QVBoxLayout()
-        toolbar = self.create_toolbar()
-        layout.addWidget(toolbar)
+        self.create_toolbar()
+
+        toolbar_container = QWidget()
+        toolbar_container.setObjectName("toolbar_container")
+
+        toolbar_layout = QHBoxLayout()
+        toolbar_layout.addStretch()
+        toolbar_layout.addWidget(self.toolbar)
+        toolbar_layout.addStretch()
+        toolbar_container.setLayout(toolbar_layout)
+
+        layout.addWidget(toolbar_container)
         layout.addWidget(self.stackedWidget)
         layout.setContentsMargins(0, 0, 0, 0)
         layout.setSpacing(0)
@@ -87,28 +99,52 @@ class HomeWindow(QWidget):
         self.setLayout(layout)
 
     def create_toolbar(self):
-        toolbar = QToolBar("Main Toolbar")
+        self.toolbar = QToolBar("Main Toolbar")
+        self.toolbar.setObjectName("mainToolbar")
+        parent_width = self.width()
+        self.toolbar.setFixedWidth(int(parent_width * 0.6))
+        self.toolbar.setMovable(False)
+
         home_action = QAction("Home", self)
         home_action.triggered.connect(self.show_home)
+        home_action.setCheckable(True)
+
         shares_action = QAction("Shares Assistant", self)
         shares_action.triggered.connect(self.show_shares_assistant)
+        shares_action.setCheckable(True)
+
         calculator_action = QAction("Calculator", self)
         calculator_action.triggered.connect(self.show_calculator)
+        calculator_action.setCheckable(True)
+
         stock_information_action = QAction("Stock Information", self)
         stock_information_action.triggered.connect(self.show_stock_information)
+        stock_information_action.setCheckable(True)
+
         settings_action = QAction("Settings", self)
         settings_action.triggered.connect(self.show_settings)
+        settings_action.setCheckable(True)
+
         help_action = QAction("Help", self)
         help_action.triggered.connect(self.show_help)
+        help_action.setCheckable(True)
 
+        self.toolbar.addAction(home_action)
+        self.toolbar.addAction(shares_action)
+        self.toolbar.addAction(calculator_action)
+        self.toolbar.addAction(stock_information_action)
+        self.toolbar.addAction(settings_action)
+        self.toolbar.addAction(help_action)
 
-        toolbar.addAction(home_action)
-        toolbar.addAction(shares_action)
-        toolbar.addAction(calculator_action)
-        toolbar.addAction(stock_information_action)
-        toolbar.addAction(settings_action)
-        toolbar.addAction(help_action)
-        return toolbar
+        self.adjust_toolbar_buttons(self.toolbar)
+
+    def adjust_toolbar_buttons(self, parent):
+        parent_width = parent.width()
+        button_width = int(parent_width * (1 / 6))
+        for action in self.toolbar.actions():
+            button = self.toolbar.widgetForAction(action)
+            if button:
+                button.setFixedWidth(button_width)
 
     def setup_home_widget(self):
         """Setup the layout and widgets of the home screen."""
@@ -207,10 +243,12 @@ class HomeWindow(QWidget):
     def show_home(self):
         """Return to the home screen view."""
         self.stackedWidget.setCurrentWidget(self.home_widget)
+        self.highlight_action(self.sender())
 
     def show_shares_assistant(self):
         """Switch the view to the shares assistant screen."""
         self.stackedWidget.setCurrentWidget(self.shares_assistant)
+        self.highlight_action(self.sender())
 
     def show_shares_assistant_results(self):
         self.shares_assistant_results = SharesAssistantResults()
@@ -221,6 +259,7 @@ class HomeWindow(QWidget):
     def show_calculator(self):
         """Switch the view to the calculator screen."""
         self.stackedWidget.setCurrentWidget(self.calculator)
+        self.highlight_action(self.sender())
 
     def show_calculator_results(self):
         """Return to the home screen view."""
@@ -229,19 +268,28 @@ class HomeWindow(QWidget):
     def show_stock_information(self):
         """Return to the home screen view."""
         self.stackedWidget.setCurrentWidget(self.stock_information)
+        self.highlight_action(self.sender())
 
     def show_settings(self):
         """Switch the view to the shares assistant screen."""
         self.stackedWidget.setCurrentWidget(self.settings)
+        self.highlight_action(self.sender())
 
     def show_help(self):
         """Switch the view to the calculator screen."""
         self.stackedWidget.setCurrentWidget(self.help)
+        self.highlight_action(self.sender())
 
     def show_company_details(self):
         self.company_details = CompanyDetails(self.company_config.company_name, self.company_config.growth, self.company_config.percentage_growth)
         self.stackedWidget.addWidget(self.company_details)
         self.stackedWidget.setCurrentWidget(self.company_details)
+
+    def highlight_action(self, action):
+        for toolbar_action in self.findChildren(QAction):
+            toolbar_button = self.toolbar.widgetForAction(toolbar_action)
+            if toolbar_button:
+                toolbar_button.setChecked(toolbar_action == action)
 
 if __name__ == "__main__":
     pass
