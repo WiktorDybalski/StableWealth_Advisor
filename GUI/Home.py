@@ -38,10 +38,10 @@ class HomeWindow(QWidget):
 
     def setup_window_size(self):
         screen = self.app.primaryScreen().size()
-        width = screen.width() * 0.8
-        height = screen.height() * 0.8
-        left = screen.width() * 0.1
-        top = screen.height() * 0.1
+        width = screen.width() * 0.9
+        height = screen.height() * 0.88
+        left = screen.width() * 0.05
+        top = screen.height() * 0.05
         self.setGeometry(left, top, width, height)
 
         self.setWindowTitle("StableWealth Advisor")
