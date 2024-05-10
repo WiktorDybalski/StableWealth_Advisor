@@ -1,7 +1,7 @@
-/* General Window Styles */
+
 QWidget {
-    background-color: #f5f5f5;
-    font-family: 'Segoe UI', Arial, sans-serif;
+    background-color: #f2f3f5;
+    font-family: 'Montserrat', sans-serif;
     font-size: 12pt;
 }
 
@@ -9,23 +9,15 @@ QWidget {
 QLabel#header, QLabel#footer {
     background-color: #2c3e50;
     color: #ecf0f1;
-    font-size: 20px;
-    font-weight: bold;
-    padding: 2px;
-    border-radius: 10px;
-    margin: 1px 10px;
-    max-height: 300px;
-}
-
-QLabel#footer {
-    font-size: 15px;
+    font-size: 14px;
     padding: 0;
+    border-radius: 10px;
+    margin: 1px 0px;
 }
 
 /* Button Styles */
 QPushButton {
     background-color: #3498db; /* Primary Background Color */
-    background-image: linear-gradient(to right, #3498db, #5dade2);
     color: #ffffff; /* White Text */
     font-weight: bold; /* Bold Font */
     border: 2px solid #2980b9;
@@ -47,22 +39,30 @@ QLabel {
     margin: 5px;
 }
 
-/* Middle Widget Styling */
-QWidget#middle_widget {
-    border: 5px solid #bdc3c7;
-    border-radius: 10px;
-    padding: 10px;
-    margin: 10px;
+#welcome_widget {
+        background-color: #F5F5F5;
 }
 
-#upper_label {
-    font-weight: bolder;
-    font-size: 30px;
+#title_label {
+    font-size: 24px;
+    font-weight: bold;
+    color: #333;
 }
+
+#subtitle_label {
+    font-size: 16px;
+    color: gray;
+}
+
+#divider {
+    background-color: #D3D3D3;
+    height: 2px;
+}
+
 QLabel#tag_label, QLabel#additional_info_label {
     background-color: #2c3e50;
     color: white;
-    padding: 15px;
+    padding: 5px;
     margin: 0;
     border-radius: 0;
     text-align: center;
@@ -91,7 +91,7 @@ QLabel#additional_info_label {
 
 QToolButton {
     margin: 0;
-    padding: 5px;
+    padding: 8px;
     border: 0;
     border-radius: 8px;
     background: #2c3e50;

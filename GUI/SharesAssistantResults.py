@@ -29,22 +29,13 @@ class SharesAssistantResults(QWidget):
         """Set up the layout and widgets of the shares_assistant_results."""
         self.layout = QVBoxLayout()
 
-        self.create_header(self.layout)
-
         self.setup_middle_widget(self.layout)
 
         self.create_footer(self.layout)
 
         self.setLayout(self.layout)
 
-    def create_header(self, layout):
-        """Create and configure the header section."""
-        header = QLabel("StableWealth Advisor")
-        header.setAlignment(Qt.AlignCenter)
-        header.setObjectName("header")
-        layout.addWidget(header, 10)
-        layout.setContentsMargins(0, 0, 0, 0)
-        layout.setSpacing(0)
+
 
     def setup_middle_widget(self, layout):
         """Create and set up the middle widget with a home button and results layout."""
@@ -163,7 +154,7 @@ class SharesAssistantResults(QWidget):
         footer_layout.addWidget(label)
         footer_layout.addWidget(additional_info)
 
-        layout.addWidget(footer, 8)
+        layout.addWidget(footer)
     def emit_home_requested(self):
         """Emit a signal when the home button is pressed."""
         self.home_requested.emit()

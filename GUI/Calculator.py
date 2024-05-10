@@ -18,7 +18,6 @@ class Calculator(QWidget):
     def _init_ui(self):
         """Setup the layout and widgets of the home screen."""
         self.layout = QVBoxLayout()
-        self.create_header(self.layout)
         self.create_middle_part(self.layout)
         self.create_footer(self.layout)
         self.setLayout(self.layout)
@@ -30,15 +29,6 @@ class Calculator(QWidget):
         style_sheet = str(style_file.readAll(), encoding='utf-8')
         self.setStyleSheet(style_sheet)
 
-
-    def create_header(self, layout):
-        """Create and configure the header section."""
-        header = QLabel("Calculator")
-        header.setAlignment(Qt.AlignCenter)
-        header.setObjectName("header")
-        layout.addWidget(header, 10)
-        layout.setContentsMargins(0, 0, 0, 0)
-        layout.setSpacing(0)
 
     def create_middle_part(self, layout):
         middle_widget = QWidget()

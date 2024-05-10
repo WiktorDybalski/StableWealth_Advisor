@@ -1,7 +1,6 @@
 from PySide6.QtGui import QAction
-from PySide6.QtWidgets import QWidget, QVBoxLayout, QLabel, QHBoxLayout, QPushButton, QStackedWidget, QToolBar, \
-    QSizePolicy
-from PySide6.QtCore import Qt, QFile, QPropertyAnimation, QEasingCurve
+from PySide6.QtWidgets import QWidget, QVBoxLayout, QLabel, QHBoxLayout, QPushButton, QStackedWidget, QToolBar, QFrame
+from PySide6.QtCore import Qt, QFile
 from GUI.SharesAssistant import SharesAssistant
 from GUI.SharesAssistantResults import SharesAssistantResults
 from GUI.Calculator import Calculator
@@ -39,12 +38,12 @@ class HomeWindow(QWidget):
 
     def setup_window_size(self):
         screen = self.app.primaryScreen().size()
-        width = screen.width() * 1
-        height = screen.height() * 0.91
-        left = screen.width() * 0
-        top = screen.height() * 0
+        width = screen.width() * 0.8
+        height = screen.height() * 0.8
+        left = screen.width() * 0.1
+        top = screen.height() * 0.1
         self.setGeometry(left, top, width, height)
-        self.showMaximized()
+
         self.setWindowTitle("StableWealth Advisor")
 
     def init_others_widgets(self):
@@ -102,7 +101,7 @@ class HomeWindow(QWidget):
         self.toolbar = QToolBar("Main Toolbar")
         self.toolbar.setObjectName("mainToolbar")
         parent_width = self.width()
-        self.toolbar.setFixedWidth(int(parent_width * 0.6))
+        self.toolbar.setFixedWidth(int(parent_width * 0.7))
         self.toolbar.setMovable(False)
 
         home_action = QAction("Home", self)
@@ -138,8 +137,8 @@ class HomeWindow(QWidget):
 
         self.adjust_toolbar_buttons(self.toolbar)
 
-    def adjust_toolbar_buttons(self, parent):
-        parent_width = parent.width()
+    def adjust_toolbar_buttons(self, parrent):
+        parent_width = parrent.width()
         button_width = int(parent_width * (1 / 6))
         for action in self.toolbar.actions():
             button = self.toolbar.widgetForAction(action)
@@ -149,8 +148,6 @@ class HomeWindow(QWidget):
     def setup_home_widget(self):
         """Setup the layout and widgets of the home screen."""
         layout = QVBoxLayout()
-
-        self.create_header(layout)
         self.create_middle_part(layout)
         self.create_footer(layout)
 
@@ -163,27 +160,63 @@ class HomeWindow(QWidget):
         style_sheet = str(style_file.readAll(), encoding='utf-8')
         self.setStyleSheet(style_sheet)
 
-
-    def create_header(self, layout):
-        """Create and configure the header section."""
-        header = QLabel("StableWealth Advisor")
-        header.setAlignment(Qt.AlignCenter)
-        header.setObjectName("header")
-        layout.addWidget(header, 10)
-        layout.setContentsMargins(0, 0, 0, 0)
-        layout.setSpacing(0)
-
     def create_middle_part(self, layout):
-        """Create and set up the central part of the home widget."""
-        middle_widget = QWidget()
-        middle_widget.setObjectName("middle_widget")
-        middle_layout = QVBoxLayout()
-        middle_widget.setLayout(middle_layout)
+        """Create and set up the main welcome screen layout."""
+        # Title Section
+        title_section = QWidget()
+        title_section.setObjectName("title_section")
+        title_layout = QVBoxLayout()
+        title_section.setLayout(title_layout)
 
-        self.create_upper_label(middle_layout)
-        self.create_down_label(middle_layout)
+        # Add Title Label
+        title_label = QLabel("Welcome to Safe Investment Assistant")
+        title_label.setObjectName("title_label")
+        title_label.setAlignment(Qt.AlignCenter)
+        title_label.setStyleSheet("font-size: 24px; font-weight: bold;")
+        title_layout.addWidget(title_label)
 
-        layout.addWidget(middle_widget, 60)
+        # Add Subtitle Label
+        subtitle_label = QLabel("Your Partner in Secure Investing")
+        subtitle_label.setObjectName("subtitle_label")
+        subtitle_label.setAlignment(Qt.AlignCenter)
+        subtitle_label.setStyleSheet("font-size: 16px; color: gray;")
+        title_layout.addWidget(subtitle_label)
+
+        layout.addWidget(title_section, alignment=Qt.AlignTop)
+
+        # Divider Line
+        divider = QFrame()
+        divider.setFrameShape(QFrame.HLine)
+        divider.setFrameShadow(QFrame.Sunken)
+        layout.addWidget(divider)
+
+        # Button Section
+        button_section = QWidget()
+        button_section.setObjectName("button_section")
+        button_layout = QHBoxLayout()
+        button_layout.setSpacing(15)
+        button_section.setLayout(button_layout)
+
+        # Shares Assistant Button
+        shares_button = QPushButton("Shares Assistant")
+        shares_button.setObjectName("shares_button")
+        shares_button.setToolTip("Click to analyze your investment opportunities.")
+        shares_button.setStyleSheet("font-size: 14px; padding: 10px;")
+        shares_button.clicked.connect(self.show_shares_assistant)
+        button_layout.addWidget(shares_button)
+
+        # Treasury Bond Calculator Button
+        calculator_button = QPushButton("Treasury Bond Calculator")
+        calculator_button.setObjectName("calculator_button")
+        calculator_button.setToolTip("Click to explore current market trends.")
+        calculator_button.setStyleSheet("font-size: 14px; padding: 10px;")
+        calculator_button.clicked.connect(self.show_calculator)
+        button_layout.addWidget(calculator_button)
+
+        layout.addWidget(button_section, alignment=Qt.AlignCenter)
+
+        # Add Spacing for Alignment
+        layout.addStretch()
 
     def create_footer(self, layout):
         """Create and configure the footer section."""
@@ -204,35 +237,11 @@ class HomeWindow(QWidget):
 
         footer_layout.addWidget(label)
         footer_layout.addWidget(additional_info)
+        parent_width = self.width()
+        footer.setFixedHeight(int(parent_width * 0.04))
 
-        layout.addWidget(footer, 8)
+        layout.addWidget(footer)
 
-    def create_upper_label(self, parent_layout):
-        upper_label = QLabel("Choose one of our products:")
-        upper_label.setObjectName("upper_label")
-        upper_label.setAlignment(Qt.AlignCenter)
-
-        parent_layout.addWidget(upper_label, 30)
-
-    def create_down_label(self, parent_layout):
-        down_label = QLabel()
-        down_label.setObjectName("down_label")
-        down_label_layout = QHBoxLayout()
-        down_label.setLayout(down_label_layout)
-
-        shares_button = QPushButton("Shares assistant")
-        shares_button.clicked.connect(self.show_shares_assistant)
-
-        calculator_button = QPushButton("Treasury bond calculator")
-        calculator_button.clicked.connect(self.show_calculator)
-
-        shares_button.setToolTip("Click to perform investment analysis")
-        calculator_button.setToolTip("Click to view current market trends")
-
-        down_label_layout.addWidget(shares_button)
-        down_label_layout.addWidget(calculator_button)
-
-        parent_layout.addWidget(down_label, 70)
 
     def send_stock_data_to_stock_controller(self):
         self.stock_controller.create_data()

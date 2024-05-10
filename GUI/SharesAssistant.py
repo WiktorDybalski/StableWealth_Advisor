@@ -25,7 +25,6 @@ class SharesAssistant(QWidget):
     def _init_ui(self):
         """Initialize the user interface components of the SharesAssistant."""
         self.layout = QVBoxLayout()
-        self._create_header(self.layout)
         self._create_content_area()
         self._create_footer(self.layout)
         self.setLayout(self.layout)
@@ -38,15 +37,6 @@ class SharesAssistant(QWidget):
             self.setStyleSheet(style_sheet)
         else:
             print("SharesAssistant StyleSheet Load Error.")
-
-    def _create_header(self, layout):
-        """Create and configure the header section."""
-        header = QLabel("Shares Assistant")
-        header.setAlignment(Qt.AlignCenter)
-        header.setObjectName("header")
-        layout.addWidget(header, 10)
-        layout.setContentsMargins(0, 0, 0, 0)
-        layout.setSpacing(0)
 
 
     def _create_content_area(self):
