@@ -45,13 +45,6 @@ class SharesAssistant(QWidget):
         content_layout = QVBoxLayout()
         content.setObjectName("middle_widget")
 
-        # Divider Line
-        divider = QFrame()
-        divider.setObjectName("divider")
-        divider.setFrameShape(QFrame.HLine)
-        divider.setFrameShadow(QFrame.Sunken)
-        content_layout.addWidget(divider)
-
         # Input fields for desired return and risk
         input_layout = QGridLayout()
         input_layout.setObjectName("input_layout")
