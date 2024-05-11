@@ -1,5 +1,6 @@
 from PySide6.QtGui import QAction
-from PySide6.QtWidgets import QWidget, QVBoxLayout, QLabel, QHBoxLayout, QPushButton, QStackedWidget, QToolBar, QFrame
+from PySide6.QtWidgets import QWidget, QVBoxLayout, QLabel, QHBoxLayout, QPushButton, QStackedWidget, QToolBar, QFrame, \
+    QApplication
 from PySide6.QtCore import Qt, QFile
 from GUI.SharesAssistant import SharesAssistant
 from GUI.SharesAssistantResults import SharesAssistantResults
@@ -42,6 +43,8 @@ class HomeWindow(QWidget):
         height = screen.height() * 0.88
         left = screen.width() * 0.05
         top = screen.height() * 0.05
+        self.setWindowFlag(Qt.FramelessWindowHint)
+        # self.setAttribute(Qt.WA_TranslucentBackground)
         self.setGeometry(left, top, width, height)
 
         self.setWindowTitle("StableWealth Advisor")
@@ -120,20 +123,21 @@ class HomeWindow(QWidget):
         stock_information_action.triggered.connect(self.show_stock_information)
         stock_information_action.setCheckable(True)
 
-        settings_action = QAction("Settings", self)
-        settings_action.triggered.connect(self.show_settings)
-        settings_action.setCheckable(True)
-
         help_action = QAction("Help", self)
         help_action.triggered.connect(self.show_help)
         help_action.setCheckable(True)
+
+        close_action = QAction("Close App", self)
+        close_action.triggered.connect(self.close)
+        close_action.setCheckable(True)
+
 
         self.toolbar.addAction(home_action)
         self.toolbar.addAction(shares_action)
         self.toolbar.addAction(calculator_action)
         self.toolbar.addAction(stock_information_action)
-        self.toolbar.addAction(settings_action)
         self.toolbar.addAction(help_action)
+        self.toolbar.addAction(close_action)
 
         self.adjust_toolbar_buttons(self.toolbar)
 
@@ -161,12 +165,24 @@ class HomeWindow(QWidget):
         self.setStyleSheet(style_sheet)
 
     def create_middle_part(self, layout):
-        """Create and set up the main welcome screen layout."""
+        """Create and set up the central part of the stock information widget."""
+        # Middle Widget Setup
+        middle_widget = QFrame()
+        middle_widget.setObjectName("middle_widget")
+        middle_layout = QVBoxLayout()
+        middle_widget.setLayout(middle_layout)
+        middle_layout.setAlignment(Qt.AlignCenter)
+        middle_layout.setContentsMargins(15, 15, 15, 15)
+        middle_layout.setSpacing(15)
+        middle_widget.setFixedHeight(self.height() * 0.8)
+        middle_widget.setFixedWidth(self.width())
+
         # Title Section
         title_section = QWidget()
         title_section.setObjectName("title_section")
         title_layout = QVBoxLayout()
         title_section.setLayout(title_layout)
+        middle_layout.addWidget(title_section)
 
         # Add Title Label
         title_label = QLabel("Welcome to Safe Investment Assistant")
@@ -182,38 +198,86 @@ class HomeWindow(QWidget):
         subtitle_label.setStyleSheet("font-size: 16px; color: gray;")
         title_layout.addWidget(subtitle_label)
 
-        layout.addWidget(title_section, alignment=Qt.AlignTop)
-
         # Divider Line
         divider = QFrame()
         divider.setFrameShape(QFrame.HLine)
         divider.setFrameShadow(QFrame.Sunken)
-        layout.addWidget(divider)
+        middle_layout.addWidget(divider)
 
-        # Button Section
-        button_section = QWidget()
-        button_section.setObjectName("button_section")
-        button_layout = QHBoxLayout()
-        button_layout.setSpacing(15)
-        button_section.setLayout(button_layout)
+        # Content Section
+        content_section = QWidget()
+        content_section.setObjectName("content_section")
+        content_layout = QHBoxLayout()
+        content_section.setLayout(content_layout)
+        content_section.setFixedWidth(self.width() * 0.8)
+        content_section.setFixedHeight(self.height() * 0.5)
+        content_layout.setAlignment(Qt.AlignTop)
 
-        # Shares Assistant Button
-        shares_button = QPushButton("Shares Assistant")
-        shares_button.setObjectName("shares_button")
-        shares_button.setToolTip("Click to analyze your investment opportunities.")
-        shares_button.setStyleSheet("font-size: 14px; padding: 10px;")
+        # Left Section for Shares Assistant
+        left_section = QWidget()
+        left_section.setObjectName("left_section")
+        left_layout = QVBoxLayout()
+        left_section.setLayout(left_layout)
+        left_section.setFixedHeight(content_section.height() * 0.6)
+
+        left_title_label = QLabel("Shares Assistant")
+        left_title_label.setStyleSheet("font-size: 16px; font-weight: bold;")
+        left_layout.addWidget(left_title_label)
+
+        left_desc_label = QLabel()
+        left_desc_label.setTextFormat(Qt.RichText)
+        left_desc_label.setText("""<p style='text-align: justify;'>
+                Unlock your investment potential with our Shares Assistant, 
+                a cutting-edge tool designed to navigate the complexities of 
+                the stock market, offering tailored insights and real-time 
+                analytics to help you make informed decisions and maximize 
+                your financial growth.
+            </p>""")
+        left_desc_label.setWordWrap(True)
+        left_desc_label.setStyleSheet("font-size: 14px; color: gray;")
+        left_layout.addWidget(left_desc_label)
+
+        shares_button = QPushButton("Go to Shares Assistant")
+        shares_button.setStyleSheet("padding: 10px;")
         shares_button.clicked.connect(self.show_shares_assistant)
-        button_layout.addWidget(shares_button)
+        left_layout.addWidget(shares_button)
 
-        # Treasury Bond Calculator Button
-        calculator_button = QPushButton("Treasury Bond Calculator")
-        calculator_button.setObjectName("calculator_button")
-        calculator_button.setToolTip("Click to explore current market trends.")
-        calculator_button.setStyleSheet("font-size: 14px; padding: 10px;")
+        content_layout.addWidget(left_section)
+
+        # Right Section for Treasury Bond Calculator
+        right_section = QWidget()
+        right_section.setObjectName("right_section")
+        right_layout = QVBoxLayout()
+        right_section.setLayout(right_layout)
+        right_section.setFixedHeight(content_section.height() * 0.6)
+
+        right_title_label = QLabel("Treasury Bond Calculator")
+        right_title_label.setStyleSheet("font-size: 16px; font-weight: bold;")
+        right_layout.addWidget(right_title_label)
+
+        right_desc_label = QLabel()
+        right_desc_label.setTextFormat(Qt.RichText)
+        right_desc_label.setText("""<p style='text-align: justify;'>
+                Explore the lucrative world of government securities with our Treasury Bond Calculator, 
+                a sophisticated resource that simplifies bond market analysis, enabling you to understand yields, 
+                calculate returns, and make strategic investment choices with confidence and precision.
+            </p>""")
+        right_desc_label.setWordWrap(True)
+        right_desc_label.setStyleSheet("font-size: 14px; color: gray;")
+        right_layout.addWidget(right_desc_label)
+
+        calculator_button = QPushButton("Go to Bond Calculator")
+        calculator_button.setStyleSheet("padding: 10px;")
         calculator_button.clicked.connect(self.show_calculator)
-        button_layout.addWidget(calculator_button)
+        right_layout.addWidget(calculator_button)
 
-        layout.addWidget(button_section, alignment=Qt.AlignCenter)
+        content_layout.addWidget(right_section)
+
+        # Adding Content Section to the Middle Layout
+        middle_layout.addWidget(content_section)
+
+        # Add the middle_widget to the main layout
+        layout.addWidget(middle_widget, alignment=Qt.AlignCenter)
 
         # Add Spacing for Alignment
         layout.addStretch()
@@ -279,10 +343,9 @@ class HomeWindow(QWidget):
         self.stackedWidget.setCurrentWidget(self.stock_information)
         self.highlight_action(self.sender())
 
-    def show_settings(self):
+    def close(self):
         """Switch the view to the shares assistant screen."""
-        self.stackedWidget.setCurrentWidget(self.settings)
-        self.highlight_action(self.sender())
+        QApplication.quit()
 
     def show_help(self):
         """Switch the view to the calculator screen."""
