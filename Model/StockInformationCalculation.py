@@ -12,12 +12,12 @@ class StockInformationCalculation:
         self.config = config()
         self.controller = None
         self.data = pd.read_csv(Utils.get_absolute_file_path("stock_data_without_polish.csv"))
+        #self.create_day_data()
 
     def set_controller(self, controller):
         self.controller = controller
 
     def create_day_data(self):
-        print("Calculating day data")
         self.data['Date'] = pd.to_datetime(self.data['Date'])
         df_last_two_rows = self.data.tail(2)
 
@@ -26,8 +26,8 @@ class StockInformationCalculation:
 
         # najlepiej by zwracalo obecny dzien i pod nim % zmiane
         result = pd.concat([df_last_two_rows.head(2), daily_difference])
-        print(result)
-        print(type(result))
+        # print(result)
+        # print(type(result))
 
         df = pd.DataFrame(result)
         diff = df.diff().iloc[1]
@@ -48,7 +48,7 @@ class StockInformationCalculation:
                 percentage_difference = float('inf') if difference > 0 else float('-inf')
             final_result.append((ticker, today_value, difference, percentage_difference))
 
-        print(final_result)
+        #print(final_result)
 
         self.config.companies_day = final_result
 

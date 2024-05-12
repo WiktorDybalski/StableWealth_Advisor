@@ -6,6 +6,7 @@ class StockInformationController:
         self.config = config("day")
         self.model = model
         self.view = view
+        #self.create_data()
 
     def get_companies_names(self):
         pass
@@ -16,8 +17,8 @@ class StockInformationController:
         # self.model.get_last_day(self.path_data)
         #print(period)
         if period == "day":
-            print("creating day data - in controller")
             self.model.create_day_data()
+            print(self.config.companies_day)
         elif period == "month":
             self.model.create_month_data()
         else:

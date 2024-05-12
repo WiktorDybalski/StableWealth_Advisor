@@ -312,7 +312,6 @@ class HomeWindow(QWidget):
         layout.addWidget(footer)
 
     def send_stock_data_to_stock_controller(self):
-        print("creating data - sending to controller")
         self.stock_controller.create_data()
 
     def send_data_to_controller(self):

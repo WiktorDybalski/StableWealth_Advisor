@@ -21,7 +21,7 @@ class StockInformation(QWidget):
         super().__init__()
         self.config = config()
         self.si_config = si_config("day")
-        self.create_data()
+        #self.create_data()
         self.scale_combo = None
         self.table_widget = None
         self.buttons_dict = {}
@@ -75,9 +75,9 @@ class StockInformation(QWidget):
         middle_layout.addLayout(controls_layout)
 
         # Create the table widget
-        self.table_widget = QTableWidget(0, 6)
+        self.table_widget = QTableWidget(0, 7)
         self.table_widget.setHorizontalHeaderLabels(
-            ["Nr", "Company Name", "Growth", "Percentage growth", "Trend", "Show a period plot"])
+            ["Nr", "Company Name", "Today's Value", "Growth", "Percentage growth", "Trend", "Show a period plot"])
         header = self.table_widget.horizontalHeader()
         header.setSectionResizeMode(QHeaderView.Stretch)
         self.table_widget.verticalHeader().setVisible(False)
@@ -97,12 +97,27 @@ class StockInformation(QWidget):
     def update_table(self):
         """Populate the table based on the selected scale."""
         #self.create_data()
-        #data = self.si_config.companies_day
+        # data = self.si_config.companies_day
         data = self.get_data(self.scale_combo.currentText())
+
+        if self.si_config.period == "day":
+            data = self.si_config.companies_day
+        elif self.si_config.period == "month":
+            data = self.si_config.companies_month
+        else:
+            data = self.si_config.companies_year
+
+        #print(data)
         self.table_widget.setRowCount(len(data))
         self.buttons_dict = {}
 
-        for row, (company_name, growth) in enumerate(data):
+        for i in range(len(data)):
+            row = i
+            company_name = data[i][0]
+            value = data[i][1]
+            growth = data[i][2]
+            percentage_growth = data[i][3]
+
             # Nr column
             nr_item = QTableWidgetItem(str(row + 1))
             nr_item.setFlags(nr_item.flags() & ~Qt.ItemIsEditable)
@@ -115,17 +130,23 @@ class StockInformation(QWidget):
             company_item.setTextAlignment(Qt.AlignCenter)
             self.table_widget.setItem(row, 1, company_item)
 
+            # Company value
+            company_value = QTableWidgetItem(f"{value:.2f}")
+            company_value.setFlags(company_value.flags() & ~Qt.ItemIsEditable)
+            company_value.setTextAlignment(Qt.AlignCenter)
+            self.table_widget.setItem(row, 2, company_value)
+
             # Growth
-            growth_item = QTableWidgetItem(f"{growth:.2f}%")
+            growth_item = QTableWidgetItem(f"{growth:.2f}")
             growth_item.setFlags(growth_item.flags() & ~Qt.ItemIsEditable)
             growth_item.setTextAlignment(Qt.AlignCenter)
-            self.table_widget.setItem(row, 2, growth_item)
+            self.table_widget.setItem(row, 3, growth_item)
 
             # Percentage growth (duplicate of growth)
-            percentage_growth_item = QTableWidgetItem(f"{growth:.2f}%")
+            percentage_growth_item = QTableWidgetItem(f"{percentage_growth:.2f}%")
             percentage_growth_item.setFlags(percentage_growth_item.flags() & ~Qt.ItemIsEditable)
             percentage_growth_item.setTextAlignment(Qt.AlignCenter)
-            self.table_widget.setItem(row, 3, percentage_growth_item)
+            self.table_widget.setItem(row, 4, percentage_growth_item)
 
             # Trend icon
             trend_label = QLabel()
@@ -141,7 +162,7 @@ class StockInformation(QWidget):
             trend_layout.setAlignment(Qt.AlignCenter)
             trend_layout.setContentsMargins(0, 0, 0, 0)
             trend_layout.addWidget(trend_label)
-            self.table_widget.setCellWidget(row, 4, trend_widget)
+            self.table_widget.setCellWidget(row, 5, trend_widget)
 
             # Show period plot button
             plot_button = QToolButton()
@@ -157,30 +178,46 @@ class StockInformation(QWidget):
                 self.buttons_dict[company_name] = plot_button
 
             plot_button.clicked.connect(partial(self.show_company_button_details, plot_button))
-            self.table_widget.setCellWidget(row, 5, self.buttons_dict[company_name])
+            self.table_widget.setCellWidget(row, 6, self.buttons_dict[company_name])
 
             self.table_widget.setRowHeight(row, 50)
 
-        # Adjust the trend column width for larger icons
-        self.table_widget.setColumnWidth(4, 40)
+            # Adjust the trend column width for larger icons
+            self.table_widget.setColumnWidth(4, 40)
 
     def get_data(self, scale):
         """Simulate fetching growth data based on the selected scale."""
 
-        self.create_data()
-        print(self.si_config.companies_day)
+        # self.create_data()
+        #print(self.si_config.companies_day)
+
         data = {
-            "Day": [("Apple Inc.", 1.5), ("Microsoft Corporation", -0.3), ("Alphabet Inc.", 2.2), ("Amazon.com Inc.", 1.5),
+            "Day": [("Apple Inc.", 1.5), ("Microsoft Corporation", -0.3), ("Alphabet Inc.", 2.2),
+                    ("Amazon.com Inc.", 1.5),
                     ("Berkshire Hathaway Inc.", -0.3), ("Tesla Inc.", 2.2), ("UnitedHealth Group Incorporated", 1.5),
-                    ("Johnson & Johnson", -0.3), ("Visa Inc.", 2.2), ("NVIDIA Corporation", 2.2), ("Exxon Mobil Corporation", 2.2), ("Taiwan Semiconductor Manufacturing Company Limited", 2.2)],
+                    ("Johnson & Johnson", -0.3), ("Visa Inc.", 2.2), ("NVIDIA Corporation", 2.2),
+                    ("Exxon Mobil Corporation", 2.2), ("Taiwan Semiconductor Manufacturing Company Limited", 2.2)],
             "Month": [("Apple Inc.", -1.2), ("Microsoft Corporation", 3.4), ("Alphabet Inc.", 0.8),
                       ("Amazon.com Inc.", -1.2), ("Berkshire Hathaway Inc.", 3.4), ("Tesla Inc.", 0.8),
-                      ("UnitedHealth Group Incorporated", -1.2), ("Johnson & Johnson", 3.4), ("Visa Inc.", 0.8), ("NVIDIA Corporation", 0.8), ("Exxon Mobil Corporation", 0.8), ("Taiwan Semiconductor Manufacturing Company Limited", 0.8)],
+                      ("UnitedHealth Group Incorporated", -1.2), ("Johnson & Johnson", 3.4), ("Visa Inc.", 0.8),
+                      ("NVIDIA Corporation", 0.8), ("Exxon Mobil Corporation", 0.8),
+                      ("Taiwan Semiconductor Manufacturing Company Limited", 0.8)],
             "Year": [("Apple Inc.", 10.5), ("Microsoft Corporation", -2.1), ("Alphabet Inc.", 6.3),
                      ("Amazon.com Inc.", 10.5), ("Berkshire Hathaway Inc.", -2.1), ("Tesla Inc.", 6.3),
                      ("UnitedHealth Group Incorporated", 10.5), ("Microsoft Corporation", -2.1), ("Visa Inc.", 6.3),
-                     ("NVIDIA Corporation", 6.3), ("Exxon Mobil Corporation", 6.3), ("Taiwan Semiconductor Manufacturing Company Limited", 6.3)]
+                     ("NVIDIA Corporation", 6.3), ("Exxon Mobil Corporation", 6.3),
+                     ("Taiwan Semiconductor Manufacturing Company Limited", 6.3)]
         }
+
+        if self.si_config.period == "day":
+            data.update({
+                "Day": self.si_config.companies_day,
+                "Month": [],
+                "Year": []
+            })
+
+
+
 
         # """Fetch actual growth data based on the selected scale."""
         # # Read data from CSV file
