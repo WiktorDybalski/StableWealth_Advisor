@@ -3,7 +3,7 @@ from Data.Companies import Companies as comp
 class StockInformationController:
     def __init__(self, view, model, path_data):
         self.path_data = path_data
-        self.config = config("day")
+        self.config = config("Day")
         self.model = model
         self.view = view
         #self.create_data()
@@ -16,10 +16,12 @@ class StockInformationController:
 
         # self.model.get_last_day(self.path_data)
         #print(period)
-        if period == "day":
+        if period == "Day":
             self.model.create_day_data()
             print(self.config.companies_day)
-        elif period == "month":
+        elif period == "Month":
             self.model.create_month_data()
+            print(self.config.companies_month)
         else:
             self.model.create_year_data()
+            print(self.config.companies_year)

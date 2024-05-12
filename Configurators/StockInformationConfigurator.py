@@ -10,13 +10,25 @@ class StockInformationConfigurator:
     def __init__(self, period=None, companies_day=None, companies_month=None, companies_year=None, last_update_time=None):
         if companies_day is None:
             companies_day = [("Test", 0, 0, 0)]
+        if companies_month is None:
+            companies_month = [("Test", 0, 0, 0)]
+        if companies_year is None:
+            companies_year = [("Test", 0, 0, 0)]
         if not hasattr(self, '_initialized'):
-            self.period = period
+            self._period = period
             self._companies_day = companies_day
             self._companies_month = companies_month
             self._companies_year = companies_year
-            self.last_update_time = last_update_time
+            self._last_update_time = last_update_time
             self._initialized = True
+
+    @property
+    def period(self):
+        return self._period
+
+    @period.setter  # czemu error
+    def period(self, value):
+        self._period = value
 
     @property
     def companies_day(self):

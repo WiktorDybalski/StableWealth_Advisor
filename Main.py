@@ -40,7 +40,10 @@ def main():
     view.set_si_controller(si_controller)
 
 
-    si_controller.create_data()
+    si_model.create_day_data()
+    si_model.create_month_data()
+    si_model.create_year_data()
+
     view.show()
 
     print("Starting Application")

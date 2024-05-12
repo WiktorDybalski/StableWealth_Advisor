@@ -98,11 +98,15 @@ class StockInformation(QWidget):
         """Populate the table based on the selected scale."""
         #self.create_data()
         # data = self.si_config.companies_day
-        data = self.get_data(self.scale_combo.currentText())
+        current_period = str(self.scale_combo.currentText())
+        print(current_period)
+        self.si_config.period = current_period
 
-        if self.si_config.period == "day":
+
+        #print(self.si_config.period)
+        if self.si_config.period == "Day":
             data = self.si_config.companies_day
-        elif self.si_config.period == "month":
+        elif self.si_config.period == "Month":
             data = self.si_config.companies_month
         else:
             data = self.si_config.companies_year
