@@ -7,6 +7,7 @@ from Utils import Utils
 from Model.UpdateData import UpdateData
 
 
+
 def main():
     app = QApplication(sys.argv)
     view = Home.HomeWindow(app)

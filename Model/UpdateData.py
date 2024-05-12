@@ -28,14 +28,19 @@ class UpdateData:
             return stock_data_path
 
         today = datetime.date.today()
+        # print(today)
         file_path = Utils.get_absolute_file_path("recently_updated_day.txt")
+        # = Utils.get_absolute_file_path("new_stock_data_reduced.csv")
+        # dodane do Utilsów nowe csv
         new_stock_data_path = Utils.get_absolute_file_path("new_stock_data.csv")
         last_date = UpdateData.get_last_update_date(file_path)
 
         next_day_string = (last_date + datetime.timedelta(days=1)).strftime('%Y-%m-%d')
+        print(next_day_string)
+        # UpdateData.create_csv_data_with_start(UpdateData.get_reduced_ticker_symbols_without_polish(), new_stock_data_path,next_day_string)
         UpdateData.create_csv_data_with_start(UpdateData.get_ticker_symbols_without_polish(), new_stock_data_path,
                                               next_day_string)
-        print("new_stock_data.csv")
+        #print("new_stock_data.csv")
         UpdateData.update_csv_file(stock_data_path, new_stock_data_path)
 
         with open(file_path, 'a') as file:
@@ -82,7 +87,7 @@ class UpdateData:
         # 90 companies
         return ["AAPL", "MSFT", "GOOGL", "AMZN", "BRK-A", "TSLA", "UNH", "JNJ", "V", "NVDA",
                 "XOM", "TSM", "WMT", "META", "PG", "LLY", "HD", "CVX", "KO",
-                "PFE", "ABBV", "MRK", "PEP", "TMO", "ORCL", "COST", "AZN", "RIL",
+                "PFE", "ABBV", "MRK", "PEP", "TMO", "ORCL", "COST", "AZN",
                 "MCD", "CSCO", "TMUS", "SHEL", "DIS", "DHR", "TM", "NVS", "ABT",
                 "ACN", "VZ", "TXN", "BHP", "WFC", "LIN", "MS", "INTC", "CMCSA", "ADBE",
                 "SAP", "UPS", "TTE", "IBM", "HSBC", "AMGN", "LOW", "C", "BABA", "RTX",
@@ -156,6 +161,7 @@ class UpdateData:
         with open(output_csv_path, mode='w', newline='', encoding='utf-8') as csv_file:
             writer = csv.writer(csv_file)
             writer.writerows(rows)
+
     def remove_empty_rows_except_date(self, input_csv_path, output_csv_path, date_column="Date"):
         # Wczytujemy dane z pliku CSV
         df = pd.read_csv(input_csv_path)
@@ -175,5 +181,8 @@ if __name__ == "__main__":
     # UpdateData.create_csv_data(UpdateData.get_ticker_symbols(), "../Data/stock_data.csv")
     # UpdateData.create_csv_data(UpdateData.get_reduced_ticker_symbols(), "../Data/stock_data_reduced.csv")
     # UpdateData.create_csv_data(UpdateData.get_ticker_symbols_without_polish(), "../Data/stock_data_without_polish.csv")
-    # UpdateData.create_csv_data(UpdateData.get_reduced_ticker_symbols_without_polish(),
-    #                            "../Data/stock_data_without_polish_reduced.csv")
+    # UpdateData.create_csv_data(UpdateData.get_reduced_ticker_symbols_without_polish(),"../Data/stock_data_without_polish_reduced.csv")
+
+    # UpdateData.update_data("../Data/stock_data_without_polish_reduced.csv")
+    #UpdateData.update_data("../Data/stock_data_without_polish.csv")
+    # RIL USUNIETATY TYLKO Z stock_data_without_polish

@@ -18,7 +18,8 @@ class StockInformationCalculation:
         daily_difference = df_last_two_rows.set_index('Date').diff().tail(1)
         daily_difference.reset_index(inplace=True)
 
-        result = pd.concat([df_last_two_rows.head(1), daily_difference])
+        # najlepiej by zwracalo obecny dzien i pod nim % zmiane
+        result = pd.concat([df_last_two_rows.head(2), daily_difference])
         print(result)
         return result
 

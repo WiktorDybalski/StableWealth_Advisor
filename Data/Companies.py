@@ -147,7 +147,6 @@ class Companies:
         "COST": "Costco Wholesale Corporation",
         "AZN": "AstraZeneca PLC",
         "RIL": "Reliance Industries Limited",
-
         "MCD": "McDonald's Corporation",
         "CSCO": "Cisco Systems, Inc.",
         "TMUS": "T-Mobile US, Inc.",

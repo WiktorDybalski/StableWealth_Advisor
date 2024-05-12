@@ -132,7 +132,7 @@ class Simulation:
             raise BaseException("Optimization failed: " + opt_results.message)
 
         optimal_weights = opt_results.x
-        optimal_weights
+        # optimal_weights
         for st, i in zip(companies_list, optimal_weights):
             print(f'Stock {st} has weight {np.round(i * 100, 2)} %')
 
@@ -148,6 +148,7 @@ class Simulation:
         self.config.companies = companies_list
         self.config.weights = optimal_weights
         self.config.results = results
+        self.plot_risk_return_scatter(daily_returns)
         self.send_data_to_controller()
         return optimal_weights, results
 
@@ -221,3 +222,4 @@ class Simulation:
 if __name__ == "__main__":
     simulation = Simulation()
     print(simulation.run_best_of_three(Utils.get_absolute_file_path("stock_data_without_polish.csv")))
+

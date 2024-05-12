@@ -8,6 +8,10 @@ from Configurators.StockInformationConfigurator import StockInformationConfigura
 from Utils import Utils
 from Configurators.CompanyConfigurator import CompanyConfigurator as config
 
+from Data.Companies import Companies
+
+from datetime import datetime, timedelta
+import csv
 
 class StockInformation(QWidget):
     home_requested = Signal()
@@ -159,6 +163,7 @@ class StockInformation(QWidget):
 
     def get_data(self, scale):
         """Simulate fetching growth data based on the selected scale."""
+        self.create_data()
         data = {
             "Day": [("Apple Inc.", 1.5), ("Microsoft Corporation", -0.3), ("Alphabet Inc.", 2.2), ("Amazon.com Inc.", 1.5),
                     ("Berkshire Hathaway Inc.", -0.3), ("Tesla Inc.", 2.2), ("UnitedHealth Group Incorporated", 1.5),
@@ -171,6 +176,41 @@ class StockInformation(QWidget):
                      ("UnitedHealth Group Incorporated", 10.5), ("Microsoft Corporation", -2.1), ("Visa Inc.", 6.3),
                      ("NVIDIA Corporation", 6.3), ("Exxon Mobil Corporation", 6.3), ("Taiwan Semiconductor Manufacturing Company Limited", 6.3)]
         }
+
+        # """Fetch actual growth data based on the selected scale."""
+        # # Read data from CSV file
+        # with open('stock_data_without_polish.csv', newline='') as csvfile:
+        #     reader = csv.DictReader(csvfile)
+        #     stock_data = list(reader)
+        #
+        # # Get today's date and the second-to-last day
+        # today = datetime.today().date()
+        # second_last_day = today - timedelta(days=1)
+        #
+        # # Filter stock data for today and the second-to-last day
+        # today_data = [data for data in stock_data if datetime.strptime(data['Date'], '%Y-%m-%d').date() == today]
+        # second_last_day_data = [data for data in stock_data if
+        #                         datetime.strptime(data['Date'], '%Y-%m-%d').date() == second_last_day]
+        #
+        # # Calculate growth percentage for each company based on the second-to-last day compared to today's price
+        # growth_data = {}
+        # for company in stock_data[0].keys():
+        #     if company != 'Date':  # Exclude 'Date' column
+        #         # Get today's and second-to-last day's prices
+        #         today_price = float(today_data[0][company])
+        #         second_last_day_price = float(second_last_day_data[0][company])
+        #
+        #         # Calculate growth percentage
+        #         growth_percentage = ((today_price - second_last_day_price) / second_last_day_price) * 100
+        #         data["Day"].append((company, growth_percentage))
+        #         #growth_data[company] = growth_percentage
+        #
+        # # Sort companies by growth percentage
+        # #sorted_growth_data = sorted(growth_data.items(), key=lambda x: x[1], reverse=True)
+        #
+        # # Add the growth data for today to the "Day" variant in the data dictionary
+        # data["Day"] = growth_data
+
         return data.get(scale, [])
 
     def create_footer(self, layout):
