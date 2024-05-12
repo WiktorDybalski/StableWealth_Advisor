@@ -7,47 +7,95 @@ import yfinance as yf
 from Utils import Utils
 
 # TODO
-# Add data_validation
+# Add data_validation  - DONE
 # Fix UpdateData class
 
 class UpdateData:
     @staticmethod
-    def is_already_updated():
-        file_path = Utils.get_absolute_file_path("recently_updated_day.txt")
-        if not os.path.exists(file_path):
-            return False
-        with open(file_path, 'r') as file:
-            last_line = file.readlines()[-1].strip()
-        last_update_date = datetime.datetime.strptime(last_line, '%Y-%m-%d').date()
-        return last_update_date >= datetime.date.today() - datetime.timedelta(days=1)
+    def is_already_updated(stock_data_path):
+        # pd.read_csv(stock_data_path)
+        #
+        # with open(stock_data_path, 'r') as file:
+        #     last_line = file.readlines()[-1].strip()
+        # last_date = datetime.datetime.strptime(last_line, '%Y-%m-%d').date()
+
+        # with open(stock_data_path, 'r') as file:
+        #     reader = csv.reader(file)
+        #     last_line = file.readlines()[-1].strip().split(',')
+        #     date_time = last_line[0]
+        #     # for row in reader:
+        #     #     data = row[-1].split(',')
+        #     #     date_time = data[0]
+        #     #     break
+        # #print(date_time)
+        # #print(datetime.date.today())
+        # last_day = datetime.datetime.strptime(date_time, "%Y-%m-%d %H:%M:%S%z").date()
+        last_day = UpdateData.get_last_date(stock_data_path)
+        return last_day >= datetime.date.today() - datetime.timedelta(days=1)
+        # file_path = Utils.get_absolute_file_path("recently_updated_day.txt")
+        # if not os.path.exists(file_path):
+        #     return False
+        # with open(file_path, 'r') as file:
+        #     last_line = file.readlines()[-1].strip()
+        # last_update_date = datetime.datetime.strptime(last_line, '%Y-%m-%d').date()
+        # return last_update_date >= datetime.date.today() - datetime.timedelta(days=1)
 
     @staticmethod
     def update_data(stock_data_path):
-        if UpdateData.is_already_updated():
+        if UpdateData.is_already_updated(stock_data_path):
             print("Data is already updated today.")
             return stock_data_path
 
         today = datetime.date.today()
         # print(today)
-        file_path = Utils.get_absolute_file_path("recently_updated_day.txt")
+        # file_path = Utils.get_absolute_file_path("recently_updated_day.txt")
+        # last_date = UpdateData.get_last_update_date(file_path)
+
+
         # = Utils.get_absolute_file_path("new_stock_data_reduced.csv")
         # dodane do Utilsów nowe csv
         new_stock_data_path = Utils.get_absolute_file_path("new_stock_data.csv")
-        last_date = UpdateData.get_last_update_date(file_path)
+        last_day = UpdateData.get_last_date(stock_data_path)
+        # with open(stock_data_path, 'r') as file:
+        #     reader = csv.reader(file)
+        #     last_line = file.readlines()[-1].strip().split(',')
+        #     date_time = last_line[0]
+        #     # for row in reader:
+        #     #     data = row[-1].split(',')
+        #     #     date_time = data[0]
+        #     #     break
+        # #print(date_time)
+        # #print(datetime.date.today())
+        # last_day = datetime.datetime.strptime(date_time, "%Y-%m-%d %H:%M:%S%z").date()
 
-        next_day_string = (last_date + datetime.timedelta(days=1)).strftime('%Y-%m-%d')
+        next_day_string = (last_day + datetime.timedelta(days=1)).strftime('%Y-%m-%d')
         print(next_day_string)
         # UpdateData.create_csv_data_with_start(UpdateData.get_reduced_ticker_symbols_without_polish(), new_stock_data_path,next_day_string)
+
         UpdateData.create_csv_data_with_start(UpdateData.get_ticker_symbols_without_polish(), new_stock_data_path,
                                               next_day_string)
         #print("new_stock_data.csv")
-        UpdateData.update_csv_file(stock_data_path, new_stock_data_path)
+        # fool proof - na problemy z weekendem i siwetami
 
-        with open(file_path, 'a') as file:
-            file.write(today.strftime('%Y-%m-%d') + '\n')
+        new_last_day = UpdateData.get_last_date(new_stock_data_path)
+        if last_day < new_last_day:
+            UpdateData.update_csv_file(stock_data_path, new_stock_data_path)
+
+        # with open(file_path, 'a') as file:
+        #     file.write(today.strftime('%Y-%m-%d') + '\n')
         print("Data file updated with new data.")
         return stock_data_path
 
+    @staticmethod
+    def get_last_date(file_path):
+        with open(file_path, 'r') as file:
+            reader = csv.reader(file)
+            last_line = file.readlines()[-1].strip().split(',')
+            date_time = last_line[0]
+        last_day = datetime.datetime.strptime(date_time, "%Y-%m-%d %H:%M:%S%z").date()
+        return last_day
+
+    # Nie potrzebna
     @staticmethod
     def get_last_update_date(file_path):
         with open(file_path, 'r') as file:
@@ -184,5 +232,7 @@ if __name__ == "__main__":
     # UpdateData.create_csv_data(UpdateData.get_reduced_ticker_symbols_without_polish(),"../Data/stock_data_without_polish_reduced.csv")
 
     # UpdateData.update_data("../Data/stock_data_without_polish_reduced.csv")
-    #UpdateData.update_data("../Data/stock_data_without_polish.csv")
+    UpdateData.update_data("../Data/stock_data_without_polish.csv")
     # RIL USUNIETATY TYLKO Z stock_data_without_polish
+    # instance = UpdateData.is_already_updated("../Data/stock_data_without_polish.csv")
+    # print(instance)
