@@ -4,7 +4,7 @@ from PySide6.QtGui import QIcon, QPixmap
 from PySide6.QtWidgets import QWidget, QVBoxLayout, QLabel, QHBoxLayout, QPushButton, QTableWidgetItem, QTableWidget, \
     QComboBox, QHeaderView, QSizePolicy, QFrame, QScrollBar, QToolButton
 from PySide6.QtCore import Qt, QFile, Signal, QSize
-from Configurators.StockInformationConfigurator import StockInformationConfigurator as config
+from Configurators.StockInformationConfigurator import StockInformationConfigurator as si_config
 from Utils import Utils
 from Configurators.CompanyConfigurator import CompanyConfigurator as config
 
@@ -19,7 +19,8 @@ class StockInformation(QWidget):
     company_details_requested = Signal()
     def __init__(self):
         super().__init__()
-        self.config = config("day")
+        self.config = config()
+        self.si_config = si_config("day")
         self.create_data()
         self.scale_combo = None
         self.table_widget = None
@@ -95,6 +96,8 @@ class StockInformation(QWidget):
 
     def update_table(self):
         """Populate the table based on the selected scale."""
+        #self.create_data()
+        #data = self.si_config.companies_day
         data = self.get_data(self.scale_combo.currentText())
         self.table_widget.setRowCount(len(data))
         self.buttons_dict = {}
@@ -163,7 +166,9 @@ class StockInformation(QWidget):
 
     def get_data(self, scale):
         """Simulate fetching growth data based on the selected scale."""
+
         self.create_data()
+        print(self.si_config.companies_day)
         data = {
             "Day": [("Apple Inc.", 1.5), ("Microsoft Corporation", -0.3), ("Alphabet Inc.", 2.2), ("Amazon.com Inc.", 1.5),
                     ("Berkshire Hathaway Inc.", -0.3), ("Tesla Inc.", 2.2), ("UnitedHealth Group Incorporated", 1.5),

@@ -30,34 +30,34 @@ class Simulation:
         optimal_weights, metrics = self.run_scipy_simulation(selected_df)
         return optimal_weights, metrics, columns
 
-    def run_best_of_three(self, stock_data_path):
-        stock_data = pandas.read_csv(stock_data_path)
-        n = stock_data.shape[1]
-        max_sr = 0
-        best_result = None
-        tasks = []
-        num_cores = os.cpu_count()
-        for i in range(1, n):
-            for j in range(i + 1, n):
-                for k in range(j + 1, n):
-                    tasks.append((stock_data, [i, j, k]))
-
-        with multiprocessing.Pool(processes=num_cores - 1) as pool:
-            results = pool.starmap(self.process_combination, tasks)
-
-        for weights, metrics, columns in results:
-            if metrics[2] > max_sr:
-                max_sr = metrics[2]
-                best_result = (weights, metrics, [stock_data.columns[i] for i in columns])
-
-        print(best_result[1], best_result[0], best_result[2])
-        return best_result
-
-    def run_best_of_four(self):
-        pass
-
-    def run_best_of_five(self):
-        pass
+    # def run_best_of_three(self, stock_data_path):
+    #     stock_data = pandas.read_csv(stock_data_path)
+    #     n = stock_data.shape[1]
+    #     max_sr = 0
+    #     best_result = None
+    #     tasks = []
+    #     num_cores = os.cpu_count()
+    #     for i in range(1, n):
+    #         for j in range(i + 1, n):
+    #             for k in range(j + 1, n):
+    #                 tasks.append((stock_data, [i, j, k]))
+    #
+    #     with multiprocessing.Pool(processes=num_cores - 1) as pool:
+    #         results = pool.starmap(self.process_combination, tasks)
+    #
+    #     for weights, metrics, columns in results:
+    #         if metrics[2] > max_sr:
+    #             max_sr = metrics[2]
+    #             best_result = (weights, metrics, [stock_data.columns[i] for i in columns])
+    #
+    #     print(best_result[1], best_result[0], best_result[2])
+    #     return best_result
+    #
+    # def run_best_of_four(self):
+    #     pass
+    #
+    # def run_best_of_five(self):
+    #     pass
 
     def run_scipy_simulation(self, daily_returns, desired_return_min=None, desired_return_max=None,
                              desired_risk_min=None, desired_risk_max=None):

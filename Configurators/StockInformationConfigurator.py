@@ -7,12 +7,13 @@ class StockInformationConfigurator:
             cls._instance = super(StockInformationConfigurator, cls).__new__(cls)
         return cls._instance
 
-    def __init__(self, period=None, companies_day=None, companies_month=None, companies_year=None):
+    def __init__(self, period=None, companies_day=None, companies_month=None, companies_year=None, last_update_time=None):
         if not hasattr(self, '_initialized'):
             self.period = period
             self._companies_day = companies_day
             self._companies_month = companies_month
             self._companies_year = companies_year
+            self.last_update_time = last_update_time
             self._initialized = True
 
     @property
@@ -38,3 +39,11 @@ class StockInformationConfigurator:
     @companies_year.setter
     def companies_year(self, value):
         self._companies_year = value
+
+    @property
+    def last_update_time(self):
+        return self._last_update_time
+
+    @last_update_time.setter
+    def last_update_time(self, value):
+        self._last_update_time = value

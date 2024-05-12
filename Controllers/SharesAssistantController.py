@@ -8,7 +8,7 @@ class Controller:
         self.data = pd.read_csv(path_data, index_col=0)
         self.view = view
         self.model = model
-        self. config = config()
+        self.config = config()
 
 
     def get_tickers(self):

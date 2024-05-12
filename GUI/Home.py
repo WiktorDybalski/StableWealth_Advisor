@@ -34,8 +34,11 @@ class HomeWindow(QWidget):
         self._init_ui()
         self._setup_styles()
 
-    def set_controller(self, controller):
+    def set_sa_controller(self, controller):
         self.shares_assistant_controller = controller
+
+    def set_si_controller(self, controller):
+        self.stock_controller = controller
 
     def setup_window_size(self):
         screen = self.app.primaryScreen().size()
@@ -61,9 +64,11 @@ class HomeWindow(QWidget):
         self.shares_assistant.home_requested.connect(self.show_home)
         self.shares_assistant.simulation_requested.connect(self.send_data_to_controller)
         self.calculator.home_requested.connect(self.show_home)
+
         self.stock_information.home_requested.connect(self.show_home)
         self.stock_information.stock_data_requested.connect(self.send_stock_data_to_stock_controller)
         self.stock_information.company_details_requested.connect(self.show_company_details)
+
         self.settings.home_requested.connect(self.show_home)
         self.help.home_requested.connect(self.show_home)
 
@@ -306,8 +311,8 @@ class HomeWindow(QWidget):
 
         layout.addWidget(footer)
 
-
     def send_stock_data_to_stock_controller(self):
+        print("creating data - sending to controller")
         self.stock_controller.create_data()
 
     def send_data_to_controller(self):
