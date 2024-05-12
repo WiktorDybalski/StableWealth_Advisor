@@ -69,7 +69,7 @@ class UpdateData:
         # last_day = datetime.datetime.strptime(date_time, "%Y-%m-%d %H:%M:%S%z").date()
 
         next_day_string = (last_day + datetime.timedelta(days=1)).strftime('%Y-%m-%d')
-        print(next_day_string)
+        # print(next_day_string)
         # UpdateData.create_csv_data_with_start(UpdateData.get_reduced_ticker_symbols_without_polish(), new_stock_data_path,next_day_string)
 
         UpdateData.create_csv_data_with_start(UpdateData.get_ticker_symbols_without_polish(), new_stock_data_path,
