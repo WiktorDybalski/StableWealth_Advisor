@@ -48,26 +48,32 @@ class StockInformation(QWidget):
         middle_widget.setLayout(middle_layout)
         middle_layout.setAlignment(Qt.AlignCenter)
         middle_layout.setContentsMargins(15, 15, 15, 15)
-        middle_layout.setSpacing(15)
+        middle_layout.setSpacing(5)
 
         # Scale selection combo box and refresh button
         controls_layout = QHBoxLayout()
-        controls_layout.setSpacing(10)
+        controls_layout.setSpacing(5)
         controls_layout.setContentsMargins(0, 0, 0, 0)
 
         self.scale_combo = QComboBox()
+        self.scale_combo.setObjectName("scale_combo")
         self.scale_combo.addItems(["Day", "Month", "Year"])
         self.scale_combo.setMinimumWidth(120)
 
         last_update_text = QLabel("Date of last update:")
+        last_update_text.setObjectName("last_update")
         last_update_value = QLabel(str(self.last_date))
+        last_update_value.setObjectName("last_update_value")
 
         refresh_button = QPushButton("Refresh")
         refresh_button.clicked.connect(self.update_table)
         refresh_button.setFixedHeight(50)
         refresh_button.setFixedWidth(150)
 
-        controls_layout.addWidget(QLabel("Select a time period:"))
+        time_period_label = QLabel("Select a time period:")
+        time_period_label.setObjectName("time_period_label")
+
+        controls_layout.addWidget(time_period_label)
         controls_layout.addWidget(self.scale_combo)
         controls_layout.addWidget(last_update_text)
         controls_layout.addWidget(last_update_value)
@@ -79,7 +85,7 @@ class StockInformation(QWidget):
         # Create the table widget
         self.table_widget = QTableWidget(0, 7)
         self.table_widget.setHorizontalHeaderLabels(
-            ["Nr", "Company Name", "Today's Value", "Growth", "Percentage growth", "Trend", "Show a period plot"])
+            ["Nr", "Company Name", "Today's Price", "Growth", "Percentage growth", "Trend", "Show a period plot"])
         header = self.table_widget.horizontalHeader()
         header.setSectionResizeMode(QHeaderView.Stretch)
         self.table_widget.verticalHeader().setVisible(False)
