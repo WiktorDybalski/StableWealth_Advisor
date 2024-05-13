@@ -13,10 +13,12 @@ class CompanyDetails(QWidget):
 
     def __init__(self, company_name, growth, percentage_growth):
         super().__init__()
+        self.percentage_growth_label = None
+        self.growth_label = None
         self.company_config = config()
         self.company_name = company_name
-        self.growth = growth
-        self.percentage_growth = percentage_growth
+        self.growth_value = growth
+        self.percentage_growth_value = percentage_growth
         self._init_ui()
 
     def _init_ui(self):
@@ -56,15 +58,15 @@ class CompanyDetails(QWidget):
         upper_widget.setLayout(upper_layout)
 
         self.growth_label = QLabel("Growth:")
-        self.growth_label_val = QLabel(f"{self.company_config.growth:.2f}")
+        self.growth_value = QLabel(f"{self.company_config.growth:.2f}")
 
         self.percentage_growth_label = QLabel("Percentage Growth:")
-        self.percentage_growth_label_val = QLabel(f"{self.company_config.percentage_growth:.2f}%")
+        self.percentage_growth_value = QLabel(f"{self.company_config.percentage_growth:.2f}%")
 
         upper_layout.addWidget(self.growth_label)
-        upper_layout.addWidget(self.growth_label_val)
+        upper_layout.addWidget(self.growth_value)
         upper_layout.addWidget(self.percentage_growth_label)
-        upper_layout.addWidget(self.percentage_growth_label_val)
+        upper_layout.addWidget(self.percentage_growth_value)
 
         # Lower widget for Stock Price Chart
         self.stock_chart = StockPriceChart()

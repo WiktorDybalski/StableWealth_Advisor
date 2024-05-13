@@ -121,6 +121,8 @@ class StockInformation(QWidget):
             row = i
             company_name = Companies.get_companies_without_polish()[data[i][0]]
             value = data[i][1]
+            if value is None:
+                pass
             growth = data[i][2]
             percentage_growth = data[i][3]
 
@@ -193,8 +195,8 @@ class StockInformation(QWidget):
             plot_button.setToolButtonStyle(Qt.ToolButtonTextBesideIcon)
             plot_button.setProperty("company_name", company_name)
             plot_button.setProperty("growth", growth)
-            price = 100
-            plot_button.setProperty("percentage_growth", (growth / price) * 100)
+            #price = 100
+            plot_button.setProperty("percentage_growth", percentage_growth)
 
             if not company_name in self.buttons_dict:
                 self.buttons_dict[company_name] = plot_button
@@ -237,7 +239,10 @@ class StockInformation(QWidget):
             plot_button = self.buttons_dict[company_name]
             plot_button.setProperty("company_name", company_name)
             plot_button.setProperty("growth", growth)
-            plot_button.setProperty("percentage_growth", (growth / value) * 100)
+            plot_button.setProperty("percentage_growth", percentage_growth)
+            # print("printing proprerties: \n")
+            # print(plot_button.property("growth"))
+            # print(plot_button.property("percentage_growth"))
 
     def update_growth_color(self, item, growth):
         if growth > 0:
@@ -264,5 +269,6 @@ class StockInformation(QWidget):
         self.config.company_name = company_name
         self.config.growth = growth
         self.config.percentage_growth = percentage_growth
+        #print(self.config.percentage_growth)
         self.company_details_requested.emit()
 
