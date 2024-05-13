@@ -1,20 +1,28 @@
-from matplotlib.figure import Figure
-from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas
+import pandas as pd
+from PySide6.QtCharts import QChart, QLineSeries, QChartView
+from PySide6.QtCore import QDateTime
+from PySide6.QtGui import QPainter
 
-class StockPriceChart(FigureCanvas):
-    def __init__(self, parent=None, width=5, height=4, dpi=100):
-        fig = Figure(figsize=(width, height), dpi=dpi)
-        self.axes = fig.add_subplot(111)
-        super(StockPriceChart, self).__init__(fig)
-        self.setParent(parent)
 
-    def plot(self, data):
-        """Plot the stock price data (list of tuples: [(Date, price), ...])"""
-        dates, prices = zip(*data)
-        self.axes.clear()
-        self.axes.plot(dates, prices, marker='o')
-        self.axes.set_xlabel("Date")
-        self.axes.set_ylabel("Price")
-        self.axes.set_title("Stock Prices")
-        self.draw()
+class StockPriceChart(QChartView):
+    def __init__(self, parent=None):
+        super().__init__(parent)
+        self.chart = QChart()
+        self.setChart(self.chart)
+        self.setRenderHint(QPainter.Antialiasing)
 
+    def plot(self, df):
+        print(df.columns)
+        if not isinstance(df, pd.DataFrame):
+            raise ValueError("Provided data is not a pandas DataFrame")
+
+        series = QLineSeries()
+        for index, row in df.iterrows():
+            if pd.notna(row.iloc[1]):
+                date = QDateTime.fromString(str(row['Date'])[:10], 'yyyy-MM-dd')
+                price = float(row.iloc[1])
+                series.append(date.toMSecsSinceEpoch(), price)
+
+        self.chart.addSeries(series)
+        self.chart.createDefaultAxes()
+        self.chart.setTitle("Stock Price Over Time")

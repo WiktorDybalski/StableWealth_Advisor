@@ -7,11 +7,12 @@ class CompanyConfigurator:
             cls._instance = super(CompanyConfigurator, cls).__new__(cls)
         return cls._instance
 
-    def __init__(self, company_name=None, growth=None, percentage_growth=None):
+    def __init__(self, company_name=None, growth=None, percentage_growth=None, company_df=None):
         if not hasattr(self, '_initialized'):
             self._company_name = company_name
             self._growth = growth
             self._percentage_growth = percentage_growth
+            self._company_df = company_df
             self._initialized = True
 
     @property
@@ -37,3 +38,9 @@ class CompanyConfigurator:
     @percentage_growth.setter
     def percentage_growth(self, value):
         self._percentage_growth = value
+
+    def company_df(self):
+        return self._company_df
+
+    def company_df_setter(self, value):
+        self._company_df = value

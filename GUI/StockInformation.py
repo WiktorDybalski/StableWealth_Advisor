@@ -1,5 +1,6 @@
 from functools import partial
 
+import pandas as pd
 from PySide6.QtGui import QIcon, QPixmap, QBrush, QColor
 from PySide6.QtWidgets import QWidget, QVBoxLayout, QLabel, QHBoxLayout, QPushButton, QTableWidgetItem, QTableWidget, \
     QComboBox, QHeaderView, QSizePolicy, QFrame, QScrollBar, QToolButton
@@ -12,7 +13,6 @@ from Data.Companies import Companies
 
 
 class StockInformation(QWidget):
-    home_requested = Signal()
     stock_data_requested = Signal()
     company_details_requested = Signal()
 
@@ -237,7 +237,7 @@ class StockInformation(QWidget):
             plot_button = self.buttons_dict[company_name]
             plot_button.setProperty("company_name", company_name)
             plot_button.setProperty("growth", growth)
-            plot_button.setProperty("percentage_growth", (growth / 100) * 100)
+            plot_button.setProperty("percentage_growth", (growth / value) * 100)
 
     def update_growth_color(self, item, growth):
         if growth > 0:
@@ -257,14 +257,12 @@ class StockInformation(QWidget):
 
     def show_company_button_details(self, button):
         """Update the configuration and emit a signal to show company details."""
-        company_name = button.property("company_name")
+        company_name = str(button.property("company_name"))
         growth = button.property("growth")
         percentage_growth = button.property("percentage_growth")
+
         self.config.company_name = company_name
         self.config.growth = growth
         self.config.percentage_growth = percentage_growth
         self.company_details_requested.emit()
 
-    def emit_home_requested(self):
-        """Emit a signal to indicate a request to go to the home window."""
-        self.home_requested.emit()

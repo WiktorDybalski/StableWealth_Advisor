@@ -65,7 +65,6 @@ class HomeWindow(QWidget):
         self.shares_assistant.simulation_requested.connect(self.send_data_to_controller)
         self.calculator.home_requested.connect(self.show_home)
 
-        self.stock_information.home_requested.connect(self.show_home)
         self.stock_information.stock_data_requested.connect(self.send_stock_data_to_stock_controller)
         self.stock_information.company_details_requested.connect(self.show_company_details)
 
