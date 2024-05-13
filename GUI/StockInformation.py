@@ -1,6 +1,6 @@
 from functools import partial
 
-from PySide6.QtGui import QIcon, QPixmap
+from PySide6.QtGui import QIcon, QPixmap, QBrush, QColor
 from PySide6.QtWidgets import QWidget, QVBoxLayout, QLabel, QHBoxLayout, QPushButton, QTableWidgetItem, QTableWidget, \
     QComboBox, QHeaderView, QSizePolicy, QFrame, QScrollBar, QToolButton
 from PySide6.QtCore import Qt, QFile, Signal, QSize
@@ -10,21 +10,20 @@ from Configurators.CompanyConfigurator import CompanyConfigurator as config
 
 from Data.Companies import Companies
 
-from datetime import datetime, timedelta
-import csv
 
 class StockInformation(QWidget):
     home_requested = Signal()
     stock_data_requested = Signal()
     company_details_requested = Signal()
+
     def __init__(self):
         super().__init__()
         self.config = config()
         self.si_config = si_config("day")
-        #self.create_data()
         self.scale_combo = None
         self.table_widget = None
         self.buttons_dict = {}
+        self.last_date = self.si_config.last_update_time
         self._init_ui()
         self.setup_styles()
 
@@ -32,7 +31,6 @@ class StockInformation(QWidget):
         """Setup the layout and widgets of the home screen."""
         self.layout = QVBoxLayout()
         self.create_middle_part(self.layout)
-        self.create_footer(self.layout)
         self.setLayout(self.layout)
 
     def setup_styles(self):
@@ -41,7 +39,6 @@ class StockInformation(QWidget):
         style_file.open(QFile.ReadOnly | QFile.Text)
         style_sheet = str(style_file.readAll(), encoding='utf-8')
         self.setStyleSheet(style_sheet)
-
 
     def create_middle_part(self, layout):
         """Create and set up the central part of the stock information widget."""
@@ -62,6 +59,9 @@ class StockInformation(QWidget):
         self.scale_combo.addItems(["Day", "Month", "Year"])
         self.scale_combo.setMinimumWidth(120)
 
+        last_update_text = QLabel("Date of last update:")
+        last_update_value = QLabel(str(self.last_date))
+
         refresh_button = QPushButton("Refresh")
         refresh_button.clicked.connect(self.update_table)
         refresh_button.setFixedHeight(50)
@@ -69,6 +69,8 @@ class StockInformation(QWidget):
 
         controls_layout.addWidget(QLabel("Select a time period:"))
         controls_layout.addWidget(self.scale_combo)
+        controls_layout.addWidget(last_update_text)
+        controls_layout.addWidget(last_update_value)
         controls_layout.addStretch()
         controls_layout.addWidget(refresh_button)
 
@@ -92,18 +94,13 @@ class StockInformation(QWidget):
         layout.addWidget(middle_widget, 60)
 
         # Initialize the table with data
-        self.update_table()
+        self.create_table()
 
-    def update_table(self):
+    def create_table(self):
         """Populate the table based on the selected scale."""
-        #self.create_data()
-        # data = self.si_config.companies_day
         current_period = str(self.scale_combo.currentText())
-        print(current_period)
         self.si_config.period = current_period
 
-
-        #print(self.si_config.period)
         if self.si_config.period == "Day":
             data = self.si_config.companies_day
         elif self.si_config.period == "Month":
@@ -111,13 +108,12 @@ class StockInformation(QWidget):
         else:
             data = self.si_config.companies_year
 
-        #print(data)
         self.table_widget.setRowCount(len(data))
         self.buttons_dict = {}
 
         for i in range(len(data)):
             row = i
-            company_name = data[i][0]
+            company_name = Companies.get_companies_without_polish()[data[i][0]]
             value = data[i][1]
             growth = data[i][2]
             percentage_growth = data[i][3]
@@ -144,12 +140,28 @@ class StockInformation(QWidget):
             growth_item = QTableWidgetItem(f"{growth:.2f}")
             growth_item.setFlags(growth_item.flags() & ~Qt.ItemIsEditable)
             growth_item.setTextAlignment(Qt.AlignCenter)
+
+            if growth > 0:
+                growth_item.setForeground(QBrush(QColor(0, 128, 0)))
+            elif growth < 0:
+                growth_item.setForeground(QBrush(QColor(255, 0, 0)))
+            else:
+                growth_item.setForeground(QBrush(QColor(0, 0, 0)))
+
             self.table_widget.setItem(row, 3, growth_item)
 
             # Percentage growth (duplicate of growth)
             percentage_growth_item = QTableWidgetItem(f"{percentage_growth:.2f}%")
             percentage_growth_item.setFlags(percentage_growth_item.flags() & ~Qt.ItemIsEditable)
             percentage_growth_item.setTextAlignment(Qt.AlignCenter)
+
+            if percentage_growth > 0:
+                percentage_growth_item.setForeground(QBrush(QColor(0, 128, 0)))
+            elif growth < 0:
+                percentage_growth_item.setForeground(QBrush(QColor(255, 0, 0)))
+            else:
+                percentage_growth_item.setForeground(QBrush(QColor(0, 0, 0)))
+
             self.table_widget.setItem(row, 4, percentage_growth_item)
 
             # Trend icon
@@ -189,97 +201,50 @@ class StockInformation(QWidget):
             # Adjust the trend column width for larger icons
             self.table_widget.setColumnWidth(4, 40)
 
-    def get_data(self, scale):
-        """Simulate fetching growth data based on the selected scale."""
+    def update_table(self):
+        """Update the table based on the selected scale."""
+        current_period = str(self.scale_combo.currentText())
+        self.si_config.period = current_period
+        if self.si_config.period == "Day":
+            data = self.si_config.companies_day
+        elif self.si_config.period == "Month":
+            data = self.si_config.companies_month
+        else:
+            data = self.si_config.companies_year
 
-        # self.create_data()
-        #print(self.si_config.companies_day)
+        for row in range(len(data)):
+            company_id = data[row][0]
+            company_name = Companies.get_companies_without_polish()[company_id]
+            value = data[row][1]
+            growth = data[row][2]
+            percentage_growth = data[row][3]
 
-        data = {
-            "Day": [("Apple Inc.", 1.5), ("Microsoft Corporation", -0.3), ("Alphabet Inc.", 2.2),
-                    ("Amazon.com Inc.", 1.5),
-                    ("Berkshire Hathaway Inc.", -0.3), ("Tesla Inc.", 2.2), ("UnitedHealth Group Incorporated", 1.5),
-                    ("Johnson & Johnson", -0.3), ("Visa Inc.", 2.2), ("NVIDIA Corporation", 2.2),
-                    ("Exxon Mobil Corporation", 2.2), ("Taiwan Semiconductor Manufacturing Company Limited", 2.2)],
-            "Month": [("Apple Inc.", -1.2), ("Microsoft Corporation", 3.4), ("Alphabet Inc.", 0.8),
-                      ("Amazon.com Inc.", -1.2), ("Berkshire Hathaway Inc.", 3.4), ("Tesla Inc.", 0.8),
-                      ("UnitedHealth Group Incorporated", -1.2), ("Johnson & Johnson", 3.4), ("Visa Inc.", 0.8),
-                      ("NVIDIA Corporation", 0.8), ("Exxon Mobil Corporation", 0.8),
-                      ("Taiwan Semiconductor Manufacturing Company Limited", 0.8)],
-            "Year": [("Apple Inc.", 10.5), ("Microsoft Corporation", -2.1), ("Alphabet Inc.", 6.3),
-                     ("Amazon.com Inc.", 10.5), ("Berkshire Hathaway Inc.", -2.1), ("Tesla Inc.", 6.3),
-                     ("UnitedHealth Group Incorporated", 10.5), ("Microsoft Corporation", -2.1), ("Visa Inc.", 6.3),
-                     ("NVIDIA Corporation", 6.3), ("Exxon Mobil Corporation", 6.3),
-                     ("Taiwan Semiconductor Manufacturing Company Limited", 6.3)]
-        }
+            # Update widgets
+            self.table_widget.item(row, 0).setText(str(row + 1))
+            self.table_widget.item(row, 1).setText(company_name)
+            self.table_widget.item(row, 2).setText(f"{value:.2f}")
+            self.table_widget.item(row, 3).setText(f"{growth:.2f}")
+            self.table_widget.item(row, 4).setText(f"{percentage_growth:.2f}%")
+            self.update_growth_color(self.table_widget.item(row, 3), growth)
+            self.update_growth_color(self.table_widget.item(row, 4), growth)
+            self.update_trend_icon(self.table_widget.cellWidget(row, 5), growth)
+            plot_button = self.buttons_dict[company_name]
+            plot_button.setProperty("company_name", company_name)
+            plot_button.setProperty("growth", growth)
+            plot_button.setProperty("percentage_growth", (growth / 100) * 100)
 
-        if self.si_config.period == "day":
-            data.update({
-                "Day": self.si_config.companies_day,
-                "Month": [],
-                "Year": []
-            })
+    def update_growth_color(self, item, growth):
+        if growth > 0:
+            item.setForeground(QBrush(QColor(0, 128, 0)))
+        elif growth < 0:
+            item.setForeground(QBrush(QColor(255, 0, 0)))
+        else:
+            item.setForeground(QBrush(QColor(0, 0, 0)))
 
-
-
-
-        # """Fetch actual growth data based on the selected scale."""
-        # # Read data from CSV file
-        # with open('stock_data_without_polish.csv', newline='') as csvfile:
-        #     reader = csv.DictReader(csvfile)
-        #     stock_data = list(reader)
-        #
-        # # Get today's date and the second-to-last day
-        # today = datetime.today().date()
-        # second_last_day = today - timedelta(days=1)
-        #
-        # # Filter stock data for today and the second-to-last day
-        # today_data = [data for data in stock_data if datetime.strptime(data['Date'], '%Y-%m-%d').date() == today]
-        # second_last_day_data = [data for data in stock_data if
-        #                         datetime.strptime(data['Date'], '%Y-%m-%d').date() == second_last_day]
-        #
-        # # Calculate growth percentage for each company based on the second-to-last day compared to today's price
-        # growth_data = {}
-        # for company in stock_data[0].keys():
-        #     if company != 'Date':  # Exclude 'Date' column
-        #         # Get today's and second-to-last day's prices
-        #         today_price = float(today_data[0][company])
-        #         second_last_day_price = float(second_last_day_data[0][company])
-        #
-        #         # Calculate growth percentage
-        #         growth_percentage = ((today_price - second_last_day_price) / second_last_day_price) * 100
-        #         data["Day"].append((company, growth_percentage))
-        #         #growth_data[company] = growth_percentage
-        #
-        # # Sort companies by growth percentage
-        # #sorted_growth_data = sorted(growth_data.items(), key=lambda x: x[1], reverse=True)
-        #
-        # # Add the growth data for today to the "Day" variant in the data dictionary
-        # data["Day"] = growth_data
-
-        return data.get(scale, [])
-
-    def create_footer(self, layout):
-        """Create and configure the footer section."""
-        footer = QLabel()
-        footer.setObjectName("footer")
-        footer.setAlignment(Qt.AlignCenter)
-
-        footer_layout = QHBoxLayout()
-        footer.setLayout(footer_layout)
-
-        label = QLabel("WealthStable Advisor - © 2024")
-        label.setObjectName("tag_label")
-        label.setAlignment(Qt.AlignCenter)
-
-        additional_info = QLabel("Created by Wiktor Dybalski, Maksymilian Katolik")
-        additional_info.setObjectName("additional_info_label")
-        additional_info.setAlignment(Qt.AlignCenter)
-
-        footer_layout.addWidget(label)
-        footer_layout.addWidget(additional_info)
-
-        layout.addWidget(footer, 8)
+    def update_trend_icon(self, widget, growth):
+        icon_path = Utils.get_absolute_file_path("up_green.png" if growth > 0 else "down_red.png")
+        widget.layout().itemAt(0).widget().setPixmap(
+            QPixmap(icon_path).scaled(32, 32, Qt.KeepAspectRatio, Qt.SmoothTransformation))
 
     def create_data(self):
         self.stock_data_requested.emit()
