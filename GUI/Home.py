@@ -80,7 +80,6 @@ class HomeWindow(QWidget):
     def _init_ui(self):
         """Initialize the main user interface of the window."""
         self.setup_window_size()
-
         layout = QVBoxLayout()
         self.create_toolbar()
 

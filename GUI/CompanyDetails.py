@@ -1,9 +1,9 @@
 import pandas as pd
-from PySide6.QtWidgets import QWidget, QVBoxLayout, QLabel, QHBoxLayout
+from PySide6.QtWidgets import QWidget, QVBoxLayout, QLabel, QHBoxLayout, QFrame
 from PySide6.QtCore import Qt, QFile, Signal
 
 from Data.Companies import Companies
-from GUI.Plots.StockPriceStart import StockPriceChart
+from GUI.Plots.StockPriceChart import StockPriceChart
 from Configurators.CompanyConfigurator import CompanyConfigurator as config
 from Utils import Utils
 
@@ -24,33 +24,35 @@ class CompanyDetails(QWidget):
     def _init_ui(self):
         """Setup the layout and widgets of the home screen."""
         self.layout = QVBoxLayout()
-        self.create_header(self.company_name, self.layout)
-        self.create_middle_part(self.layout)
+        self.create_middle_part(self.company_name, self.layout)
         self.setLayout(self.layout)
 
     def setup_styles(self):
         """Read and apply the CSS stylesheet to the window."""
-        style_file = QFile(Utils.get_absolute_file_path("HomeWindowStyle.qss"))
+        style_file = QFile(Utils.get_absolute_file_path("CompanyDetailsStyle.qss"))
         style_file.open(QFile.ReadOnly | QFile.Text)
         style_sheet = str(style_file.readAll(), encoding='utf-8')
         self.setStyleSheet(style_sheet)
 
-
-    def create_header(self, company_name, layout):
-        """Create and configure the header section."""
-        header = QLabel(company_name)
-        header.setAlignment(Qt.AlignCenter)
-        header.setObjectName("header")
-        layout.addWidget(header, 10)
-        layout.setContentsMargins(0, 0, 0, 0)
-        layout.setSpacing(0)
-
-    def create_middle_part(self, layout):
+    def create_middle_part(self, company_name, layout):
         """Create and set up the central part of the home widget."""
         middle_widget = QWidget()
         middle_widget.setObjectName("middle_widget")
         middle_layout = QVBoxLayout()
         middle_widget.setLayout(middle_layout)
+
+        # Header section
+        header = QLabel(company_name)
+        header.setAlignment(Qt.AlignLeft)
+        header.setObjectName("header_company")
+        header.setFixedHeight(self.height() * 0.1)
+        middle_layout.addWidget(header)
+
+
+        divider = QFrame()
+        divider.setFrameShape(QFrame.HLine)
+        divider.setFrameShadow(QFrame.Sunken)
+        middle_layout.addWidget(divider)
 
         # Upper widget for Growth and Percentage Growth
         upper_widget = QWidget()
@@ -68,6 +70,8 @@ class CompanyDetails(QWidget):
         upper_layout.addWidget(self.percentage_growth_label)
         upper_layout.addWidget(self.percentage_growth_value)
 
+        middle_layout.addWidget(upper_widget)
+
         # Lower widget for Stock Price Chart
         self.stock_chart = StockPriceChart()
         lower_widget = QWidget()
@@ -75,6 +79,7 @@ class CompanyDetails(QWidget):
         lower_widget.setLayout(lower_layout)
         lower_layout.addWidget(self.stock_chart)
 
+        # Load and plot the stock data
         df = pd.read_csv(Utils.get_absolute_file_path("stock_data_without_polish.csv"))
 
         company_df = df.iloc[:, [0]]
@@ -89,8 +94,6 @@ class CompanyDetails(QWidget):
 
         self.stock_chart.plot(company_df)
 
-        # Add upper and lower widgets to the middle layout
-        middle_layout.addWidget(upper_widget)
         middle_layout.addWidget(lower_widget)
 
         layout.addWidget(middle_widget, 60)

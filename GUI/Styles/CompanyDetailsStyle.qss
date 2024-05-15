@@ -1,0 +1,53 @@
+/* HomeWindowStyle.qss */
+
+QWidget {
+    color: #333;
+    font-family: Arial, sans-serif;
+    font-size: 14px;
+}
+
+
+QLabel#growth_label, QLabel#percentage_growth_label {
+    font-weight: bold;
+    color: #555;
+}
+
+QLabel#growth_value, QLabel#percentage_growth_value {
+    color: #388E3C;
+}
+
+/* Stock Price Chart */
+QWidget#middle_widget {
+    background-color: #ffffff;
+    border: 2px solid #ddd;
+    border-radius: 10px;
+    margin: 10px;
+    padding: 20px;
+    padding-top: 50px
+}
+
+/* Button styles (if any) */
+QPushButton {
+    background-color: #4CAF50;
+    color: #ffffff;
+    border: none;
+    border-radius: 5px;
+    padding: 10px 20px;
+    font-size: 16px;
+}
+
+#header_company {
+    font-size: 40px;
+    font-weight: bold;
+    color: #333;
+    padding: 10px;
+    border: 5px solid black
+}
+
+QPushButton:hover {
+    background-color: #45A049;
+}
+
+QPushButton:pressed {
+    background-color: #388E3C;
+}
