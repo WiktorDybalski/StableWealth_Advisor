@@ -1,12 +1,13 @@
-QMainWindow {
-    background-color: #FFFFFF;  /* biały kolor tła */
-    border-radius: 20px;  /* zaokrąglenie krawędzi */
-}
-
 QWidget {
     background-color: #f2f3f5;
     font-family: 'Montserrat', sans-serif;
     font-size: 12pt;
+}
+
+HomeWindow {
+    background-color: #FFFFFF;
+    border-radius: 20px;
+    border: 5px solid red;
 }
 
 /* Styles for Header and Footer */

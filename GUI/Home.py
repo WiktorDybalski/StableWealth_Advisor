@@ -7,7 +7,6 @@ from GUI.SharesAssistantResults import SharesAssistantResults
 from GUI.Calculator import Calculator
 from GUI.StockInformation import StockInformation
 from GUI.CalculatorResults import CalculatorResults
-from GUI.Settings import Settings
 from GUI.Help import Help
 from GUI.CompanyDetails import CompanyDetails
 from Configurators.CompanyConfigurator import CompanyConfigurator as company_config
@@ -16,6 +15,7 @@ from Utils import Utils
 class HomeWindow(QWidget):
     def __init__(self, app):
         super().__init__()
+        self.setObjectName("HomeWindow")
         self.toolbar = None
         self.home_widget = None
         self.shares_assistant_results = None
@@ -26,7 +26,6 @@ class HomeWindow(QWidget):
         self.help = None
         self.shares_assistant_controller = None
         self.stock_controller = None
-        self.settings = None
         self.company_details = None
         self.company_config = company_config()
         self.app = app
@@ -58,7 +57,6 @@ class HomeWindow(QWidget):
         self.calculator = Calculator()
         self.calculator_results = CalculatorResults()
         self.stock_information = StockInformation()
-        self.settings = Settings()
         self.help = Help()
 
         self.shares_assistant.home_requested.connect(self.show_home)
@@ -68,13 +66,11 @@ class HomeWindow(QWidget):
         self.stock_information.stock_data_requested.connect(self.send_stock_data_to_stock_controller)
         self.stock_information.company_details_requested.connect(self.show_company_details)
 
-        self.settings.home_requested.connect(self.show_home)
         self.help.home_requested.connect(self.show_home)
 
         self.stackedWidget.addWidget(self.shares_assistant)
         self.stackedWidget.addWidget(self.calculator)
         self.stackedWidget.addWidget(self.stock_information)
-        self.stackedWidget.addWidget(self.settings)
         self.stackedWidget.addWidget(self.help)
 
     def _init_ui(self):

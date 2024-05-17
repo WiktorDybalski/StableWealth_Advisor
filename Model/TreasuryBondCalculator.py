@@ -14,10 +14,11 @@ ROD = "ROD"
 
 
 class TreasuryBondCalculator:
-    def __init__(self, params):
-        self.bond_type = params[0]
-        self.number_of_bonds = params[1]
-        self.curr_inflation = params[2]
+    def __init__(self):
+        self.period = None
+        self.curr_inflation = None
+        self.number_of_bonds = None
+        self.bond_type = None
         self.FUNCTION_MAP = {
             OTS: self.calculate_OTS,
             ROR: self.calculate_ROR,
@@ -29,13 +30,35 @@ class TreasuryBondCalculator:
             ROD: self.calculate_ROD
         }
 
-    def main(self, bond_type):
-        calculate_func = self.FUNCTION_MAP.get(bond_type)
-        if calculate_func:
-            return calculate_func()
-        else:
-            print("Unsupported bond type.")
-            return None
+    def main(self, params):
+        self.bond_type = params[0]
+        self.number_of_bonds = params[1]
+        self.curr_inflation = params[2]
+        self.period = params[3]
+        start_value = params[1] * 100
+        bond_period = 120
+
+        df = pd.DataFrame()
+        remaining_period = self.period
+
+        while remaining_period > bond_period:
+            current_period = min(remaining_period, bond_period)
+            self.period = current_period
+            new_df = self.FUNCTION_MAP.get(self.bond_type)(start_value)
+            df = pd.concat([df, new_df], ignore_index=True)
+            total_profit = df.iloc[-1, 6]
+            start_value += total_profit
+            remaining_period -= current_period
+
+        # For the remaining period (if less than bond period)
+        if remaining_period > 0:
+            self.period = remaining_period
+            final_df = self.FUNCTION_MAP.get(self.bond_type)(start_value)
+            df = pd.concat([df, final_df.iloc[:remaining_period // 12 + 1]], ignore_index=True)
+
+        df.index.name = "Year"
+        df.to_csv("calc_results.csv")
+        print(df)
 
     def calculate_OTS(self):
         pass
@@ -52,13 +75,11 @@ class TreasuryBondCalculator:
     def calculate_COI(self):
         pass
 
-    def calculate_EDO(self):
+    def calculate_EDO(self, start_value):
         redemption_fee_per_bond = 2
         n = self.number_of_bonds
-        redemption_fee = [0] + [redemption_fee_per_bond * n for _ in range(9)] + [0]
+        redemption_fee = [redemption_fee_per_bond * n for _ in range(9)] + [0] + [0]
         year_inflation = self.curr_inflation / 100
-        bond_value = 100
-        start_value = n * bond_value
         interest_rates = [0.07] + [(year_inflation + 0.015) for _ in range(9)]
         last_accumulated_inflation = 0
         last_accumulated_interests = 0
@@ -77,15 +98,15 @@ class TreasuryBondCalculator:
             interest_rate = interest_rates[i]
             interests = last_value * interest_rate
             accumulated_interests = last_accumulated_interests + interests
-            beam_belka_tax = BELKA_TAX * (accumulated_interests - redemption_fee[i + 1])
-            net_profit = self.calculate_net_profit(accumulated_interests, redemption_fee[i + 1])
+            beam_belka_tax = BELKA_TAX * (accumulated_interests - redemption_fee[i])
+            net_profit = self.calculate_net_profit(accumulated_interests, redemption_fee[i])
             accumulated_inflation = (1 - last_accumulated_inflation) * year_inflation + last_accumulated_inflation
             total_profit = (start_value + net_profit) * (1 - accumulated_inflation) - start_value
             total_profit_percent = total_profit / start_value
 
             row = [round(value, 2), round(interest_rate, 2), round(interests, 2),
                    round(accumulated_interests, 2),
-                   round(redemption_fee[i + 1], 2), round(beam_belka_tax, 2), round(net_profit, 2),
+                   round(redemption_fee[i], 2), round(beam_belka_tax, 2), round(net_profit, 2),
                    round(year_inflation * 100, 2), round(accumulated_inflation * 100, 2),
                    round(total_profit, 2), round(total_profit_percent * 100, 2)]
 
@@ -94,9 +115,6 @@ class TreasuryBondCalculator:
             last_value = value
             last_accumulated_interests = accumulated_interests
             last_accumulated_inflation = accumulated_inflation
-
-        data.index.name = "Year"
-        data.to_csv("calc_results.csv")
 
         return data
 
@@ -114,5 +132,5 @@ class TreasuryBondCalculator:
 
 
 if __name__ == "__main__":
-    calc = TreasuryBondCalculator(["EDO", 1000, 3])
-    print(calc.main("EDO"))
+    calc = TreasuryBondCalculator()
+    calc.main(["EDO", 1000, 3, 150])

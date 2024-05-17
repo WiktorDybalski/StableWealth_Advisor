@@ -26,7 +26,6 @@ class SharesAssistant(QWidget):
         """Initialize the user interface components of the SharesAssistant."""
         self.layout = QVBoxLayout()
         self._create_content_area()
-        self._create_footer(self.layout)
         self.setLayout(self.layout)
 
     def _load_styles(self):
@@ -100,27 +99,6 @@ class SharesAssistant(QWidget):
         self.layout.addWidget(content, 60)
 
 
-    def _create_footer(self, layout):
-        """Create and configure the footer section."""
-        footer = QLabel()
-        footer.setObjectName("footer")
-        footer.setAlignment(Qt.AlignCenter)
-
-        footer_layout = QHBoxLayout()
-        footer.setLayout(footer_layout)
-
-        label = QLabel("WealthStable Advisor - © 2024")
-        label.setObjectName("tag_label")
-        label.setAlignment(Qt.AlignCenter)
-
-        additional_info = QLabel("Created by Wiktor Dybalski, Maksymilian Katolik")
-        additional_info.setObjectName("additional_info_label")
-        additional_info.setAlignment(Qt.AlignCenter)
-
-        footer_layout.addWidget(label)
-        footer_layout.addWidget(additional_info)
-
-        layout.addWidget(footer, 8)
 
     def _add_button(self, layout, text, handler):
         """Helper method to create and add a button."""

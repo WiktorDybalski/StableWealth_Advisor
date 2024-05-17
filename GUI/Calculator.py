@@ -35,7 +35,6 @@ class Calculator(QWidget):
         """Setup the layout and widgets of the calculator home screen."""
         self.layout = QVBoxLayout()
         self.create_middle_part(self.layout)
-        self.create_footer(self.layout)
         self.setLayout(self.layout)
 
     def create_middle_part(self, layout):
@@ -127,27 +126,6 @@ class Calculator(QWidget):
 
         middle_widget.setLayout(middle_layout)
         layout.addWidget(middle_widget, 80)
-
-    def create_footer(self, layout):
-        """Create and configure the footer section."""
-        footer = QLabel()
-        footer.setObjectName("footer")
-        footer.setAlignment(Qt.AlignCenter)
-
-        footer_layout = QHBoxLayout()
-        footer.setLayout(footer_layout)
-
-        label = QLabel("WealthStable Advisor - © 2024")
-        label.setObjectName("tag_label")
-        label.setAlignment(Qt.AlignCenter)
-
-        additional_info = QLabel("Created by Wiktor Dybalski, Maksymilian Katolik")
-        additional_info.setObjectName("additional_info_label")
-        additional_info.setAlignment(Qt.AlignCenter)
-
-        footer_layout.addWidget(label)
-        footer_layout.addWidget(additional_info)
-        layout.addWidget(footer, 8)
 
     def set_bond_type(self, bond_type):
         """Set the selected bond type."""
