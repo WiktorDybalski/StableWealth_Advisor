@@ -1,3 +1,4 @@
+import math
 from functools import partial
 
 import pandas as pd
@@ -8,6 +9,7 @@ from PySide6.QtCore import Qt, QFile, Signal, QSize
 from Configurators.StockInformationConfigurator import StockInformationConfigurator as si_config
 from Utils import Utils
 from Configurators.CompanyConfigurator import CompanyConfigurator as config
+from math import isnan
 
 from Data.Companies import Companies
 
@@ -121,10 +123,10 @@ class StockInformation(QWidget):
             row = i
             company_name = Companies.get_companies_without_polish()[data[i][0]]
             value = data[i][1]
-            if value is None:
-                pass
             growth = data[i][2]
             percentage_growth = data[i][3]
+            if math.isnan(value) or math.isnan(growth):
+                pass
 
             # Nr column
             nr_item = QTableWidgetItem(str(row + 1))
@@ -224,7 +226,12 @@ class StockInformation(QWidget):
             company_id = data[row][0]
             company_name = Companies.get_companies_without_polish()[company_id]
             value = data[row][1]
+            print(company_name, value, type(value))
+            print()
             growth = data[row][2]
+            if math.isnan(value) or math.isnan(growth):
+                pass
+
             percentage_growth = data[row][3]
 
             # Update widgets
