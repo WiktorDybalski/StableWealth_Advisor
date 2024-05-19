@@ -25,6 +25,7 @@ class HomeWindow(QWidget):
         self.stock_information = None
         self.help = None
         self.shares_assistant_controller = None
+        self.calc_controller = None
         self.stock_controller = None
         self.company_details = None
         self.company_config = company_config()
@@ -36,15 +37,22 @@ class HomeWindow(QWidget):
     def set_sa_controller(self, controller):
         self.shares_assistant_controller = controller
 
+    def set_calc_controller(self, controller):
+        self.calc_controller = controller
+
     def set_si_controller(self, controller):
         self.stock_controller = controller
 
     def setup_window_size(self):
         screen = self.app.primaryScreen().size()
-        width = screen.width() * 0.9
-        height = screen.height() * 0.88
-        left = screen.width() * 0.05
-        top = screen.height() * 0.05
+        # width = screen.width() * 0.9
+        # height = screen.height() * 0.88
+        # left = screen.width() * 0.05
+        # top = screen.height() * 0.05
+        width = screen.width()
+        height = screen.height()
+        left = screen.width() * 0
+        top = screen.height() * 0
         self.setWindowFlag(Qt.FramelessWindowHint)
         # self.setAttribute(Qt.WA_TranslucentBackground)
         self.setGeometry(left, top, width, height)
@@ -61,7 +69,9 @@ class HomeWindow(QWidget):
 
         self.shares_assistant.home_requested.connect(self.show_home)
         self.shares_assistant.simulation_requested.connect(self.send_data_to_controller)
+
         self.calculator.home_requested.connect(self.show_home)
+        self.calculator.table_requested.connect(self.wake_bond_controller)
 
         self.stock_information.stock_data_requested.connect(self.send_stock_data_to_stock_controller)
         self.stock_information.company_details_requested.connect(self.show_company_details)
@@ -310,6 +320,9 @@ class HomeWindow(QWidget):
 
     def send_data_to_controller(self):
         self.shares_assistant_controller.run_simulation()
+
+    def wake_bond_controller(self):
+        self.calc_controller.run_calculation()
 
     def show_home(self):
         """Return to the home screen view."""

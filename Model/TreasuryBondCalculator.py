@@ -4,6 +4,8 @@ import matplotlib.pyplot as plt
 NOMINAL_VALUE_OF_OBLIGATION = 100
 BELKA_TAX = 0.19
 
+from Data.Bonds import Bonds
+
 class TreasuryBondCalculator:
     def __init__(self):
         self.period = None
@@ -13,18 +15,21 @@ class TreasuryBondCalculator:
         self.NBP = None
         self.last_row_list = []
         self.start_value = 0
-        self.bonds = {
-            "ROD": (7.25, 2.0, "Year", 2, 144, True, None),
-            "EDO": (7, 1.5, "Year", 2, 120, True, None),
-            "ROS": (6.95, 1.75, "Year", 0.7, 72, True, None),
-            "TOS": (6.6, None, "Year", 0.7, 36, True, None),
-            "COI": (6.75, 1.25, "Year", 0.7, 48, False, None),
-            "OTS": (3/12, None, "Month", 0, 3, False, None),  # 3% roczne oprcentowanie ale na miesiac to 0,25
-            "ROR": (6.25/12, None, "Month", 0.5, 12, False, 0),  # bierzemy % NBP i dzielimy przez 12; 0 bo dodajemy 0 do NBP
-            "DOR": (6.5 / 12, None, "Month", 0.7, 24, False, 0.5),  # bierzemy % NBP i dzielimy przez 12
-        }
+        self.bonds = Bonds.get_bonds()
+        # self.bonds = {
+        #     "ROD": (7.25, 2.0, "Year", 2, 144, True, None),
+        #     "EDO": (7, 1.5, "Year", 2, 120, True, None),
+        #     "ROS": (6.95, 1.75, "Year", 0.7, 72, True, None),
+        #     "TOS": (6.6, None, "Year", 0.7, 36, True, None),
+        #     "COI": (6.75, 1.25, "Year", 0.7, 48, False, None),
+        #     "OTS": (3/12, None, "Month", 0, 3, False, None),  # 3% roczne oprcentowanie ale na miesiac to 0,25
+        #     "ROR": (6.25/12, None, "Month", 0.5, 12, False, 0),  # bierzemy % NBP i dzielimy przez 12; 0 bo dodajemy 0 do NBP
+        #     "DOR": (6.5 / 12, None, "Month", 0.7, 24, False, 0.5),  # bierzemy % NBP i dzielimy przez 12
+        # }
 
-    def main(self, params):
+    def bond_result(self, params):
+        #print(params)
+        self.last_row_list = []
         self.bond_type = params[0]
         self.number_of_bonds = params[1]
         self.curr_inflation = params[2]
@@ -97,7 +102,7 @@ class TreasuryBondCalculator:
         plt.show()
 
     def calculate_bond(self, start_value):
-        print("calculating bond")
+        #print("calculating bond")
         redemption_fee_per_bond = self.bonds[self.bond_type][3]
         n = self.number_of_bonds
 
@@ -128,6 +133,7 @@ class TreasuryBondCalculator:
         if nbp is not None:
             interest_rates = [percetnage_initial / 100] + [(((nbp+self.NBP)/12) / 100) for _ in range(cycles - 1)]
 
+        print(self.last_row_list)
         if self.last_row_list:
             print(self.last_row_list[8])
             last_accumulated_inflation = self.last_row_list[8] / 100
@@ -157,16 +163,19 @@ class TreasuryBondCalculator:
                 net_profit = accumulated_interests - redemption_fee[i] - belka_tax
             elif not capitalaised:
                 value = start_value
-                belka_tax = BELKA_TAX * accumulated_interests
+                belka_tax = BELKA_TAX * interests
             accumulated_inflation = (1 - last_accumulated_inflation) * year_inflation + last_accumulated_inflation
+            if i == 0:
+                print(last_accumulated_inflation)
+                print(accumulated_inflation)
             total_profit = (start_value + net_profit) * (1 - accumulated_inflation) - self.start_value
             total_profit_percent = total_profit / self.start_value
 
-            row = [round(value, 2), round(interest_rate, 2), round(interests, 2),
+            row = [round(value, 2), str(round(interest_rate*100, 4))+"%", round(interests, 2),
                    round(accumulated_interests, 2),
                    round(redemption_fee[i], 2), round(belka_tax, 2), round(net_profit, 2),
                    round(year_inflation * 100, 2), round(accumulated_inflation * 100, 2),
-                   round(total_profit, 2), round(total_profit_percent * 100, 2)]
+                   round(total_profit, 2), str(round(total_profit_percent * 100, 2))+"%"]
 
             data.loc[len(data)] = row
 
@@ -185,8 +194,12 @@ class TreasuryBondCalculator:
     def calculate_net_profit(self, accumulated_interests, redemption_fee):
         return accumulated_interests - redemption_fee - BELKA_TAX * (accumulated_interests - redemption_fee)
 
+    def set_controller(self, controller):
+        self.controller = controller
+
 if __name__ == "__main__":
     calc = TreasuryBondCalculator()
 
-    # calc.main(["TOS", 1000, 12.4, 36, None])
-    calc.main(["ROR", 1000, 12.4, 24, 5.25])
+    #calc.bond_result(["TOS", 1000, 12.4, 72, None])
+    #calc.bond_result(["ROR", 1000, 12.4, 24, 5.25])
+    #calc.bond_result(['EDO', 1000, 12.4, 10, None]) # nie dziala
