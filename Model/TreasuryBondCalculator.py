@@ -151,7 +151,8 @@ class TreasuryBondCalculator:
             accumulated_interests = last_accumulated_interests + interests
             belka_tax = BELKA_TAX * (accumulated_interests - redemption_fee[i])
             net_profit = self.calculate_net_profit(accumulated_interests, redemption_fee[i])
-            if not capitalaised and nbp:
+            if not capitalaised and nbp is not None:
+                value = start_value
                 belka_tax = BELKA_TAX * interests
                 net_profit = accumulated_interests - redemption_fee[i] - belka_tax
             elif not capitalaised:
@@ -188,4 +189,4 @@ if __name__ == "__main__":
     calc = TreasuryBondCalculator()
 
     # calc.main(["TOS", 1000, 12.4, 36, None])
-    calc.main(["EDO", 1000, 12.4, 240, None])
+    calc.main(["ROR", 1000, 12.4, 24, 5.25])
