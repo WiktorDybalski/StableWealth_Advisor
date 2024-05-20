@@ -1,3 +1,17 @@
+QLabel {
+    color: #333;
+    font-size: 14px;
+    font-family: Arial, sans-serif;
+    padding: 2px;
+}
+
+#content_layout {
+    background-color: #F9F9F9;
+    padding: 20px;
+    border-radius: 10px;
+    border: 1px solid #D3D3D3;
+}
+
 /* List Widget Styles */
 QListWidget {
     border: 2px solid #bdc3c7;
@@ -47,4 +61,26 @@ QPushButton:hover {
 #input_layout {
     margin: 20px;
     padding: 20px
+}
+
+#label {
+    font-size: 14px;
+    color: #555;
+    margin-top: 10px;
+}
+
+#min_return_label, #max_return_label, #min_risk_label, #max_risk_label, #return_input_min, #return_input_max, #risk_input_min, #risk_input_max {
+    padding: 10px;
+    border: 1px solid #D3D3D3;
+    border-radius: 5px;
+    font-size: 14px;
+    margin-top: 10px;
+    margin-right: 10px;
+    margin-left: 10px;
+}
+
+#divider {
+    background-color: #D3D3D3;
+    height: 2px;
+    margin: 10px 0;
 }

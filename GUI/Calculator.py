@@ -1,6 +1,6 @@
 from PySide6.QtWidgets import QWidget, QTableWidgetItem, QVBoxLayout, QLabel, QHBoxLayout, QPushButton, QScrollArea, \
     QComboBox, QFrame, \
-    QLineEdit, QSlider, QCheckBox, QTableWidget, QMessageBox, QScrollBar
+    QLineEdit, QSlider, QCheckBox, QTableWidget, QMessageBox, QScrollBar, QSizePolicy, QHeaderView, QGridLayout
 from PySide6.QtCore import Qt, QFile, Signal
 
 from Configurators.CalculatorConfigurator import CalculatorConfigurator as config
@@ -22,14 +22,14 @@ class Calculator(QWidget):
         self.config = config()
         self.bond_type = ""
         self.amount = 1000
-        self.years = 10
+        # self.years = 10
         self.inflation_rate = 12.4
-        self.months_amount = 12
-        self.NBP = 5.25
+        self.months_amount = 120
+        self.NBP = ''
         #self.annual_inflation = True
         self.bond_results = None
         self.results_table = None
-        self.table_placeholder = None
+        self.middle_layout = None
         self._init_ui()
         self.load_styles()
 
@@ -53,107 +53,95 @@ class Calculator(QWidget):
         """Create the main content of the calculator."""
         middle_widget = QWidget()
         middle_widget.setObjectName("middle_widget")
-        middle_layout = QVBoxLayout()
-        middle_layout.setAlignment(Qt.AlignTop)
+        self.middle_layout = QVBoxLayout()  # store middle layout reference
+        self.middle_layout.setAlignment(Qt.AlignTop)
 
         # Section Title
         title = QLabel("Treasury Bonds Calculator")
         title.setObjectName("section_title")
         title.setAlignment(Qt.AlignCenter)
-        middle_layout.addWidget(title)
+        self.middle_layout.addWidget(title)
 
         # Divider Line
         divider = QFrame()
         divider.setObjectName("divider")
         divider.setFrameShape(QFrame.HLine)
         divider.setFrameShadow(QFrame.Sunken)
-        middle_layout.addWidget(divider)
+        self.middle_layout.addWidget(divider)
 
         # Bond Type Selection
         bonds_type_label = QLabel("Select Bond Type")
         bonds_type_label.setObjectName("label")
         bonds_type_label.setAlignment(Qt.AlignLeft)
-        middle_layout.addWidget(bonds_type_label)
+        self.middle_layout.addWidget(bonds_type_label)
 
         bonds_type_checkbox = QComboBox()
         bonds_type_checkbox.setObjectName("bonds_type_checkbox")
-        bond_types = ["OTS", "ROR", "DOR", "TOS", "COI", "EDO", "ROS", "ROD"]
+        bond_types = ["EDO", "OTS", "ROR", "DOR", "TOS", "COI", "ROS", "ROD"]
         bonds_type_checkbox.addItems(bond_types)
-        # bonds_type_checkbox.currentIndexChanged[str].connect(self.set_bond_type)
-        middle_layout.addWidget(bonds_type_checkbox)
+        self.middle_layout.addWidget(bonds_type_checkbox)
 
         # Belka tax info
         belka_tax_label = QLabel("Belka Tax = 19%")
         belka_tax_label.setObjectName("label")
         belka_tax_label.setAlignment(Qt.AlignLeft)
-        middle_layout.addWidget(belka_tax_label)
+        self.middle_layout.addWidget(belka_tax_label)
 
-        # Amount and Cycles Entries in a Horizontal Layout
-        amount_cycles_layout = QHBoxLayout()
+        # Create a grid layout for the labels and input boxes
+        grid_layout = QGridLayout()
 
-        # Amount Entry
+        # Amount and Cycles Entries
         amount_label = QLabel("Investment Amount (in PLN)")
         amount_label.setObjectName("label")
         amount_label.setAlignment(Qt.AlignLeft)
-        amount_cycles_layout.addWidget(amount_label)
+        grid_layout.addWidget(amount_label, 0, 0)
 
         self.amount_input = QLineEdit(str(self.amount))
         self.amount_input.setObjectName("amount_input")
-        amount_cycles_layout.addWidget(self.amount_input)
+        grid_layout.addWidget(self.amount_input, 0, 1)
 
-        # Cycles Entry
         months_amount_label = QLabel("Number of Months")
         months_amount_label.setObjectName("label")
         months_amount_label.setAlignment(Qt.AlignLeft)
-        amount_cycles_layout.addWidget(months_amount_label)
+        grid_layout.addWidget(months_amount_label, 0, 2)
 
         self.months_amount_input = QLineEdit(str(self.months_amount))
         self.months_amount_input.setObjectName("cycles_input")
-        amount_cycles_layout.addWidget(self.months_amount_input)
+        grid_layout.addWidget(self.months_amount_input, 0, 3)
 
-        # Add the horizontal layout to the main layout
-        middle_layout.addLayout(amount_cycles_layout)
-
-
-        # Inflation Rate and NBP Rate Entries in a Horizontal Layout
-        inflation_nbp_layout = QHBoxLayout()
-
-        # Inflation Rate Entry
+        # Inflation Rate and NBP Rate Entries
         inflation_rate_label = QLabel("Inflation Rate (%):")
         inflation_rate_label.setObjectName("label")
         inflation_rate_label.setAlignment(Qt.AlignLeft)
-        inflation_nbp_layout.addWidget(inflation_rate_label)
+        grid_layout.addWidget(inflation_rate_label, 1, 0)
 
         self.inflation_rate_input = QLineEdit(str(self.inflation_rate))
         self.inflation_rate_input.setObjectName("inflation_rate_input")
-        inflation_nbp_layout.addWidget(self.inflation_rate_input)
+        grid_layout.addWidget(self.inflation_rate_input, 1, 1)
 
-        # NBP Entry
         NBP_label = QLabel("NBP Reference Rate:")
         NBP_label.setObjectName("label")
         NBP_label.setAlignment(Qt.AlignLeft)
-        inflation_nbp_layout.addWidget(NBP_label)
+        grid_layout.addWidget(NBP_label, 1, 2)
 
         self.NBP_input = QLineEdit(str(self.NBP))
         self.NBP_input.setObjectName("NBP_input")
-        inflation_nbp_layout.addWidget(self.NBP_input)
+        grid_layout.addWidget(self.NBP_input, 1, 3)
 
-        # Add the horizontal layout to the main layout
-        middle_layout.addLayout(inflation_nbp_layout)
-
+        # Add the grid layout to the main layout
+        self.middle_layout.addLayout(grid_layout)
 
         # Calculation Button
         calculate_button = QPushButton("Calculate")
         calculate_button.setObjectName("calculate_button")
         calculate_button.clicked.connect(self.display_calculator_results)
-        middle_layout.addWidget(calculate_button)
+        self.middle_layout.addWidget(calculate_button)
 
         # Placeholder for the results table
-        self.table_placeholder = QWidget()
-        middle_layout.addWidget(self.table_placeholder)
+        self.results_table = QTableWidget()
+        self.middle_layout.addWidget(self.results_table)
 
-
-        middle_widget.setLayout(middle_layout)
+        middle_widget.setLayout(self.middle_layout)
         layout.addWidget(middle_widget, 80)
 
     def set_bond_type(self, bond_type):
@@ -223,12 +211,16 @@ class Calculator(QWidget):
         csv_path = Utils.get_absolute_file_path("calc_results.csv")
         self.bond_results = pd.read_csv(csv_path)
 
-        # Check if the table already exists
-        if self.results_table is None:
-            # Create a new QTableWidget if it doesn't exist
-            self.results_table = QTableWidget()
-            self.layout.replaceWidget(self.table_placeholder, self.results_table)
-            self.layout.addWidget(self.results_table)
+        # # Check if the table already exists
+        # if self.results_table is None:
+        #     # Create a new QTableWidget if it doesn't exist
+        #     self.results_table = QTableWidget()
+        #     #self.layout.replaceWidget(self.table_placeholder, self.results_table)
+        #     self.layout.addWidget(self.results_table)
+
+        if self.results_table is not None:
+            self.results_table.setRowCount(0)
+            self.results_table.setColumnCount(0)
 
         # Update the existing table
         self.results_table.setRowCount(len(self.bond_results))
@@ -236,12 +228,27 @@ class Calculator(QWidget):
         self.results_table.setHorizontalHeaderLabels(self.bond_results.columns)
         self.results_table.setVerticalScrollBar(QScrollBar())
 
+        # Hide the vertical headers
+        self.results_table.verticalHeader().setVisible(False)
+
         # Populate the table with CSV data
         for i in range(len(self.bond_results)):
             for j in range(len(self.bond_results.columns)):
                 item = QTableWidgetItem(str(self.bond_results.iat[i, j]))
+                item.setTextAlignment(Qt.AlignCenter)  # Center align the text
                 self.results_table.setItem(i, j, item)
 
+        # Resize columns to fit contents
+        self.results_table.resizeColumnsToContents()
+        self.results_table.horizontalHeader().setStretchLastSection(True)
+        # header = self.results_table.horizontalHeader()
+        # header.setSectionResizeMode(QHeaderView.Stretch)
+
+        self.results_table.setSelectionBehavior(QTableWidget.SelectRows)
+        self.results_table.setSelectionMode(QTableWidget.SingleSelection)
+
+        # Make table occupy full horizontal space
+        self.results_table.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
         # generting and showing the graph
 
 

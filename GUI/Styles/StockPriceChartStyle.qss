@@ -45,3 +45,11 @@ QToolTip {
 QValueAxis::gridLine, QDateTimeAxis::gridLine {
     color: #e0e0e0;
 }
+
+QLabel {
+    color: #333;
+    font-size: 14px;
+    font-family: Arial, sans-serif;
+    padding: 2px;
+}
+

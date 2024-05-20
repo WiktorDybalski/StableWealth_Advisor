@@ -98,6 +98,8 @@ class StockPriceChart(QChartView):
         axisX.setGridLineVisible(True)
         axisY.setGridLineVisible(True)
 
+        self.chart.legend().setVisible(False)
+        #self.chart.legend().setObjectName("Price")
         series.hovered.connect(self.show_tooltip)
 
     def show_tooltip(self, point, state):

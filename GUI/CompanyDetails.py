@@ -1,5 +1,6 @@
 import pandas as pd
-from PySide6.QtWidgets import QWidget, QVBoxLayout, QLabel, QHBoxLayout, QFrame
+from PySide6.QtGui import QFont
+from PySide6.QtWidgets import QWidget, QVBoxLayout, QLabel, QHBoxLayout, QFrame, QGridLayout
 from PySide6.QtCore import Qt, QFile, Signal
 
 from Data.Companies import Companies
@@ -43,9 +44,18 @@ class CompanyDetails(QWidget):
 
         # Header section
         header = QLabel(company_name)
-        header.setAlignment(Qt.AlignLeft)
+        header.setAlignment(Qt.AlignCenter)
         header.setObjectName("header_company")
         header.setFixedHeight(self.height() * 0.1)
+
+        header.setStyleSheet("font-size: 20px; font-weight: bold;")
+
+        # # Increase font size and make it bold
+        # font = QFont()
+        # font.setPointSize(100)  # Change the font size as needed
+        # font.setBold(True)  # Make the font bold
+        # header.setFont(font)
+
         middle_layout.addWidget(header)
 
 
@@ -54,23 +64,36 @@ class CompanyDetails(QWidget):
         divider.setFrameShadow(QFrame.Sunken)
         middle_layout.addWidget(divider)
 
-        # Upper widget for Growth and Percentage Growth
-        upper_widget = QWidget()
-        upper_layout = QHBoxLayout()
-        upper_widget.setLayout(upper_layout)
+        # Inside create_middle_part method
+        upper_layout = QGridLayout()
 
         self.growth_label = QLabel("Growth:")
+        self.growth_label.setObjectName("label")
+        self.growth_label.setAlignment(Qt.AlignRight)
+        self.growth_label.setStyleSheet("font-size: 14px;")
+        upper_layout.addWidget(self.growth_label, 0, 0)
+
         self.growth_value = QLabel(f"{self.company_config.growth:.2f}")
+        self.growth_value.setObjectName("label")
+        self.growth_value.setAlignment(Qt.AlignLeft)
+        self.growth_value.setStyleSheet("font-size: 14px;")
+        upper_layout.addWidget(self.growth_value, 0, 1)
 
         self.percentage_growth_label = QLabel("Percentage Growth:")
+        self.percentage_growth_label.setObjectName("label")
+        self.percentage_growth_label.setAlignment(Qt.AlignRight)
+        self.percentage_growth_label.setStyleSheet("font-size: 14px;")
+        upper_layout.addWidget(self.percentage_growth_label, 0, 2)
+
         self.percentage_growth_value = QLabel(f"{self.company_config.percentage_growth:.2f}%")
+        self.percentage_growth_value.setObjectName("label")
+        self.percentage_growth_value.setAlignment(Qt.AlignLeft)
+        self.percentage_growth_value.setStyleSheet("font-size: 14px;")
+        upper_layout.addWidget(self.percentage_growth_value, 0, 3)
 
-        upper_layout.addWidget(self.growth_label)
-        upper_layout.addWidget(self.growth_value)
-        upper_layout.addWidget(self.percentage_growth_label)
-        upper_layout.addWidget(self.percentage_growth_value)
+        # Add widgets to the layout
 
-        middle_layout.addWidget(upper_widget)
+        middle_layout.addLayout(upper_layout)
 
         # Lower widget for Stock Price Chart
         self.stock_chart = StockPriceChart()

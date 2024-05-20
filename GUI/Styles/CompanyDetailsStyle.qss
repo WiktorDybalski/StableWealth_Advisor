@@ -1,11 +1,15 @@
-/* HomeWindowStyle.qss */
-
 QWidget {
     color: #333;
     font-family: Arial, sans-serif;
     font-size: 14px;
 }
 
+QLabel {
+    color: #333;
+    font-size: 14px;
+    font-family: Arial, sans-serif;
+    padding: 2px;
+}
 
 QLabel#growth_label, QLabel#percentage_growth_label {
     font-weight: bold;
@@ -37,11 +41,12 @@ QPushButton {
 }
 
 #header_company {
-    font-size: 40px;
+    font-size: 70px;
     font-weight: bold;
     color: #333;
     padding: 10px;
     border: 5px solid black
+    text-align: center;
 }
 
 QPushButton:hover {
@@ -51,3 +56,31 @@ QPushButton:hover {
 QPushButton:pressed {
     background-color: #388E3C;
 }
+
+#upper_layout {
+    background-color: #F9F9F9;
+    padding: 20px;
+    border-radius: 10px;
+    border: 1px solid #D3D3D3;
+}
+
+#middle_widget {
+    background-color: #F9F9F9;
+    padding: 20px;
+    border-radius: 10px;
+    border: 1px solid #D3D3D3;
+}
+
+QLabel {
+    color: #333;
+    font-size: 14px;
+    font-family: Arial, sans-serif;
+    padding: 2px;
+}
+
+#label {
+    font-size: 14px;
+    color: #555;
+    margin-top: 10px;
+}
+

@@ -1,6 +1,6 @@
 from PySide6.QtCore import Qt, QPoint, QFile, Qt, Signal, QPropertyAnimation, QRect
 from PySide6.QtWidgets import QWidget, QVBoxLayout, QLabel, QHBoxLayout, QPushButton, QListWidget, QAbstractItemView, \
-    QMessageBox, QAbstractItemView, QLineEdit, QFrame, QGridLayout
+    QMessageBox, QAbstractItemView, QLineEdit, QFrame, QGridLayout, QSpacerItem, QSizePolicy
 from Data.Companies import Companies
 from Utils import Utils
 from Configurators.SharesAssistantConfigurator import SharesAssistantConfigurator as config
@@ -41,47 +41,111 @@ class SharesAssistant(QWidget):
     def _create_content_area(self):
         """Setup the central content area of the widget."""
         content = QWidget(self)
-        content_layout = QVBoxLayout()
+        content_layout = QVBoxLayout(content)
         content.setObjectName("middle_widget")
 
-        # Input fields for desired return and risk
-        input_layout = QGridLayout()
+        # Wrapper widget for input layout
+        input_wrapper = QWidget()
+        input_wrapper.setObjectName("input_wrapper")  # Add an object name for styling
+        input_layout = QGridLayout(input_wrapper)
         input_layout.setObjectName("input_layout")
         input_layout.setHorizontalSpacing(15)
         input_layout.setVerticalSpacing(8)
 
+
+        #############################
+        # Create a grid layout for the labels and input boxes
+        grid_layout = QGridLayout()
+
+        # Amount and Cycles Entries
+        min_return_label = QLabel("Desired Min Return:")
+        min_return_label.setObjectName("label")
+        min_return_label.setAlignment(Qt.AlignLeft)
+        grid_layout.addWidget(min_return_label, 0, 0)
+
         self.return_input_min = QLineEdit(self)
         self.return_input_min.setPlaceholderText("Minimum Return (%)")
         self.return_input_min.setObjectName("input_field")
+        grid_layout.addWidget(self.return_input_min, 0, 1)
+
+        max_return_label = QLabel("Desired Max Return:")
+        max_return_label.setObjectName("label")
+        max_return_label.setAlignment(Qt.AlignLeft)
+        grid_layout.addWidget(max_return_label, 0, 2)
 
         self.return_input_max = QLineEdit(self)
         self.return_input_max.setPlaceholderText("Maximum Return (%)")
         self.return_input_max.setObjectName("input_field")
+        grid_layout.addWidget(self.return_input_max, 0, 3)
+
+        # Inflation Rate and NBP Rate Entries
+        min_risk_label = QLabel("Desired Min Risk:")
+        min_risk_label.setObjectName("label")
+        min_risk_label.setAlignment(Qt.AlignLeft)
+        grid_layout.addWidget(min_risk_label, 1, 0)
 
         self.risk_input_min = QLineEdit(self)
         self.risk_input_min.setPlaceholderText("Minimum Risk (%)")
         self.risk_input_min.setObjectName("input_field")
+        grid_layout.addWidget(self.risk_input_min, 1, 1)
+
+        max_risk_label = QLabel("Desired Max Risk:")
+        max_risk_label.setObjectName("label")
+        max_risk_label.setAlignment(Qt.AlignLeft)
+        grid_layout.addWidget(max_risk_label, 1, 2)
 
         self.risk_input_max = QLineEdit(self)
         self.risk_input_max.setPlaceholderText("Maximum Risk (%)")
         self.risk_input_max.setObjectName("input_field")
+        grid_layout.addWidget(self.risk_input_max, 1, 3)
 
-        self.return_input_min.textChanged.connect(self.on_return_input_changed)
-        self.return_input_max.textChanged.connect(self.on_return_input_changed)
-        self.risk_input_min.textChanged.connect(self.on_risk_input_changed)
-        self.risk_input_max.textChanged.connect(self.on_risk_input_changed)
+        # Add the grid layout to the main layout
+        content_layout.addLayout(grid_layout)
 
-        input_layout.addWidget(QLabel("Desired Min Return:"), 0, 0)
-        input_layout.addWidget(self.return_input_min, 0, 1)
-        input_layout.addWidget(QLabel("Desired Max Return:"), 1, 0)
-        input_layout.addWidget(self.return_input_max, 1, 1)
+        ##############################
+        #
+        # self.return_input_min = QLineEdit(self)
+        # self.return_input_min.setPlaceholderText("Minimum Return (%)")
+        # self.return_input_min.setObjectName("input_field")
+        #
+        # self.return_input_max = QLineEdit(self)
+        # self.return_input_max.setPlaceholderText("Maximum Return (%)")
+        # self.return_input_max.setObjectName("input_field")
+        #
+        # self.risk_input_min = QLineEdit(self)
+        # self.risk_input_min.setPlaceholderText("Minimum Risk (%)")
+        # self.risk_input_min.setObjectName("input_field")
+        #
+        # self.risk_input_max = QLineEdit(self)
+        # self.risk_input_max.setPlaceholderText("Maximum Risk (%)")
+        # self.risk_input_max.setObjectName("input_field")
+        #
+        # self.return_input_min.textChanged.connect(self.on_return_input_changed)
+        # self.return_input_max.textChanged.connect(self.on_return_input_changed)
+        # self.risk_input_min.textChanged.connect(self.on_risk_input_changed)
+        # self.risk_input_max.textChanged.connect(self.on_risk_input_changed)
+        #
+        # input_layout.addWidget(QLabel("Desired Min Return:"), 0, 0)
+        # input_layout.addWidget(self.return_input_min, 0, 1)
+        # input_layout.addWidget(QLabel("Desired Max Return:"), 0, 2)
+        # input_layout.addWidget(self.return_input_max, 0, 3)
+        #
+        # input_layout.addWidget(QLabel("Desired Min Risk:"), 1, 0)
+        # input_layout.addWidget(self.risk_input_min, 1, 1)
+        # input_layout.addWidget(QLabel("Desired Max Risk:"), 1, 2)
+        # input_layout.addWidget(self.risk_input_max, 1, 3)
+        #
+        # content_layout.addWidget(input_wrapper)
+        #
+        # content_layout.addLayout(input_layout)
 
-        input_layout.addWidget(QLabel("Desired Min Risk:"), 2, 0)
-        input_layout.addWidget(self.risk_input_min, 2, 1)
-        input_layout.addWidget(QLabel("Desired Max Risk:"), 3, 0)
-        input_layout.addWidget(self.risk_input_max, 3, 1)
-
-        content_layout.addLayout(input_layout)
+        # Divider Line
+        divider = QFrame()
+        divider.setObjectName("divider")
+        divider.setFrameShape(QFrame.HLine)
+        divider.setFrameShadow(QFrame.Sunken)
+        # divider.setVisible(False)
+        content_layout.addWidget(divider)
 
         # Buttons Layout
         buttons_layout = QHBoxLayout()

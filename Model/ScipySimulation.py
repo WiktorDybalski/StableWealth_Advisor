@@ -123,8 +123,7 @@ class Simulation:
         if not opt_results.success:
             msg_box = QMessageBox()
             msg_box.setWindowTitle('Simulation failed')
-            msg_box.setText(
-                'Try changing the value of your desired risk and/or return as in current arrangement it is not possible to reach such value')
+            msg_box.setText('Try changing the value of your desired risk and/or return as in current arrangement it is not possible to reach such value')
             msg_box.setObjectName("msg_box")
             msg_box.exec()
 
