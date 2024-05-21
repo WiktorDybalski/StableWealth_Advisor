@@ -38,6 +38,8 @@ class TreasuryBondCalculator:
         start_value = params[1] * 100
         self.start_value = start_value
         last_value = start_value
+
+        last_net_profit = 0
         bond_stats = self.bonds.get(self.bond_type)
         df = pd.DataFrame()
         remaining_period = self.period
@@ -48,7 +50,7 @@ class TreasuryBondCalculator:
         while remaining_period >= bond_stats[4]:
             current_period = min(remaining_period, bond_stats[4])
             self.period = current_period
-            new_df = self.calculate_bond(last_value)
+            new_df = self.calculate_bond(last_value, last_net_profit)
             if first_cycle:
                 df = pd.concat([df, new_df], ignore_index=True)
                 first_cycle = 0
@@ -57,12 +59,13 @@ class TreasuryBondCalculator:
             self.last_row_list = df.iloc[-1].values.tolist()
             total_profit = df.iloc[-1, 6]
             last_value = last_value + total_profit
+            last_net_profit = df.iloc[-1, 7]
             remaining_period -= current_period
 
         # For the remaining period (if less than bond period)
         if remaining_period > 0:
             self.period = remaining_period
-            final_df = self.calculate_bond(last_value)
+            final_df = self.calculate_bond(last_value, last_net_profit)
             if bond_stats[2] == "Month":
                 df = pd.concat([df, final_df.iloc[1:remaining_period + 1]], ignore_index=True)
             else:
@@ -77,7 +80,7 @@ class TreasuryBondCalculator:
 
         # Mozna [1:] usunac by bylo od roku 0
         # Plot Net Profit
-        plt.plot(df.index[1:], df['Net Profit'][1:], marker='o', color='green', label='Net Profit')
+        plt.plot(df.index[1:], df['Profit Accumulated'][1:], marker='o', color='green', label='Profit Accumulated')
 
         # Plot Total Profit
         plt.plot(df.index[1:], df['Total Profit'][1:], marker='o', color='red', label='Total Profit')
@@ -101,7 +104,7 @@ class TreasuryBondCalculator:
         plt.grid(True)
         plt.show()
 
-    def calculate_bond(self, start_value):
+    def calculate_bond(self, start_value, last_net_profit):
         #print("calculating bond")
         redemption_fee_per_bond = self.bonds[self.bond_type][3]
         n = self.number_of_bonds
@@ -135,19 +138,19 @@ class TreasuryBondCalculator:
 
         print(self.last_row_list)
         if self.last_row_list:
-            print(self.last_row_list[8])
-            last_accumulated_inflation = self.last_row_list[8] / 100
+            print(self.last_row_list[9])
+            last_accumulated_inflation = self.last_row_list[9] / 100
         else:
             last_accumulated_inflation = 0
         last_accumulated_interests = 0
         last_value = start_value
 
         titles = ['Value', 'Interest Rate', 'Interests', 'Accumulated Interests', 'Redemption Fee',
-                  'Belka Tax', 'Net Profit', 'Year Inflation', 'Accumulated Inflation', 'Total Profit',
+                  'Belka Tax', 'Net Profit', 'Profit Accumulated', 'Year Inflation', 'Accumulated Inflation', 'Total Profit',
                   'Total Profit %']
         data = pd.DataFrame(columns=titles)
 
-        first_row = [start_value] + [0 for _ in range(10)]
+        first_row = [start_value] + [0 for _ in range(11)]
         data.loc[len(data)] = first_row
 
         for i in range(cycles):
@@ -168,12 +171,15 @@ class TreasuryBondCalculator:
             if i == 0:
                 print(last_accumulated_inflation)
                 print(accumulated_inflation)
+
             total_profit = (start_value + net_profit) * (1 - accumulated_inflation) - self.start_value
             total_profit_percent = total_profit / self.start_value
 
+            last_net_profit += net_profit
+
             row = [round(value, 2), str(round(interest_rate*100, 4))+"%", round(interests, 2),
                    round(accumulated_interests, 2),
-                   round(redemption_fee[i], 2), round(belka_tax, 2), round(net_profit, 2),
+                   round(redemption_fee[i], 2), round(belka_tax, 2), round(net_profit, 2), round(last_net_profit, 2),
                    round(year_inflation * 100, 2), round(accumulated_inflation * 100, 2),
                    round(total_profit, 2), str(round(total_profit_percent * 100, 2))+"%"]
 
@@ -202,4 +208,4 @@ if __name__ == "__main__":
 
     #calc.bond_result(["TOS", 1000, 12.4, 72, None])
     #calc.bond_result(["ROR", 1000, 12.4, 24, 5.25])
-    #calc.bond_result(['EDO', 1000, 12.4, 10, None]) # nie dziala
+    calc.bond_result(['EDO', 1000, 12.4, 240, None]) # nie dziala
