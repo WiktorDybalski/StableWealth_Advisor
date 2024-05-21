@@ -49,7 +49,7 @@ class HomeWindow(QWidget):
         # height = screen.height() * 0.88
         # left = screen.width() * 0.05
         # top = screen.height() * 0.05
-        width = screen.width()
+        width = screen.width() * 0.99
         height = screen.height()
         left = screen.width() * 0
         top = screen.height() * 0

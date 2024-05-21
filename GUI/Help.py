@@ -15,7 +15,6 @@ class Help(QWidget):
         """Setup the layout and widgets of the home screen."""
         self.layout = QVBoxLayout()
         self.create_middle_part(self.layout)
-        self.create_footer(self.layout)
         self.setLayout(self.layout)
 
     def setup_styles(self):
@@ -34,27 +33,6 @@ class Help(QWidget):
 
         layout.addWidget(middle_widget, 60)
 
-    def create_footer(self, layout):
-        """Create and configure the footer section."""
-        footer = QLabel()
-        footer.setObjectName("footer")
-        footer.setAlignment(Qt.AlignCenter)
-
-        footer_layout = QHBoxLayout()
-        footer.setLayout(footer_layout)
-
-        label = QLabel("WealthStable Advisor - © 2024")
-        label.setObjectName("tag_label")
-        label.setAlignment(Qt.AlignCenter)
-
-        additional_info = QLabel("Created by Wiktor Dybalski, Maksymilian Katolik")
-        additional_info.setObjectName("additional_info_label")
-        additional_info.setAlignment(Qt.AlignCenter)
-
-        footer_layout.addWidget(label)
-        footer_layout.addWidget(additional_info)
-
-        layout.addWidget(footer, 8)
     def emit_home_requested(self):
         """Emit a signal to indicate a request to go to the home window."""
         self.home_requested.emit()

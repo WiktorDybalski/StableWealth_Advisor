@@ -44,6 +44,20 @@ class SharesAssistant(QWidget):
         content_layout = QVBoxLayout(content)
         content.setObjectName("middle_widget")
 
+
+        # Section Title
+        title = QLabel("Shares Assistant")
+        title.setObjectName("section_title")
+        title.setAlignment(Qt.AlignCenter)
+        content_layout.addWidget(title)
+
+        # Divider Line
+        divider = QFrame()
+        divider.setObjectName("divider")
+        divider.setFrameShape(QFrame.HLine)
+        divider.setFrameShadow(QFrame.Sunken)
+        content_layout.addWidget(divider)
+
         # Wrapper widget for input layout
         input_wrapper = QWidget()
         input_wrapper.setObjectName("input_wrapper")  # Add an object name for styling
@@ -139,18 +153,9 @@ class SharesAssistant(QWidget):
         #
         # content_layout.addLayout(input_layout)
 
-        # Divider Line
-        divider = QFrame()
-        divider.setObjectName("divider")
-        divider.setFrameShape(QFrame.HLine)
-        divider.setFrameShadow(QFrame.Sunken)
-        # divider.setVisible(False)
-        content_layout.addWidget(divider)
-
         # Buttons Layout
         buttons_layout = QHBoxLayout()
         buttons_layout.setAlignment(Qt.AlignTop)
-        self._add_button(buttons_layout, "Home", self.emit_home_requested)
         self.toggle_list_button = self._add_button(buttons_layout, "Show Companies", self.toggle_company_list)
         self._add_button(buttons_layout, "Select Companies", self.select_companies)
         self._add_button(buttons_layout, "Start Simulation", self.send_data_to_home_window)
