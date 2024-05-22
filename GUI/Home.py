@@ -44,20 +44,16 @@ class HomeWindow(QWidget):
         self.stock_controller = controller
 
     def setup_window_size(self):
-        screen = self.app.primaryScreen().size()
-        # width = screen.width() * 0.9
-        # height = screen.height() * 0.88
-        # left = screen.width() * 0.05
-        # top = screen.height() * 0.05
-        width = screen.width() * 0.99
-        height = screen.height()
-        left = screen.width() * 0
-        top = screen.height() * 0
-        self.setWindowFlag(Qt.FramelessWindowHint)
-        # self.setAttribute(Qt.WA_TranslucentBackground)
-        self.setGeometry(left, top, width, height)
+        screen = QApplication.primaryScreen()
+        available_geometry = screen.availableGeometry()
 
-        self.setWindowTitle("StableWealth Advisor")
+        width = available_geometry.width() * 0.99
+        height = available_geometry.height()
+        left = available_geometry.left()
+        top = available_geometry.top()
+
+        self.setWindowFlag(Qt.FramelessWindowHint)
+        self.setGeometry(left, top, width, height)
 
     def init_others_widgets(self):
 
