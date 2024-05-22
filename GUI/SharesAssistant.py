@@ -155,7 +155,7 @@ class SharesAssistant(QWidget):
 
         # Buttons Layout
         buttons_layout = QHBoxLayout()
-        buttons_layout.setAlignment(Qt.AlignTop)
+        buttons_layout.setAlignment(Qt.AlignCenter)
         buttons_layout.setObjectName("buttons_shares")
         self.toggle_list_button = self._add_button(buttons_layout, "Show Companies", self.toggle_company_list)
         self._add_button(buttons_layout, "Select Companies", self.select_companies)
@@ -166,7 +166,7 @@ class SharesAssistant(QWidget):
         self._setup_company_list(content_layout)
 
         content.setLayout(content_layout)
-        self.layout.addWidget(content, 60)
+        self.layout.addWidget(content, 80)
 
 
 
