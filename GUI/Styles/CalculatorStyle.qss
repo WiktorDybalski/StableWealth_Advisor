@@ -61,6 +61,7 @@ QLabel {
     font-size: 14px;
     font-family: Arial, sans-serif;
     padding: 2px;
+    background-color: #F9F9F9;
 }
 
 
