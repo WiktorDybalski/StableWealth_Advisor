@@ -1,0 +1,55 @@
+/* StockPriceChartStyle.qss */
+
+/* General settings */
+QWidget {
+    background-color: #f0f0f0;
+    color: #333;
+    font-family: Arial, sans-serif;
+    font-size: 14px;
+}
+
+/* QChartView style */
+QChartView {
+    border: 5px solid transparent;
+    border-radius: 12px;
+}
+
+/* QChart title */
+QChart {
+    font-size: 20px;
+    font-weight: bold;
+    color: #333;
+}
+
+/* QAxis title and labels */
+QValueAxis, QDateTimeAxis {
+    color: #666;
+    font-size: 14px;
+}
+
+QValueAxis::title, QDateTimeAxis::title {
+    font-size: 14px;
+    font-weight: bold;
+    color: #333;
+}
+
+QToolTip {
+    background-color: #4CAF50;
+    color: #ffffff;
+    border: 1px solid transparent;
+    padding: 5px;
+    border-radius: 5px;
+    font-size: 14px;
+}
+
+QValueAxis::gridLine, QDateTimeAxis::gridLine {
+    color: #e0e0e0;
+}
+
+QLabel {
+    color: #333;
+    font-size: 14px;
+    font-family: Arial, sans-serif;
+    padding: 2px;
+}
+

@@ -1,2 +1,11 @@
 pandas
 numpy
+matplotlib
+scipy
+yfinance
+PyQt5
+plotly
+tqdm
+matplotlib
+PySide6
+seaborn
