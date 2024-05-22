@@ -147,7 +147,7 @@ class Simulation:
         self.config.companies = companies_list
         self.config.weights = optimal_weights
         self.config.results = results
-        self.plot_risk_return_scatter(daily_returns)
+        #self.plot_risk_return_scatter(daily_returns)
         self.send_data_to_controller()
         return optimal_weights, results
 

@@ -43,6 +43,7 @@ class SharesAssistant(QWidget):
         content = QWidget(self)
         content_layout = QVBoxLayout(content)
         content.setObjectName("middle_widget")
+        content_layout.setAlignment(Qt.AlignTop)
 
 
         # Section Title
@@ -67,7 +68,6 @@ class SharesAssistant(QWidget):
         input_layout.setVerticalSpacing(8)
 
 
-        #############################
         # Create a grid layout for the labels and input boxes
         grid_layout = QGridLayout()
 
@@ -156,6 +156,7 @@ class SharesAssistant(QWidget):
         # Buttons Layout
         buttons_layout = QHBoxLayout()
         buttons_layout.setAlignment(Qt.AlignTop)
+        buttons_layout.setObjectName("buttons_shares")
         self.toggle_list_button = self._add_button(buttons_layout, "Show Companies", self.toggle_company_list)
         self._add_button(buttons_layout, "Select Companies", self.select_companies)
         self._add_button(buttons_layout, "Start Simulation", self.send_data_to_home_window)

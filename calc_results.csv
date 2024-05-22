@@ -1,4 +1,4 @@
-Year,Value,Interest Rate,Interests,Accumulated Interests,Redemption Fee,Belka Tax,Net Profit,Profit Accumulated,Year Inflation,Accumulated Inflation,Total Profit,Total Profit %
+Year,Value,Interest Rate,Interests,Accumulated Interests,Redemption Fee,Belka Tax,Net Profit,Profit Sum,Year Inflation,Accumulated Inflation,Total Profit,Total Profit %
 0,100000.0,0,0.0,0.0,0,0.0,0.0,0.0,0.0,0.0,0.0,0
 1,107000.0,7.0%,7000.0,7000.0,2000,950.0,4050.0,4050.0,12.4,12.4,-8852.2,-8.85%
 2,121873.0,13.9%,14873.0,21873.0,2000,3775.87,16097.13,20147.13,12.4,23.26,-10909.85,-10.91%

@@ -1,3 +1,4 @@
+from PySide6.QtGui import QFont
 from PySide6.QtWidgets import QWidget, QTableWidgetItem, QVBoxLayout, QLabel, QHBoxLayout, QPushButton, QScrollArea, \
     QComboBox, QFrame, \
     QLineEdit, QSlider, QCheckBox, QTableWidget, QMessageBox, QScrollBar, QSizePolicy, QHeaderView, QGridLayout
@@ -222,6 +223,10 @@ class Calculator(QWidget):
             self.results_table.setRowCount(0)
             self.results_table.setColumnCount(0)
 
+        # Remove the column with header 'Year Inflation'
+        if 'Year Inflation' in self.bond_results.columns:
+            self.bond_results = self.bond_results.drop(columns=['Year Inflation'])
+
         # Update the existing table
         self.results_table.setRowCount(len(self.bond_results))
         self.results_table.setColumnCount(len(self.bond_results.columns))
@@ -231,11 +236,29 @@ class Calculator(QWidget):
         # Hide the vertical headers
         self.results_table.verticalHeader().setVisible(False)
 
-        # Populate the table with CSV data
+        # Define columns for 'zl' and '%' suffixes
+        zl_columns = [1, 3, 4, 5, 6, 7, 8, 10]
+        percent_columns = [9]
+
+        # Set font size
+        font = QFont()
+        font.setPointSize(11)  # Set the desired font size here
+
+        # Populate the table with CSV data and add suffixes
         for i in range(len(self.bond_results)):
             for j in range(len(self.bond_results.columns)):
-                item = QTableWidgetItem(str(self.bond_results.iat[i, j]))
+                value = self.bond_results.iat[i, j]
+
+                # Add 'zl' suffix
+                if j in zl_columns:
+                    value = f"{value} zł"
+                # Add '%' suffix
+                elif j in percent_columns:
+                    value = f"{value}%"
+
+                item = QTableWidgetItem(str(value))
                 item.setTextAlignment(Qt.AlignCenter)  # Center align the text
+                item.setFont(font)  # Set the font of the item
                 self.results_table.setItem(i, j, item)
 
         # Resize columns to fit contents

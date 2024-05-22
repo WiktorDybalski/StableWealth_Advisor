@@ -75,12 +75,13 @@ class TreasuryBondCalculator:
         df.to_csv("calc_results.csv")
         print(df)
 
+        """
         # Plot the data
         plt.figure(figsize=(10, 6))
 
         # Mozna [1:] usunac by bylo od roku 0
         # Plot Net Profit
-        plt.plot(df.index[1:], df['Profit Accumulated'][1:], marker='o', color='green', label='Profit Accumulated')
+        plt.plot(df.index[1:], df['Profit Sum'][1:], marker='o', color='green', label='Profit Accumulated')
 
         # Plot Total Profit
         plt.plot(df.index[1:], df['Total Profit'][1:], marker='o', color='red', label='Total Profit')
@@ -103,6 +104,7 @@ class TreasuryBondCalculator:
         # Show the plot
         plt.grid(True)
         plt.show()
+        """
 
     def calculate_bond(self, start_value, last_net_profit):
         #print("calculating bond")
@@ -146,7 +148,7 @@ class TreasuryBondCalculator:
         last_value = start_value
 
         titles = ['Value', 'Interest Rate', 'Interests', 'Accumulated Interests', 'Redemption Fee',
-                  'Belka Tax', 'Net Profit', 'Profit Accumulated', 'Year Inflation', 'Accumulated Inflation', 'Total Profit',
+                  'Belka Tax', 'Net Profit', 'Profit Sum', 'Year Inflation', 'Accumulated Inflation', 'Total Profit',
                   'Total Profit %']
         data = pd.DataFrame(columns=titles)
 
@@ -208,4 +210,4 @@ if __name__ == "__main__":
 
     #calc.bond_result(["TOS", 1000, 12.4, 72, None])
     #calc.bond_result(["ROR", 1000, 12.4, 24, 5.25])
-    calc.bond_result(['EDO', 1000, 12.4, 240, None]) # nie dziala
+    #calc.bond_result(['EDO', 1000, 12.4, 240, None])
