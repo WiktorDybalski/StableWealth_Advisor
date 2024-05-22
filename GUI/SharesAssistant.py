@@ -70,6 +70,7 @@ class SharesAssistant(QWidget):
 
         # Create a grid layout for the labels and input boxes
         grid_layout = QGridLayout()
+        grid_layout.setAlignment(Qt.AlignCenter)
 
         # Amount and Cycles Entries
         min_return_label = QLabel("Desired Min Return:")
@@ -114,44 +115,10 @@ class SharesAssistant(QWidget):
         grid_layout.addWidget(self.risk_input_max, 1, 3)
 
         # Add the grid layout to the main layout
-        content_layout.addLayout(grid_layout)
 
-        ##############################
-        #
-        # self.return_input_min = QLineEdit(self)
-        # self.return_input_min.setPlaceholderText("Minimum Return (%)")
-        # self.return_input_min.setObjectName("input_field")
-        #
-        # self.return_input_max = QLineEdit(self)
-        # self.return_input_max.setPlaceholderText("Maximum Return (%)")
-        # self.return_input_max.setObjectName("input_field")
-        #
-        # self.risk_input_min = QLineEdit(self)
-        # self.risk_input_min.setPlaceholderText("Minimum Risk (%)")
-        # self.risk_input_min.setObjectName("input_field")
-        #
-        # self.risk_input_max = QLineEdit(self)
-        # self.risk_input_max.setPlaceholderText("Maximum Risk (%)")
-        # self.risk_input_max.setObjectName("input_field")
-        #
-        # self.return_input_min.textChanged.connect(self.on_return_input_changed)
-        # self.return_input_max.textChanged.connect(self.on_return_input_changed)
-        # self.risk_input_min.textChanged.connect(self.on_risk_input_changed)
-        # self.risk_input_max.textChanged.connect(self.on_risk_input_changed)
-        #
-        # input_layout.addWidget(QLabel("Desired Min Return:"), 0, 0)
-        # input_layout.addWidget(self.return_input_min, 0, 1)
-        # input_layout.addWidget(QLabel("Desired Max Return:"), 0, 2)
-        # input_layout.addWidget(self.return_input_max, 0, 3)
-        #
-        # input_layout.addWidget(QLabel("Desired Min Risk:"), 1, 0)
-        # input_layout.addWidget(self.risk_input_min, 1, 1)
-        # input_layout.addWidget(QLabel("Desired Max Risk:"), 1, 2)
-        # input_layout.addWidget(self.risk_input_max, 1, 3)
-        #
-        # content_layout.addWidget(input_wrapper)
-        #
-        # content_layout.addLayout(input_layout)
+        grid_layout.setContentsMargins(10, 0, 15, 0)
+
+        content_layout.addLayout(grid_layout)
 
         # Buttons Layout
         buttons_layout = QHBoxLayout()
