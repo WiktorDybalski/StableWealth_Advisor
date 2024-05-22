@@ -173,6 +173,14 @@ class Calculator(QWidget):
             msg_box.exec()
             return
 
+        if self.findChild(QLineEdit, "NBP_input").text() == '' and Bonds.get_bonds()[self.findChild(QComboBox, "bonds_type_checkbox").currentText()][6] is not None:
+            msg_box = QMessageBox()
+            msg_box.setWindowTitle('Input Error')
+            msg_box.setText('This type of Bond doesn uses the NBP reference rate - please input the desired (current) NBP reference rate to calculate this bond')
+            msg_box.exec()
+            return
+
+
         # Retrieve the bond type
         self.bond_type = self.findChild(QComboBox, "bonds_type_checkbox").currentText()
         self.config.bond_type = self.bond_type
