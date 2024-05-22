@@ -85,7 +85,7 @@ QComboBox::drop-down {
     subcontrol-position: top right;
     width: 30px;             /* Width of the dropdown button */
     border-left-width: 1px;
-    border-left-color: darkgray;
+    border-left-color: darkgrey;
     border-left-style: solid; /* Separating line style */
     border-top-right-radius: 3px; /* Rounded corners for the top right */
     border-bottom-right-radius: 3px; /* And bottom right */

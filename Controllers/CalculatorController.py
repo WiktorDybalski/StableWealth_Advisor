@@ -1,7 +1,4 @@
-import pandas as pd
-from Data.Bonds import Bonds as bonds
 from Configurators.CalculatorConfigurator import CalculatorConfigurator as config
-
 
 class BondController:
     def __init__(self, view, model):
@@ -17,10 +14,3 @@ class BondController:
             self.config.period,
             self.config.NBP
         ])
-
-        print("Calculation done")
-
-
-
-
-

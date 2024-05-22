@@ -7,7 +7,8 @@ class SharesAssistantConfigurator:
             cls._instance = super(SharesAssistantConfigurator, cls).__new__(cls)
         return cls._instance
 
-    def __init__(self, desired_risk_min=None, desired_risk_max=None, desired_return_min=None, desired_return_max=None, companies=None, weights=None, results=None):
+    def __init__(self, desired_risk_min=None, desired_risk_max=None, desired_return_min=None, desired_return_max=None,
+                 companies=None, weights=None, results=None):
         if not hasattr(self, '_initialized'):
             self._desired_risk_min = desired_risk_min
             self._desired_risk_max = desired_risk_max

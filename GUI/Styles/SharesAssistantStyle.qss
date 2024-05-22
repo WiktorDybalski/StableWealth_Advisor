@@ -80,8 +80,6 @@ QPushButton:hover {
     margin-left: 10px;
 }
 
-
-
 #divider {
     background-color: #D3D3D3;
     height: 2px;

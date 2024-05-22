@@ -55,4 +55,3 @@ class CalculatorConfigurator:
     @NBP.setter
     def NBP(self, value):
         self._NBP = value
-

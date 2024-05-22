@@ -11,7 +11,6 @@ from Utils import Utils
 from Model.UpdateData import UpdateData
 
 
-
 def main():
     file_path = Utils.get_absolute_file_path("stock_data_without_polish.csv")
     daily_returns_path = UpdateData.update_data(file_path)
@@ -23,16 +22,6 @@ def main():
     si_model.create_day_data()
     si_model.create_month_data()
     si_model.create_year_data()
-
-    # print("z miana ")
-    # info = si_model.config.companies_day
-    # print(info)
-    #
-    # for i in range(len(info)):
-    #     print(info[i][0])
-    #     print(info[i][1])
-    #     print(info[i][2])
-    #     print(info[i][3])
 
     app = QApplication(sys.argv)
     view = Home.HomeWindow(app)
@@ -50,9 +39,8 @@ def main():
     view.set_calc_controller(calc_controller)
 
     view.show()
-
-    print("Starting Application")
     sys.exit(app.exec())
+
 
 if __name__ == "__main__":
     main()

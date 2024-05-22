@@ -23,20 +23,17 @@ class CompanyDetails(QWidget):
         self._init_ui()
 
     def _init_ui(self):
-        """Setup the layout and widgets of the home screen."""
         self.layout = QVBoxLayout()
         self.create_middle_part(self.company_name, self.layout)
         self.setLayout(self.layout)
 
     def setup_styles(self):
-        """Read and apply the CSS stylesheet to the window."""
         style_file = QFile(Utils.get_absolute_file_path("CompanyDetailsStyle.qss"))
         style_file.open(QFile.ReadOnly | QFile.Text)
         style_sheet = str(style_file.readAll(), encoding='utf-8')
         self.setStyleSheet(style_sheet)
 
     def create_middle_part(self, company_name, layout):
-        """Create and set up the central part of the home widget."""
         middle_widget = QWidget()
         middle_widget.setObjectName("middle_widget")
         middle_layout = QVBoxLayout()
@@ -50,21 +47,14 @@ class CompanyDetails(QWidget):
 
         header.setStyleSheet("font-size: 20px; font-weight: bold;")
 
-        # # Increase font size and make it bold
-        # font = QFont()
-        # font.setPointSize(100)  # Change the font size as needed
-        # font.setBold(True)  # Make the font bold
-        # header.setFont(font)
-
         middle_layout.addWidget(header)
-
 
         divider = QFrame()
         divider.setFrameShape(QFrame.HLine)
         divider.setFrameShadow(QFrame.Sunken)
         middle_layout.addWidget(divider)
 
-        # Inside create_middle_part method
+        # Grid layout for labels for growth
         upper_layout = QGridLayout()
 
         self.growth_label = QLabel("Growth:")
@@ -90,8 +80,6 @@ class CompanyDetails(QWidget):
         self.percentage_growth_value.setAlignment(Qt.AlignLeft)
         self.percentage_growth_value.setStyleSheet("font-size: 14px;")
         upper_layout.addWidget(self.percentage_growth_value, 0, 3)
-
-        # Add widgets to the layout
 
         middle_layout.addLayout(upper_layout)
 
@@ -122,14 +110,11 @@ class CompanyDetails(QWidget):
         layout.addWidget(middle_widget, 60)
 
     def update_growth_data(self, growth, percentage_growth):
-        """Update the growth and percentage growth labels."""
         self.growth_label.setText(f"Growth: {growth}")
         self.percentage_growth_label.setText(f"Percentage Growth: {percentage_growth}%")
 
     def update_stock_chart(self, data):
-        """Update the stock chart with new data (list of tuples: [(Date, price), ...])."""
         self.stock_chart.plot(data)
 
     def emit_home_requested(self):
-        """Emit a signal to indicate a request to go to the home window."""
         self.home_requested.emit()

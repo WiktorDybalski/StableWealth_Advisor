@@ -1,14 +1,10 @@
-import csv
 import datetime
-import os
+
 import pandas as pd
 import yfinance as yf
 
 from Utils import Utils
 
-# TODO
-# Add data_validation  - DONE
-# Fix UpdateData class
 
 class UpdateData:
     @staticmethod
@@ -19,7 +15,6 @@ class UpdateData:
     @staticmethod
     def update_data(stock_data_path):
         if UpdateData.is_already_updated(stock_data_path):
-            print("Data is already updated today.")
             return stock_data_path
         new_stock_data_path = Utils.get_absolute_file_path("new_stock_data.csv")
         last_day = UpdateData.get_last_date(stock_data_path)
@@ -31,7 +26,6 @@ class UpdateData:
         new_last_day = UpdateData.get_last_date(new_stock_data_path)
         if last_day < new_last_day:
             UpdateData.update_csv_file(stock_data_path, new_stock_data_path)
-        print("Data file updated with new data.")
         return stock_data_path
 
     @staticmethod
@@ -42,7 +36,6 @@ class UpdateData:
         last_day = datetime.datetime.strptime(date_time, "%Y-%m-%d %H:%M:%S%z").date()
         return last_day
 
-    # Nie potrzebna
     @staticmethod
     def get_last_update_date(file_path):
         with open(file_path, 'r') as file:
@@ -144,7 +137,3 @@ class UpdateData:
 
 if __name__ == "__main__":
     pass
-    # UpdateData.create_csv_data(UpdateData.get_ticker_symbols(), "../Data/stock_data.csv")
-    # UpdateData.create_csv_data(UpdateData.get_reduced_ticker_symbols(), "../Data/stock_data_reduced.csv")
-    UpdateData.create_csv_data(UpdateData.get_ticker_symbols_without_polish(), "../Data/stock_data_without_polish.csv")
-    # UpdateData.create_csv_data(UpdateData.get_reduced_ticker_symbols_without_polish(),"../Data/stock_data_without_polish_reduced.csv")

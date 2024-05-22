@@ -1,5 +1,7 @@
 import pandas as pd
-import matplotlib.pyplot as plt
+from PySide6.QtWidgets import QMessageBox
+
+from Utils import Utils
 
 NOMINAL_VALUE_OF_OBLIGATION = 100
 BELKA_TAX = 0.19
@@ -16,19 +18,8 @@ class TreasuryBondCalculator:
         self.last_row_list = []
         self.start_value = 0
         self.bonds = Bonds.get_bonds()
-        # self.bonds = {
-        #     "ROD": (7.25, 2.0, "Year", 2, 144, True, None),
-        #     "EDO": (7, 1.5, "Year", 2, 120, True, None),
-        #     "ROS": (6.95, 1.75, "Year", 0.7, 72, True, None),
-        #     "TOS": (6.6, None, "Year", 0.7, 36, True, None),
-        #     "COI": (6.75, 1.25, "Year", 0.7, 48, False, None),
-        #     "OTS": (3/12, None, "Month", 0, 3, False, None),  # 3% roczne oprcentowanie ale na miesiac to 0,25
-        #     "ROR": (6.25/12, None, "Month", 0.5, 12, False, 0),  # bierzemy % NBP i dzielimy przez 12; 0 bo dodajemy 0 do NBP
-        #     "DOR": (6.5 / 12, None, "Month", 0.7, 24, False, 0.5),  # bierzemy % NBP i dzielimy przez 12
-        # }
 
     def bond_result(self, params):
-        #print(params)
         self.last_row_list = []
         self.bond_type = params[0]
         self.number_of_bonds = params[1]
@@ -45,7 +36,12 @@ class TreasuryBondCalculator:
         remaining_period = self.period
         first_cycle = 1
         if remaining_period < bond_stats[4] // 12:
-            print("It is stupid request")
+            msg_box = QMessageBox()
+            msg_box.setWindowTitle('Too short of a period for a cycle')
+            msg_box.setText(
+                'Try changing the value of your desired risk and/or return as in current arrangement it is not possible to reach such value')
+            msg_box.setObjectName("msg_box")
+            msg_box.exec()
             return
         while remaining_period >= bond_stats[4]:
             current_period = min(remaining_period, bond_stats[4])
@@ -67,13 +63,19 @@ class TreasuryBondCalculator:
             self.period = remaining_period
             final_df = self.calculate_bond(last_value, last_net_profit)
             if bond_stats[2] == "Month":
-                df = pd.concat([df, final_df.iloc[1:remaining_period + 1]], ignore_index=True)
+                if first_cycle:
+                    df = pd.concat([df, final_df.iloc[:remaining_period + 1]], ignore_index=True)
+                else:
+                    df = pd.concat([df, final_df.iloc[1:remaining_period + 1]], ignore_index=True)
             else:
-                df = pd.concat([df, final_df.iloc[1:remaining_period // 12 + 1]], ignore_index=True)
+                if first_cycle:
+                    df = pd.concat([df, final_df.iloc[:remaining_period // 12 + 1]], ignore_index=True)
+                else:
+                    df = pd.concat([df, final_df.iloc[1:remaining_period // 12 + 1]], ignore_index=True)
+
 
         df.index.name = bond_stats[2]
-        df.to_csv("calc_results.csv")
-        print(df)
+        df.to_csv(Utils.get_absolute_file_path("treasury_bond_results.csv"))
 
         """
         # Plot the data
@@ -107,7 +109,6 @@ class TreasuryBondCalculator:
         """
 
     def calculate_bond(self, start_value, last_net_profit):
-        #print("calculating bond")
         redemption_fee_per_bond = self.bonds[self.bond_type][3]
         n = self.number_of_bonds
 
@@ -138,9 +139,7 @@ class TreasuryBondCalculator:
         if nbp is not None:
             interest_rates = [percetnage_initial / 100] + [(((nbp+self.NBP)/12) / 100) for _ in range(cycles - 1)]
 
-        print(self.last_row_list)
         if self.last_row_list:
-            print(self.last_row_list[9])
             last_accumulated_inflation = self.last_row_list[9] / 100
         else:
             last_accumulated_inflation = 0
@@ -170,9 +169,6 @@ class TreasuryBondCalculator:
                 value = start_value
                 belka_tax = BELKA_TAX * interests
             accumulated_inflation = (1 - last_accumulated_inflation) * year_inflation + last_accumulated_inflation
-            if i == 0:
-                print(last_accumulated_inflation)
-                print(accumulated_inflation)
 
             total_profit = (start_value + net_profit) * (1 - accumulated_inflation) - self.start_value
             total_profit_percent = total_profit / self.start_value
@@ -207,7 +203,3 @@ class TreasuryBondCalculator:
 
 if __name__ == "__main__":
     calc = TreasuryBondCalculator()
-
-    #calc.bond_result(["TOS", 1000, 12.4, 72, None])
-    #calc.bond_result(["ROR", 1000, 12.4, 24, 5.25])
-    #calc.bond_result(['EDO', 1000, 12.4, 240, None])

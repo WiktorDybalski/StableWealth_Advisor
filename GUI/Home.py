@@ -6,7 +6,6 @@ from GUI.SharesAssistant import SharesAssistant
 from GUI.SharesAssistantResults import SharesAssistantResults
 from GUI.Calculator import Calculator
 from GUI.StockInformation import StockInformation
-from GUI.CalculatorResults import CalculatorResults
 from GUI.Help import Help
 from GUI.CompanyDetails import CompanyDetails
 from Configurators.CompanyConfigurator import CompanyConfigurator as company_config
@@ -53,13 +52,13 @@ class HomeWindow(QWidget):
         top = available_geometry.top()
 
         self.setWindowFlag(Qt.FramelessWindowHint)
+        # self.setAttribute(Qt.WA_TranslucentBackground)
         self.setGeometry(left, top, width, height)
 
     def init_others_widgets(self):
 
         self.shares_assistant = SharesAssistant()
         self.calculator = Calculator()
-        self.calculator_results = CalculatorResults()
         self.stock_information = StockInformation()
         self.help = Help()
 
@@ -80,7 +79,6 @@ class HomeWindow(QWidget):
         self.stackedWidget.addWidget(self.help)
 
     def _init_ui(self):
-        """Initialize the main user interface of the window."""
         self.setup_window_size()
         layout = QVBoxLayout()
         self.create_toolbar()
@@ -146,8 +144,8 @@ class HomeWindow(QWidget):
 
         self.adjust_toolbar_buttons(self.toolbar)
 
-    def adjust_toolbar_buttons(self, parrent):
-        parent_width = parrent.width()
+    def adjust_toolbar_buttons(self, parent):
+        parent_width = parent.width()
         button_width = int(parent_width * (1 / 6))
         for action in self.toolbar.actions():
             button = self.toolbar.widgetForAction(action)
@@ -155,7 +153,6 @@ class HomeWindow(QWidget):
                 button.setFixedWidth(button_width)
 
     def setup_home_widget(self):
-        """Setup the layout and widgets of the home screen."""
         layout = QVBoxLayout()
         self.create_middle_part(layout)
         self.create_footer(layout)
@@ -163,15 +160,12 @@ class HomeWindow(QWidget):
         self.home_widget.setLayout(layout)
 
     def _setup_styles(self):
-        """Read and apply the CSS stylesheet to the window."""
         style_file = QFile(Utils.get_absolute_file_path("HomeWindowStyle.qss"))
         style_file.open(QFile.ReadOnly | QFile.Text)
         style_sheet = str(style_file.readAll(), encoding='utf-8')
         self.setStyleSheet(style_sheet)
 
     def create_middle_part(self, layout):
-        """Create and set up the central part of the stock information widget."""
-        # Middle Widget Setup
         middle_widget = QFrame()
         middle_widget.setObjectName("middle_widget")
         middle_layout = QVBoxLayout()
@@ -182,34 +176,29 @@ class HomeWindow(QWidget):
         middle_widget.setFixedHeight(self.height() * 0.8)
         middle_widget.setFixedWidth(self.width())
 
-        # Title Section
         title_section = QWidget()
         title_section.setObjectName("title_section")
         title_layout = QVBoxLayout()
         title_section.setLayout(title_layout)
         middle_layout.addWidget(title_section)
 
-        # Add Title Label
         title_label = QLabel("Welcome to Safe Investment Assistant")
         title_label.setObjectName("title_label")
         title_label.setAlignment(Qt.AlignCenter)
         title_label.setStyleSheet("font-size: 24px; font-weight: bold;")
         title_layout.addWidget(title_label)
 
-        # Add Subtitle Label
         subtitle_label = QLabel("Your Partner in Secure Investing")
         subtitle_label.setObjectName("subtitle_label")
         subtitle_label.setAlignment(Qt.AlignCenter)
         subtitle_label.setStyleSheet("font-size: 16px; color: gray;")
         title_layout.addWidget(subtitle_label)
 
-        # Divider Line
         divider = QFrame()
         divider.setFrameShape(QFrame.HLine)
         divider.setFrameShadow(QFrame.Sunken)
         middle_layout.addWidget(divider)
 
-        # Content Section
         content_section = QWidget()
         content_section.setObjectName("content_section")
         content_layout = QHBoxLayout()
@@ -218,7 +207,6 @@ class HomeWindow(QWidget):
         content_section.setFixedHeight(self.height() * 0.5)
         content_layout.setAlignment(Qt.AlignTop)
 
-        # Left Section for Shares Assistant
         left_section = QWidget()
         left_section.setObjectName("left_section")
         left_layout = QVBoxLayout()
@@ -249,7 +237,6 @@ class HomeWindow(QWidget):
 
         content_layout.addWidget(left_section)
 
-        # Right Section for Treasury Bond Calculator
         right_section = QWidget()
         right_section.setObjectName("right_section")
         right_layout = QVBoxLayout()
@@ -278,17 +265,12 @@ class HomeWindow(QWidget):
 
         content_layout.addWidget(right_section)
 
-        # Adding Content Section to the Middle Layout
         middle_layout.addWidget(content_section)
 
-        # Add the middle_widget to the main layout
         layout.addWidget(middle_widget, alignment=Qt.AlignCenter)
-
-        # Add Spacing for Alignment
         layout.addStretch()
 
     def create_footer(self, layout):
-        """Create and configure the footer section."""
         footer = QLabel()
         footer.setObjectName("footer")
         footer.setAlignment(Qt.AlignCenter)
@@ -321,12 +303,10 @@ class HomeWindow(QWidget):
         self.calc_controller.run_calculation()
 
     def show_home(self):
-        """Return to the home screen view."""
         self.stackedWidget.setCurrentWidget(self.home_widget)
         self.highlight_action(self.sender())
 
     def show_shares_assistant(self):
-        """Switch the view to the shares assistant screen."""
         self.stackedWidget.setCurrentWidget(self.shares_assistant)
         self.highlight_action(self.sender())
 
@@ -337,25 +317,20 @@ class HomeWindow(QWidget):
         self.stackedWidget.setCurrentWidget(self.shares_assistant_results)
 
     def show_calculator(self):
-        """Switch the view to the calculator screen."""
         self.stackedWidget.setCurrentWidget(self.calculator)
         self.highlight_action(self.sender())
 
     def show_calculator_results(self):
-        """Return to the home screen view."""
         self.stackedWidget.setCurrentWidget(self.calculator_results)
 
     def show_stock_information(self):
-        """Return to the home screen view."""
         self.stackedWidget.setCurrentWidget(self.stock_information)
         self.highlight_action(self.sender())
 
     def close(self):
-        """Switch the view to the shares assistant screen."""
         QApplication.quit()
 
     def show_help(self):
-        """Switch the view to the calculator screen."""
         self.stackedWidget.setCurrentWidget(self.help)
         self.highlight_action(self.sender())
 

@@ -1,11 +1,10 @@
-from datetime import timedelta
-import csv
-import pandas as pd
 import datetime
 
+import pandas as pd
+
 from Configurators.StockInformationConfigurator import StockInformationConfigurator as config
-from Utils import Utils
 from Model.UpdateData import UpdateData
+from Utils import Utils
 
 
 class StockInformationCalculation:
@@ -18,7 +17,8 @@ class StockInformationCalculation:
         self.controller = controller
 
     def create_day_data(self):
-        self.config.last_update_time = UpdateData.get_last_date(Utils.get_absolute_file_path("stock_data_without_polish.csv"))
+        self.config.last_update_time = UpdateData.get_last_date(
+            Utils.get_absolute_file_path("stock_data_without_polish.csv"))
         self.data['Date'] = pd.to_datetime(self.data['Date'])
         df_last_two_rows = self.data.tail(2)
 
@@ -89,7 +89,4 @@ class StockInformationCalculation:
 
 
 if __name__ == "__main__":
-    stock_calc = StockInformationCalculation()
-    # daily_data = stock_calc.create_day_data()
-    # monthly_data = stock_calc.create_month_data()
-    # yearly_data = stock_calc.create_year_data()
+    pass

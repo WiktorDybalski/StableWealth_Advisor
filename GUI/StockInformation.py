@@ -30,20 +30,18 @@ class StockInformation(QWidget):
         self.setup_styles()
 
     def _init_ui(self):
-        """Setup the layout and widgets of the home screen."""
         self.layout = QVBoxLayout()
         self.create_middle_part(self.layout)
         self.setLayout(self.layout)
 
     def setup_styles(self):
-        """Read and apply the CSS stylesheet to the window."""
         style_file = QFile(Utils.get_absolute_file_path("StockInformationStyle.qss"))
         style_file.open(QFile.ReadOnly | QFile.Text)
         style_sheet = str(style_file.readAll(), encoding='utf-8')
         self.setStyleSheet(style_sheet)
 
     def create_middle_part(self, layout):
-        """Create and set up the central part of the stock information widget."""
+        # Create and set up the central part
         middle_widget = QFrame()
         middle_widget.setObjectName("middle_widget")
         middle_layout = QVBoxLayout()
@@ -84,7 +82,7 @@ class StockInformation(QWidget):
 
         middle_layout.addLayout(controls_layout)
 
-        # Create the table widget
+        # Creating the table widget
         self.table_widget = QTableWidget(0, 7)
         self.table_widget.setHorizontalHeaderLabels(
             ["Nr", "Company Name", "Today's Price", "Growth", "Percentage growth", "Trend", "Show a period plot"])
@@ -105,7 +103,6 @@ class StockInformation(QWidget):
         self.create_table()
 
     def create_table(self):
-        """Populate the table based on the selected scale."""
         current_period = str(self.scale_combo.currentText())
         self.si_config.period = current_period
 
@@ -160,7 +157,6 @@ class StockInformation(QWidget):
 
             self.table_widget.setItem(row, 3, growth_item)
 
-            # Percentage growth (duplicate of growth)
             percentage_growth_item = QTableWidgetItem(f"{percentage_growth:.2f}%")
             percentage_growth_item.setFlags(percentage_growth_item.flags() & ~Qt.ItemIsEditable)
             percentage_growth_item.setTextAlignment(Qt.AlignCenter)
@@ -197,7 +193,6 @@ class StockInformation(QWidget):
             plot_button.setToolButtonStyle(Qt.ToolButtonTextBesideIcon)
             plot_button.setProperty("company_name", company_name)
             plot_button.setProperty("growth", growth)
-            #price = 100
             plot_button.setProperty("percentage_growth", percentage_growth)
 
             if not company_name in self.buttons_dict:
@@ -208,11 +203,11 @@ class StockInformation(QWidget):
 
             self.table_widget.setRowHeight(row, 50)
 
-            # Adjust the trend column width for larger icons
+            # Adjusting the trend column width for larger icons
             self.table_widget.setColumnWidth(4, 40)
 
     def update_table(self):
-        """Update the table based on the selected scale."""
+        # very much like the create_table
         current_period = str(self.scale_combo.currentText())
         self.si_config.period = current_period
         if self.si_config.period == "Day":
@@ -226,9 +221,9 @@ class StockInformation(QWidget):
             company_id = data[row][0]
             company_name = Companies.get_companies_without_polish()[company_id]
             value = data[row][1]
-            print(company_name, value, type(value))
-            print()
             growth = data[row][2]
+
+            # in case yahoo.finance doesnt work for some company
             if math.isnan(value) or math.isnan(growth):
                 pass
 
@@ -247,9 +242,7 @@ class StockInformation(QWidget):
             plot_button.setProperty("company_name", company_name)
             plot_button.setProperty("growth", growth)
             plot_button.setProperty("percentage_growth", percentage_growth)
-            # print("printing proprerties: \n")
-            # print(plot_button.property("growth"))
-            # print(plot_button.property("percentage_growth"))
+
 
     def update_growth_color(self, item, growth):
         if growth > 0:

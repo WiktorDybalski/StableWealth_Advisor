@@ -1,6 +1,8 @@
 import pandas as pd
-from Data.Companies import Companies as comp
+
 from Configurators.SharesAssistantConfigurator import SharesAssistantConfigurator as config
+from Data.Companies import Companies as comp
+
 
 class Controller:
     def __init__(self, view, model, path_data):
@@ -9,7 +11,6 @@ class Controller:
         self.view = view
         self.model = model
         self.config = config()
-
 
     def get_tickers(self):
         companies_obj = comp()
@@ -28,16 +29,14 @@ class Controller:
 
     def run_simulation(self):
         tickers_list = self.get_tickers()
-        print(tickers_list)
         results = self.select_columns_from_csv(self.path_data, tickers_list)
         if not self.config.desired_return_min and not self.config.desired_return_max and not self.config.desired_risk_min and not self.config.desired_risk_max:
             self.model.run_scipy_simulation(results)
         elif self.config.desired_risk_min is not None and self.config.desired_risk_max is not None:
-            self.model.run_scipy_simulation(results, None, None, self.config.desired_risk_min, self.config.desired_risk_max)
+            self.model.run_scipy_simulation(results, None, None, self.config.desired_risk_min,
+                                            self.config.desired_risk_max)
         elif self.config.desired_return_min is not None and self.config.desired_return_min is not None:
             self.model.run_scipy_simulation(results, self.config.desired_return_min, self.config.desired_return_max)
-        print("Simulation done")
 
     def show_data_in_GUI(self):
         self.view.show_shares_assistant_results()
-

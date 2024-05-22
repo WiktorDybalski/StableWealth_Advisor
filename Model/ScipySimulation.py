@@ -1,15 +1,11 @@
-import os
 import numpy as np
 import pandas
 from PySide6.QtWidgets import QMessageBox
 from matplotlib import pyplot as plt
-
-from Data.Companies import Companies
-from Model.UpdateData import UpdateData
 from scipy import optimize
-import multiprocessing
-from Utils import Utils
+
 from Configurators.SharesAssistantConfigurator import SharesAssistantConfigurator as config
+from Data.Companies import Companies
 
 
 class Simulation:
@@ -30,35 +26,6 @@ class Simulation:
         optimal_weights, metrics = self.run_scipy_simulation(selected_df)
         return optimal_weights, metrics, columns
 
-    # def run_best_of_three(self, stock_data_path):
-    #     stock_data = pandas.read_csv(stock_data_path)
-    #     n = stock_data.shape[1]
-    #     max_sr = 0
-    #     best_result = None
-    #     tasks = []
-    #     num_cores = os.cpu_count()
-    #     for i in range(1, n):
-    #         for j in range(i + 1, n):
-    #             for k in range(j + 1, n):
-    #                 tasks.append((stock_data, [i, j, k]))
-    #
-    #     with multiprocessing.Pool(processes=num_cores - 1) as pool:
-    #         results = pool.starmap(self.process_combination, tasks)
-    #
-    #     for weights, metrics, columns in results:
-    #         if metrics[2] > max_sr:
-    #             max_sr = metrics[2]
-    #             best_result = (weights, metrics, [stock_data.columns[i] for i in columns])
-    #
-    #     print(best_result[1], best_result[0], best_result[2])
-    #     return best_result
-    #
-    # def run_best_of_four(self):
-    #     pass
-    #
-    # def run_best_of_five(self):
-    #     pass
-
     def run_scipy_simulation(self, daily_returns, desired_return_min=None, desired_return_max=None,
                              desired_risk_min=None, desired_risk_max=None):
         number_of_companies = daily_returns.shape[1]
@@ -66,7 +33,7 @@ class Simulation:
         companies_list = [Companies.get_companies_without_polish().get(ticker) for ticker in tickers]
         log_ret = np.log(daily_returns / daily_returns.shift(1))
 
-        log_mean = log_ret.mean() * 252
+        log_mean = log_ret.mean() * 252  # number of working days on the stock
         cov = log_ret.cov() * 252
 
         def get_ret_vol_sr(weights):
@@ -76,7 +43,7 @@ class Simulation:
             sr = ret / vol
             return np.array([ret, vol, sr])
 
-        # Negate Sharpe ratio as we need to max it but Scipy minimize the given function
+        # Negate Sharpe ratio because optimize.minimize finds a minimum not maximum so we have to invert our function
         def neg_sr(weights):
             return get_ret_vol_sr(weights)[-1] * -1
 
@@ -116,38 +83,29 @@ class Simulation:
         # initial guess for optimization to start with
         init_guess = [1. / number_of_companies] * number_of_companies
 
-        # Call minimizer
+        # minimizer
         opt_results = optimize.minimize(neg_sr, init_guess, method='SLSQP', constraints=cons, bounds=bounds)
 
-        # if no success
+        # if it was not successful - the desired result cannot be achieved
         if not opt_results.success:
             msg_box = QMessageBox()
             msg_box.setWindowTitle('Simulation failed')
-            msg_box.setText('Try changing the value of your desired risk and/or return as in current arrangement it is not possible to reach such value')
+            msg_box.setText(
+                'Try changing the value of your desired risk and/or return as in current arrangement it is not possible to reach such value')
             msg_box.setObjectName("msg_box")
             msg_box.exec()
 
-            # tutaj uzytkownik moze wprowadzic inna wartosc
             raise BaseException("Optimization failed: " + opt_results.message)
 
         optimal_weights = opt_results.x
-        # optimal_weights
-        for st, i in zip(companies_list, optimal_weights):
-            print(f'Stock {st} has weight {np.round(i * 100, 2)} %')
-
-        print('For a given portfolio we have: (Using SciPy optimizer)\n \n')
 
         results = []
         for i, j in enumerate('Return Volatility SharpeRatio'.split()):
-            print(f'{j} is : {get_ret_vol_sr(optimal_weights)[i]}\n')
             results.append(get_ret_vol_sr(optimal_weights)[i])
 
-        # self.plot_risk_return_scatter(daily_returns)
-        # self.plot_efficient_frontier(daily_returns, log_mean, cov)
         self.config.companies = companies_list
         self.config.weights = optimal_weights
         self.config.results = results
-        #self.plot_risk_return_scatter(daily_returns)
         self.send_data_to_controller()
         return optimal_weights, results
 
@@ -205,20 +163,5 @@ class Simulation:
                                        method='SLSQP', constraints=cons, bounds=[(0, 1)] * daily_returns.shape[1])
             return result.x
 
-        target_returns = np.linspace(log_mean.min() * 100, log_mean.max() * 100, 50)
-        efficient_portfolios = [efficient_return(tr) for tr in target_returns]
-        volatilities = [portfolio_volatility(p) for p in efficient_portfolios]
-
-        plt.figure(figsize=(10, 6))
-        plt.plot(volatilities, target_returns, label='Efficient Frontier')
-        plt.xlabel('Volatility (%)')
-        plt.ylabel('Return (%)')
-        plt.title('Efficient Frontier')
-        plt.legend()
-        plt.show()
-
-
 if __name__ == "__main__":
-    simulation = Simulation()
-    print(simulation.run_best_of_three(Utils.get_absolute_file_path("stock_data_without_polish.csv")))
-
+    pass

@@ -7,7 +7,8 @@ class StockInformationConfigurator:
             cls._instance = super(StockInformationConfigurator, cls).__new__(cls)
         return cls._instance
 
-    def __init__(self, period=None, companies_day=None, companies_month=None, companies_year=None, last_update_time=None):
+    def __init__(self, period=None, companies_day=None, companies_month=None, companies_year=None,
+                 last_update_time=None):
         if companies_day is None:
             companies_day = [("Test", 0, 0, 0)]
         if companies_month is None:

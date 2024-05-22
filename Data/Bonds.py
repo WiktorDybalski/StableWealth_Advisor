@@ -14,5 +14,3 @@ class Bonds:
         "DOR": (6.3 / 12, None, "Month", 0.7, 24, False, 0.5),  # bierzemy % NBP i dzielimy przez 12
     }
 
-# arg = Bonds()
-# print(arg.get_bonds())

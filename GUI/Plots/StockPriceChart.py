@@ -1,7 +1,7 @@
 import pandas as pd
 from PySide6.QtCharts import QChart, QChartView, QLineSeries, QDateTimeAxis, QValueAxis
+from PySide6.QtCore import QDateTime, Qt, QFile
 from PySide6.QtGui import QPainter, QCursor
-from PySide6.QtCore import QDateTime, Qt, QDate, QTime, QTimeZone, QFile
 from PySide6.QtWidgets import QToolTip
 
 from Utils import Utils
@@ -99,7 +99,6 @@ class StockPriceChart(QChartView):
         axisY.setGridLineVisible(True)
 
         self.chart.legend().setVisible(False)
-        #self.chart.legend().setObjectName("Price")
         series.hovered.connect(self.show_tooltip)
 
     def show_tooltip(self, point, state):

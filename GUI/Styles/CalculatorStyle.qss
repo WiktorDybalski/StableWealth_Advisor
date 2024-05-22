@@ -202,3 +202,23 @@ QScrollBar::sub-line:horizontal {
 QScrollBar::add-page:horizontal, QScrollBar::sub-page:horizontal {
     background: #e0e0e0;
 }
+
+QMessageBox {
+    background-color: #2e2e2e;
+    color: #ffffff;
+    border: 2px solid #ff6600;
+    border-radius: 10px;
+    font-size: 14px;
+}
+
+QMessageBox QPushButton {
+    background-color: #ff6600;
+    color: #ffffff;
+    border: none;
+    padding: 5px 10px;
+    border-radius: 5px;
+}
+
+QMessageBox QPushButton:hover {
+    background-color: #e65c00;
+}
