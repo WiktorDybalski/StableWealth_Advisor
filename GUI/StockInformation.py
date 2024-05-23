@@ -1,15 +1,13 @@
 import math
 from functools import partial
 
-import pandas as pd
 from PySide6.QtGui import QIcon, QPixmap, QBrush, QColor
 from PySide6.QtWidgets import QWidget, QVBoxLayout, QLabel, QHBoxLayout, QPushButton, QTableWidgetItem, QTableWidget, \
     QComboBox, QHeaderView, QSizePolicy, QFrame, QScrollBar, QToolButton
-from PySide6.QtCore import Qt, QFile, Signal, QSize
+from PySide6.QtCore import Qt, QFile, Signal
 from Configurators.StockInformationConfigurator import StockInformationConfigurator as si_config
 from Utils import Utils
 from Configurators.CompanyConfigurator import CompanyConfigurator as config
-from math import isnan
 
 from Data.Companies import Companies
 

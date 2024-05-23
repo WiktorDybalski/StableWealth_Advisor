@@ -1,6 +1,5 @@
 import pandas as pd
-from PySide6.QtGui import QFont
-from PySide6.QtWidgets import QWidget, QVBoxLayout, QLabel, QHBoxLayout, QFrame, QGridLayout
+from PySide6.QtWidgets import QWidget, QVBoxLayout, QLabel, QFrame, QGridLayout
 from PySide6.QtCore import Qt, QFile, Signal
 
 from Data.Companies import Companies

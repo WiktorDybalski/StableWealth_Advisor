@@ -1,8 +1,8 @@
 import numpy as np
 from PySide6.QtCharts import QPieSeries, QChart, QChartView, QPieSlice
-from PySide6.QtGui import QPainter, QFont
+from PySide6.QtGui import QPainter
 from PySide6.QtCore import Qt, QFile, Signal
-from PySide6.QtWidgets import QWidget, QVBoxLayout, QLabel, QHBoxLayout, QPushButton, QFrame, QGridLayout
+from PySide6.QtWidgets import QWidget, QVBoxLayout, QLabel, QHBoxLayout, QFrame, QGridLayout
 from Utils import Utils
 from Configurators.SharesAssistantConfigurator import SharesAssistantConfigurator as config
 

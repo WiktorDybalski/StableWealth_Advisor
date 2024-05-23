@@ -31,7 +31,6 @@ class Calculator(QWidget):
         self.load_styles()
 
     def load_styles(self):
-        """Read and apply the CSS stylesheet to the window."""
         style_file = QFile(Utils.get_absolute_file_path("CalculatorStyle.qss"))  # Update this path as required
         if style_file.open(QFile.ReadOnly | QFile.Text):
             style_sheet = str(style_file.readAll(), 'utf-8')
@@ -41,13 +40,11 @@ class Calculator(QWidget):
             print("Calculator StyleSheet Load Error.")
 
     def _init_ui(self):
-        """Setup the layout and widgets of the calculator home screen."""
         self.layout = QVBoxLayout()
         self.create_middle_part(self.layout)
         self.setLayout(self.layout)
 
     def create_middle_part(self, layout):
-        """Create the main content of the calculator."""
         middle_widget = QWidget()
         middle_widget.setObjectName("middle_widget")
         self.middle_layout = QVBoxLayout()  # store middle layout reference
@@ -80,7 +77,7 @@ class Calculator(QWidget):
         belka_tax_label.setAlignment(Qt.AlignLeft)
         self.middle_layout.addWidget(belka_tax_label)
 
-        grid_layout = QGridLayout()
+        grid_layout = QGridLayout()  # for labels and inputs
 
         amount_label = QLabel("Investment Amount (in PLN)")
         amount_label.setObjectName("label")
@@ -130,10 +127,6 @@ class Calculator(QWidget):
 
         middle_widget.setLayout(self.middle_layout)
         layout.addWidget(middle_widget, 80)
-
-    def set_bond_type(self, bond_type):
-        """Set the selected bond type."""
-        self.bond_type = bond_type
 
     def display_calculator_results(self):
         """Placeholder method for displaying calculator results."""
@@ -189,7 +182,7 @@ class Calculator(QWidget):
             self.results_table.setRowCount(0)
             self.results_table.setColumnCount(0)
 
-        # Remove the column with header 'Year Inflation'
+        # Remove the column with header 'Year Inflation' as it isnt needed
         if 'Year Inflation' in self.bond_results.columns:
             self.bond_results = self.bond_results.drop(columns=['Year Inflation'])
 
@@ -208,15 +201,15 @@ class Calculator(QWidget):
         font = QFont()
         font.setPointSize(11)
 
-        # Populate the table with CSV data and add suffixes
+        # Populating the table with CSV data and adding suffixes
         for i in range(len(self.bond_results)):
             for j in range(len(self.bond_results.columns)):
                 value = self.bond_results.iat[i, j]
 
-                # Add 'zl' suffix
+                # ' zl' suffix
                 if j in zl_columns:
                     value = f"{value} zł"
-                # Add '%' suffix
+                # '%' suffix
                 elif j in percent_columns:
                     value = f"{value}%"
 
@@ -225,7 +218,7 @@ class Calculator(QWidget):
                 item.setFont(font)
                 self.results_table.setItem(i, j, item)
 
-        # Resize columns to fit contents
+        # Resizing columns to fit contents
         self.results_table.resizeColumnsToContents()
         self.results_table.horizontalHeader().setStretchLastSection(True)
 
