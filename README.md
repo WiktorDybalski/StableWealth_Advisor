@@ -38,8 +38,27 @@ The Treasury Bond Calculator assists users in calculating various metrics for sp
 
 ## Screenshots
 
-![App Screenshot](https://via.placeholder.com/468x300?text=App+Screenshot+Here)
+### Home
+![Home](https://github.com/WiktorDybalski/StableWealth_Advisor/blob/main/Images/home.png)
 
+### Stock Market Assistant
+![Home](https://github.com/WiktorDybalski/StableWealth_Advisor/blob/main/Images/1.png)
+
+![Home](https://github.com/WiktorDybalski/StableWealth_Advisor/blob/main/Images/2.png)
+
+![Home](https://github.com/WiktorDybalski/StableWealth_Advisor/blob/main/Images/3.png)
+
+### Stock Information
+![Home](https://github.com/WiktorDybalski/StableWealth_Advisor/blob/main/Images/4.png)
+
+![Home](https://github.com/WiktorDybalski/StableWealth_Advisor/blob/main/Images/5.png)
+
+### Treasury Bond Calculator
+![Home](https://github.com/WiktorDybalski/StableWealth_Advisor/blob/main/Images/6.png)
+
+![Home](https://github.com/WiktorDybalski/StableWealth_Advisor/blob/main/Images/7.png)
+
+![Home](https://github.com/WiktorDybalski/StableWealth_Advisor/blob/main/Images/8.png)
 
 
 ### To install all necessary libraries try this: 
