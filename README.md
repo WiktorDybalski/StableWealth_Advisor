@@ -67,7 +67,7 @@ The Treasury Bond Calculator assists users in calculating various metrics for sp
 pip install -r requirements.txt
 ```
 
-## Author
+## Authors
 
 - [Wiktor Dybalski](https://github.com/WiktorDybalski)
 
